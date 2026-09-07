@@ -1,0 +1,252 @@
+# Plan
+
+Working plan for Onchain Router, written at the start of the build and updated as
+decisions land. Kept in the repo so the reasoning behind the code is reviewable, not
+just the code.
+
+---
+
+## 1. The problem
+
+An AI agent can reason its way to "I need to know who holds this token." It cannot
+act on that.
+
+Every onchain data provider is shaped for humans: sign up, create an account, get an
+API key, pick a subscription tier, put the key in a config file. An agent hits that
+wall and stops, and a human has to step in for a task the agent could otherwise
+finish on its own.
+
+The paywall is the wrong shape too. A subscription assumes a persistent relationship
+with a known customer. An agent wants one call, once, for a fraction of a cent, and
+may never come back.
+
+## 2. What we are building
+
+**Onchain Router: the onchain tool router for AI agents.**
+
+One MCP interface. An agent connects once, discovers what onchain capabilities are
+available, calls the one it needs, and pays for that single call with x402. No
+signup, no API key, no subscription.
+
+```
+Onchain Router handles:   Discovery → Routing → Payment → Execution
+The agent handles:        Reasoning → Decision → Interpretation
+```
+
+That separation is the product. We are not trying to make the agent smarter. We are
+removing the reason it has to stop.
+
+## 3. Design decisions
+
+Decisions are listed with what we gave up, because the tradeoff is the interesting
+part.
+
+### 3.1 The MCP server holds the wallet, not the model
+
+MCP has no HTTP status channel, so `tools/call` cannot return a 402. That looked like
+a blocker at first. It is not, because the 402 does not need to travel over MCP at
+all.
+
+The MCP server is itself the x402 *client*. It speaks plain HTTP to the Router API,
+handles the 402 there, signs, pays, and returns a finished result upward.
+
+```
+Claude          no key, just calls a tool
+  │ MCP
+MCP server      the agent's wallet lives here
+  │ HTTP + x402
+Onchain Router  402 → pay → settle
+  │
+Hedera / Arc
+```
+
+**Given up:** the model never sees the payment, so it cannot reason about price
+mid-task ("this tool costs more than the answer is worth"). Budget-aware agents are a
+later problem; correctness first.
+
+### 3.2 Two surfaces, two wallet models
+
+| Surface | Wallet | Why |
+|---|---|---|
+| Connect Your Agent | the user's own key, on their machine | self-custody; the real product |
+| Playground | a programmatic agent wallet we fund | anyone can try it with no setup |
+
+The Playground is not a separate demo stack. It drives the same MCP server and the
+same Router API as a real agent would, so what it shows is what actually happens.
+
+**Given up:** running a funded wallet for anonymous visitors needs spend limits. For
+now the Playground is rate-limited and capped.
+
+### 3.3 Multiple payment networks, one interface
+
+A paid call advertises several networks in a single 402 response. The agent pays on
+whichever one it already holds funds on.
+
+This is not a feature bolted on for breadth. It is the honest consequence of the
+premise: if the point is that an agent should not have to prepare in advance, then it
+should not have to hold funds on a chain we happened to pick.
+
+Tools stay unaware of this. A tool never learns which rail paid for it.
+
+```
+PaymentRail
+├── HederaRail   settles through Blocky402
+└── ArcRail      settles through Circle
+```
+
+**Given up:** two settlement paths to keep working instead of one.
+
+### 3.4 Tools return judgments, not rows
+
+A tool that forwards a query result is not worth paying for; the agent could have run
+that query itself. What is worth paying for is the interpretation.
+
+So `token-risk` does not return a holder list. It returns:
+
+```
+Risk: HIGH
+Top 10 wallets hold 64% of supply.
+3 major wallets show similar creation timing.
+
+Assessment: high holder concentration creates elevated
+dump and manipulation risk.
+```
+
+**Given up:** opinionated output is harder to defend than raw data. Every tool has to
+state its reasoning so the agent can weigh it, and say when confidence is low.
+
+### 3.5 Standardized schemas over per-protocol integrations
+
+Each protocol's own subgraph names things differently, so a query written against one
+does not run against another. Building a tool that way means one integration per
+protocol, forever.
+
+Building against a standardized schema instead means the same tool logic runs across
+every protocol that publishes to it. For a router that wants breadth with a small
+number of tools, that is the whole game.
+
+**Given up:** standardized schemas expose less than a bespoke one. Some tools will
+eventually need protocol-specific data and will have to pay that cost then.
+
+### 3.6 Rails before tools
+
+The first two days build no real tools at all, only a placeholder that returns a
+constant.
+
+The reasoning: payment is the part that can fail in ways we cannot design around.
+Tools are the part we control. If the payment path does not work, nothing else
+matters, so it gets proven first, against a tool deliberately too boring to hide a
+failure.
+
+**Given up:** nothing demoable for two days.
+
+### 3.7 Scope deliberately cut
+
+Not built: provider onboarding, admin approval queues, provider dashboards, revenue
+accounting, user accounts, marketplace management, analytics.
+
+Each of those is a real part of a marketplace and none of them are part of proving
+that an agent can discover, pay for, and use an onchain capability. Three tools that
+genuinely work say more than a marketplace shell around ten that do not.
+
+---
+
+## 4. Notable findings
+
+Things learned during the build that were not obvious from the documentation. The
+running log lives in [HARNESS-NOTES.md](./HARNESS-NOTES.md).
+
+**The reference implementation points at a different testnet facilitator than the one
+we need.** Hedera's x402 proof-of-concept defaults testnet settlement to
+`x402.org/facilitator` and only uses Blocky402 on mainnet. Blocky402 does support
+Hedera testnet, but the endpoint is not published on their site. Confirmed by querying
+`https://api.testnet.blocky402.com/supported`, which returns:
+
+```json
+{"x402Version":2,"scheme":"exact","network":"hedera:testnet","extra":{"feePayer":"0.0.7162784"}}
+```
+
+**HTS token association is a hidden prerequisite.** Paying in USDC requires the
+receiving account to be associated with the token first, or settlement fails with
+`TOKEN_NOT_ASSOCIATED_TO_ACCOUNT`. There is no equivalent concept on EVM chains, so a
+developer arriving from there reads the failure as a broken integration rather than a
+missing setup step. We default to native HBAR, which needs no association, so the
+first payment can be proven without that detour.
+
+---
+
+## 5. Build log
+
+### 7 Sept — payment rail
+
+Project scaffolded. x402 resource server wired to the Blocky402 testnet facilitator.
+A single deliberately-boring endpoint, `POST /api/tools/test`, gated behind payment.
+
+Verified: the endpoint returns a well-formed 402 whose `accepts` array carries
+`hedera:testnet`, the `exact` scheme, and a fee payer that the facilitator itself
+supplied — which is what confirms the facilitator handshake actually happened rather
+than being assumed.
+
+Paying-agent client written. Awaiting funded testnet accounts to close the loop with a
+real transaction.
+
+### 8 Sept — second rail
+
+*pending*
+
+### 9 Sept — first real tool
+
+*pending*
+
+### 10 Sept — remaining tools
+
+*pending*
+
+### 11 Sept — agent flow and Playground
+
+*pending*
+
+### 12 Sept — documentation and demo
+
+*pending*
+
+---
+
+## 6. How AI was used
+
+Used throughout, as an accelerator and a research assistant. Being specific about
+where, since the line matters.
+
+**Where it helped most**
+
+- Reading unfamiliar SDK surfaces quickly. The x402 packages are new enough that their
+  behaviour was faster to establish by reading the shipped type definitions and the
+  reference implementation than by searching for documentation.
+- Boilerplate: project scaffolding, config, the shape of a first route handler.
+- Drafting prose — this file, the README, the friction notes — from decisions already
+  made.
+
+**Where the decisions were made by hand**
+
+- The product thesis, and the choice to be agent-first rather than building a web app
+  with an agent bolted on.
+- Resolving the MCP-and-402 question by moving the x402 client into the MCP server
+  rather than trying to push payment semantics through a protocol that has no room for
+  them.
+- Choosing standardized schemas over per-protocol integrations, and accepting the
+  narrower data surface that comes with it.
+- Ordering the build rails-first, and defining "done" for day one as a real
+  transaction hash rather than a working-looking demo.
+- Cutting marketplace scope.
+
+**Where AI output was rejected**
+
+The first pass at the facilitator configuration followed the official reference
+implementation, which would have silently settled testnet payments through the wrong
+facilitator. Catching that took reading the reference's `.env.example` against the
+requirement rather than trusting the generated code, and then verifying the correct
+endpoint against a live `/supported` response.
+
+That pattern — generated code that is plausible, compiles, and is subtly wrong about
+something only the docs or the network can tell you — is the main reason every
+integration here is verified against a live response before it is called done.

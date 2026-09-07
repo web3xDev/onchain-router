@@ -1,8 +1,14 @@
-import "dotenv/config";
+import dotenv from "dotenv";
 import { x402Client } from "@x402/core/client";
+
+// Next.js reads .env.local; plain `dotenv/config` does not. Load it explicitly,
+// then fall back to .env so both layouts work.
+dotenv.config({ path: ".env.local" });
+dotenv.config();
+
 import { wrapFetchWithPayment } from "@x402/fetch";
 import { ExactHederaScheme } from "@x402/hedera/exact/client";
-import { createClientHederaSigner, PrivateKey } from "@x402/hedera";
+import { createClientHederaSigner, HBAR_ASSET_ID, PrivateKey } from "@x402/hedera";
 
 /**
  * Day 1 smoke test: act as the paying agent.
@@ -31,7 +37,28 @@ async function main() {
     network: NETWORK,
   });
 
-  const client = new x402Client().register("hedera:*", new ExactHederaScheme(signer));
+  // The client only spends "default assets" (USDC here) unless told otherwise.
+  // Native HBAR is not in that table, so allow it explicitly with a hard per-payment
+  // cap. An agent wallet should carry an allowlist, not a blank cheque.
+  let settlement: unknown;
+
+  const client = new x402Client()
+    .onPaymentResponse(async (ctx) => {
+      // The settle response is delivered here directly. Reading it off the
+      // X-PAYMENT-RESPONSE header is unreliable through the Next.js response path.
+      settlement = ctx;
+    })
+    .setSpendControls({
+      allowedAssets: [
+        {
+          network: NETWORK,
+          asset: HBAR_ASSET_ID,
+          maxAmountPerPayment: process.env.AGENT_MAX_TINYBAR ?? "20000000", // 0.2 HBAR
+        },
+      ],
+    })
+    .register("hedera:*", new ExactHederaScheme(signer));
+
   const fetchWithPayment = wrapFetchWithPayment(fetch, client);
 
   console.log(`agent   : ${accountId}`);
@@ -47,24 +74,18 @@ async function main() {
 
   console.log(`status  : ${response.status}`);
 
-  const settlement = response.headers.get("x-payment-response");
   if (settlement) {
-    let decoded: unknown = settlement;
-    try {
-      decoded = JSON.parse(Buffer.from(settlement, "base64").toString("utf8"));
-    } catch {
-      /* not base64 json, print raw */
-    }
-    console.log("settled :", JSON.stringify(decoded, null, 2));
+    const settle = (settlement as { settleResponse?: Record<string, unknown> }).settleResponse;
+    console.log(`settled : ${settle?.success ? "success" : "failed"}`);
+    console.log(`payer   : ${settle?.payer ?? "?"}`);
+    console.log(`network : ${settle?.network ?? "?"}`);
 
-    const txId =
-      typeof decoded === "object" && decoded !== null
-        ? ((decoded as Record<string, unknown>).transactionId ??
-           (decoded as Record<string, unknown>).transaction)
-        : undefined;
-
-    if (typeof txId === "string") {
-      console.log(`hashscan: https://hashscan.io/testnet/transaction/${txId}`);
+    // Settlement reports "0.0.7162784@1788793434.486458284";
+    // HashScan wants "0.0.7162784-1788793434-486458284".
+    const found = String(settle?.transaction ?? "").match(/(\d+\.\d+\.\d+)@(\d+)\.(\d+)/);
+    if (found) {
+      const [, account, seconds, nanos] = found;
+      console.log(`hashscan: https://hashscan.io/testnet/transaction/${account}-${seconds}-${nanos}`);
     }
   } else {
     console.log("settled : no x-payment-response header returned");

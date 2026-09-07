@@ -184,6 +184,27 @@ Hedera testnet, but the endpoint is not published on their site. Confirmed by qu
 {"x402Version":2,"scheme":"exact","network":"hedera:testnet","extra":{"feePayer":"0.0.7162784"}}
 ```
 
+**The standard EVM scheme cannot pay through Circle Gateway.** Arc settles through
+Circle's Gateway, which expects the EIP-712 signature to name the Gateway Wallet
+contract. `@x402/evm`'s `ExactEvmScheme` never reads `extra.verifyingContract` from
+the facilitator — in its compiled code that field is always derived locally, as
+`PERMIT2_ADDRESS`, or the token address, or its own batch-settlement contract. The
+signature would therefore be valid but over the wrong domain, and Circle would reject
+it. Circle publishes `GatewayEvmScheme` for exactly this, and says so in its own
+source comment: the base scheme "returns requirements unchanged, dropping
+`supportedKind.extra`."
+
+Worth noting for anyone diagnosing this: it is not an Arc quirk or a testnet quirk.
+Circle's facilitator advertises the same Gateway Wallet address on all twelve
+networks it supports, so any chain routed through Gateway behaves this way.
+
+**Circle's package ships stale inlined types.** `@circle-fin/x402-batching` bundles
+type definitions generated against an older `@x402/core`, so its `FacilitatorClient`
+is structurally incompatible with the installed one (`resource.description` optional
+in one, required in the other). Only one `@x402/core` is actually installed, so this
+is a declaration mismatch rather than a runtime one, and is asserted through with a
+comment rather than worked around.
+
 **The x402 client refuses unfamiliar assets by default.** Payment attempts in native
 HBAR were rejected client-side before ever reaching the network: spend controls allow
 only assets in the SDK's default table, which on Hedera is USDC alone. The fix is to
@@ -240,9 +261,21 @@ policy — Hedera Agent Kit on Hedera, Circle Agent Stack on Arc — not a priva
 a config file. Section 3.1 now says that. The smoke-test client written today uses a
 raw key deliberately: it exists to prove the payment path, not to be the architecture.
 
-### 8 Sept — second rail
+**Started the second rail early.** Arc wired in alongside Hedera: one resource server,
+two facilitators, two schemes, and a single route that advertises both networks in one
+402. The paying client registers both rails and `PAY_NETWORK` forces a choice.
 
-*pending*
+Arc is advertised only when a receiving address is configured, so the Hedera rail is
+never blocked by Arc setup being incomplete. Hedera re-verified end to end after the
+refactor: still settling.
+
+The detour worth recording: the standard EVM scheme looked like it should work and
+does not, for a reason only visible in compiled code. That cost an hour and would
+have cost a day if found later. See findings.
+
+### 8 Sept — Arc payment end to end
+
+*pending — needs a funded Gateway Wallet balance*
 
 ### 9 Sept — first real tool
 

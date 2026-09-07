@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { withX402 } from "@x402/next";
-import { HEDERA_NETWORK, resourceServer, serviceAccountId, toolPrice } from "@/lib/x402";
+import { paymentOptions, resourceServer } from "@/lib/x402";
 
 /**
  * Smoke-test tool. Deliberately returns a constant.
@@ -22,12 +22,7 @@ export const POST = withX402(
   handler,
   {
     "/api/tools/test": {
-      accepts: {
-        scheme: "exact",
-        network: HEDERA_NETWORK,
-        payTo: serviceAccountId(),
-        price: toolPrice(),
-      },
+      accepts: paymentOptions(),
       description: "Onchain Router smoke-test tool",
     },
   },

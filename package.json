@@ -12,7 +12,9 @@
     "pay": "tsx scripts/pay.ts"
   },
   "dependencies": {
+    "@circle-fin/x402-batching": "^3.4.0",
     "@x402/core": "^2.18.0",
+    "@x402/evm": "^2.25.0",
     "@x402/fetch": "^2.18.0",
     "@x402/hedera": "^2.18.0",
     "@x402/next": "^2.18.0",

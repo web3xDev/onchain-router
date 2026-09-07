@@ -19,7 +19,8 @@ Day 1 of 6. The payment rail comes first; tools and MCP follow.
 | | |
 |---|---|
 | ✅ | x402-gated endpoint on Hedera testnet via Blocky402 |
-| ✅ | Paying-agent test client |
+| ✅ | Real payment settled on-chain, agent → service, facilitator-sponsored fee |
+| ⬜ | Agent wallets (Hedera Agent Kit, Circle Agent Stack) |
 | ⬜ | Arc as a second payment rail |
 | ⬜ | MCP server |
 | ⬜ | Graph-backed tools (`token-risk`, `wallet-profile`, `exit-liquidity`) |
@@ -42,27 +43,47 @@ POST /api/tools/test
   ├─ Blocky402 verifies, adds the fee-payer signature, submits
   │
   ▼
-200 { ok: true }   + X-PAYMENT-RESPONSE with the Hedera transaction id
+200 { ok: true }
 ```
 
 The facilitator sponsors network fees, so the agent needs no HBAR for gas beyond
-the payment itself.
+the payment itself. Settlement details reach the client through its
+`onPaymentResponse` hook.
 
-### Why the agent, not Claude, holds the key
+### Where the wallet lives
 
-MCP has no HTTP status channel, so `tools/call` cannot return a 402. It does not
-need to: the **MCP server is the x402 client**. The 402 exchange happens over plain
-HTTP between the MCP server and this API. Claude just calls a tool and gets a result.
+The agent has its own wallet, the way a contractor has a company card: it spends on
+its own, within limits someone set.
+
+A language model cannot sign a transaction, so the **MCP server acts as the x402
+client** — it handles the 402 over plain HTTP against this API and hands a finished
+result back. That also sidesteps a real constraint: MCP has no HTTP status channel,
+so `tools/call` could not carry a 402 even if we wanted it to. It never needs to.
+
+The wallet itself is not a private key in a config file. It is an agent wallet whose
+policy — per-payment caps, asset allowlists, audit trail — is enforced by the wallet
+kit rather than by application code, using each network's own tooling.
+
+| Network | Agent wallet |
+|---|---|
+| Hedera | Hedera Agent Kit |
+| Arc | Circle Agent Stack |
 
 ```
-Claude          (no key)
+Claude          reasons and calls a tool, holds nothing
   │ MCP
-MCP server      (agent's wallet lives here)
+MCP server      x402 client; talks to the agent's wallet
   │ HTTP + x402
-Onchain Router  (402 → pay → settle)
+Onchain Router  402 → pay → settle
   │
 Hedera / Arc
 ```
+
+The payment layer takes a signer rather than a key, so the wallet backend stays a
+contained choice.
+
+> `scripts/pay.ts` signs with a raw key on purpose. It is a smoke test for the payment
+> rail, not the architecture.
 
 ---
 

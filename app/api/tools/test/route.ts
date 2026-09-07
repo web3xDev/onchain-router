@@ -13,7 +13,7 @@ const handler = async (_request: NextRequest) => {
   return NextResponse.json({
     ok: true,
     tool: "test",
-    message: "Payment settled. This endpoint is x402-gated on Hedera testnet.",
+    message: "Payment settled. This endpoint is x402-gated on Hedera and Arc.",
     timestamp: new Date().toISOString(),
   });
 };

@@ -18,10 +18,10 @@ Day 1 of 6. The payment rail comes first; tools and MCP follow.
 
 | | |
 |---|---|
-| ✅ | x402-gated endpoint on Hedera testnet via Blocky402 |
-| ✅ | Real payment settled on-chain, agent → service, facilitator-sponsored fee |
+| ✅ | x402-gated endpoint offering Hedera and Arc in a single 402 |
+| ✅ | Real payment settled on Hedera testnet via Blocky402 |
+| ✅ | Real payment settled on Arc testnet via Circle Gateway |
 | ⬜ | Agent wallets (Hedera Agent Kit, Circle Agent Stack) |
-| ⬜ | Arc as a second payment rail |
 | ⬜ | MCP server |
 | ⬜ | Graph-backed tools (`token-risk`, `wallet-profile`, `exit-liquidity`) |
 | ⬜ | Playground |

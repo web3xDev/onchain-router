@@ -273,9 +273,26 @@ The detour worth recording: the standard EVM scheme looked like it should work a
 does not, for a reason only visible in compiled code. That cost an hour and would
 have cost a day if found later. See findings.
 
-### 8 Sept — Arc payment end to end
+**Both rails settling.** Arc closed the same day. A single 402 now advertises Hedera
+and Arc together, and the agent pays on whichever it is pointed at:
 
-*pending — needs a funded Gateway Wallet balance*
+```
+network : hedera:testnet       network : eip155:5042002
+settled : success              settled : success
+```
+
+The Arc option carries `extra.verifyingContract` through to the client, which is the
+whole reason `GatewayEvmScheme` exists and the visible proof it is doing its job.
+
+Two more detours, both environment rather than logic. `BatchFacilitatorClient`
+defaults to the mainnet Gateway API, so a testnet build fails with a message about
+scheme support that never mentions the environment. And the deposit step is real: USDC
+in the wallet is not spendable until it sits inside Gateway, so `npm run arc:deposit`
+now does that in one command.
+
+### 8 Sept — first Graph-backed tool
+
+*pending*
 
 ### 9 Sept — first real tool
 

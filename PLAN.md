@@ -41,35 +41,53 @@ removing the reason it has to stop.
 Decisions are listed with what we gave up, because the tradeoff is the interesting
 part.
 
-### 3.1 The MCP server holds the wallet, not the model
+### 3.1 The agent owns a wallet; the MCP server is the x402 client
 
-MCP has no HTTP status channel, so `tools/call` cannot return a 402. That looked like
-a blocker at first. It is not, because the 402 does not need to travel over MCP at
-all.
+The agent needs its own wallet. That is the premise: you give your agent a wallet the
+way you would give a contractor a company card, and it spends within limits you set.
 
-The MCP server is itself the x402 *client*. It speaks plain HTTP to the Router API,
-handles the 402 there, signs, pays, and returns a finished result upward.
+Two things follow from that, and they are easy to conflate.
+
+**Where signing happens.** A language model cannot sign a transaction. Something with
+access to key material has to. So the MCP server is the x402 *client*: it speaks plain
+HTTP to the Router API, handles the 402 there, and returns a finished result upward.
+This also dissolves the apparent blocker that MCP has no HTTP status channel and so
+`tools/call` cannot carry a 402 — the 402 never needs to travel over MCP at all.
+
+**What the wallet is.** Not a private key pasted into a config file. An agent wallet,
+managed by a wallet kit that enforces policy at the wallet rather than in application
+code: per-payment caps, asset allowlists, audit trails. One per network, using each
+network's own tooling.
+
+| Network | Agent wallet |
+|---|---|
+| Hedera | Hedera Agent Kit (policy-based guardrails) |
+| Arc | Circle Agent Stack |
 
 ```
-Claude          no key, just calls a tool
+Claude          reasons, calls a tool, holds nothing
   │ MCP
-MCP server      the agent's wallet lives here
+MCP server      x402 client; talks to the agent's wallet
   │ HTTP + x402
 Onchain Router  402 → pay → settle
   │
 Hedera / Arc
 ```
 
-**Given up:** the model never sees the payment, so it cannot reason about price
-mid-task ("this tool costs more than the answer is worth"). Budget-aware agents are a
-later problem; correctness first.
+The payment layer takes a *signer*, not a key, so the wallet backend is a contained
+choice: nothing above it — routing, MCP, tools — knows or cares which one is in use.
+
+**Given up:** the model never sees the price, so it cannot decide mid-task that a tool
+costs more than the answer is worth. Spend limits live at the wallet instead, which
+bounds the damage but is blunter than judgment. Budget-aware agents are a later
+problem.
 
 ### 3.2 Two surfaces, two wallet models
 
 | Surface | Wallet | Why |
 |---|---|---|
-| Connect Your Agent | the user's own key, on their machine | self-custody; the real product |
-| Playground | a programmatic agent wallet we fund | anyone can try it with no setup |
+| Connect Your Agent | the user's own agent wallet, under their policies | it is their agent and their money |
+| Playground | an agent wallet we fund, tightly capped | anyone can try it with no setup |
 
 The Playground is not a separate demo stack. It drives the same MCP server and the
 same Router API as a real agent would, so what it shows is what actually happens.
@@ -166,6 +184,14 @@ Hedera testnet, but the endpoint is not published on their site. Confirmed by qu
 {"x402Version":2,"scheme":"exact","network":"hedera:testnet","extra":{"feePayer":"0.0.7162784"}}
 ```
 
+**The x402 client refuses unfamiliar assets by default.** Payment attempts in native
+HBAR were rejected client-side before ever reaching the network: spend controls allow
+only assets in the SDK's default table, which on Hedera is USDC alone. The fix is to
+allowlist the asset explicitly with a per-payment cap. This is a good default — an
+agent wallet should carry an allowlist rather than a blank cheque — but the failure
+surfaces as a payload-creation error rather than a policy decision, which sends you
+looking in the wrong place.
+
 **HTS token association is a hidden prerequisite.** Paying in USDC requires the
 receiving account to be associated with the token first, or settlement fails with
 `TOKEN_NOT_ASSOCIATED_TO_ACCOUNT`. There is no equivalent concept on EVM chains, so a
@@ -187,8 +213,32 @@ Verified: the endpoint returns a well-formed 402 whose `accepts` array carries
 supplied — which is what confirms the facilitator handshake actually happened rather
 than being assumed.
 
-Paying-agent client written. Awaiting funded testnet accounts to close the loop with a
-real transaction.
+**Closed the loop with a real payment.** An agent paid 0.1 HBAR for a tool call and
+received the result:
+
+```
+status  : 200
+settled : success
+payer   : 0.0.10407265
+network : hedera:testnet
+```
+
+On-chain, the transfer shows the agent debited, the service credited, and the
+facilitator's own account paying the network fee — which is the part that confirms
+the facilitator is genuinely in the path rather than assumed to be.
+
+Three obstacles on the way, none of them where we expected: `dotenv` does not read
+`.env.local`, the client's spend controls rejected HBAR as a non-default asset, and
+`new x402Client(config)` silently ignores a config object because the constructor
+takes a selector function — configuration goes through `setSpendControls` instead.
+
+**Revised the wallet model.** The plan originally described the MCP server as the
+place the wallet lives, which conflated two separate things: where signing happens
+(the MCP server, necessarily, since a model cannot sign) and what the wallet *is*.
+The wallet belongs to the agent and should be managed by a wallet kit that enforces
+policy — Hedera Agent Kit on Hedera, Circle Agent Stack on Arc — not a private key in
+a config file. Section 3.1 now says that. The smoke-test client written today uses a
+raw key deliberately: it exists to prove the payment path, not to be the architecture.
 
 ### 8 Sept — second rail
 
@@ -233,6 +283,12 @@ where, since the line matters.
 - Resolving the MCP-and-402 question by moving the x402 client into the MCP server
   rather than trying to push payment semantics through a protocol that has no room for
   them.
+- Correcting that resolution when it drifted. The first write-up concluded "the wallet
+  lives in the MCP server," which quietly turned a signing detail into a custody model
+  and would have shipped a private key in a config file as the product. The wallet
+  belongs to the agent, governed by a wallet kit. The distinction was not caught by
+  reviewing the generated text; it was caught by knowing what the product was supposed
+  to be.
 - Choosing standardized schemas over per-protocol integrations, and accepting the
   narrower data surface that comes with it.
 - Ordering the build rails-first, and defining "done" for day one as a real

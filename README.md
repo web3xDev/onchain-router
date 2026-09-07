@@ -127,12 +127,14 @@ A successful run prints the settlement and a HashScan link.
 https://api.testnet.blocky402.com
 ```
 
-Required by the bounty. Confirmed against `/supported`, which advertises
+Settlement runs through Blocky402, which sponsors the network fee so a paying agent
+needs no gas of its own. Confirmed against `/supported`, which advertises
 `{"scheme":"exact","network":"hedera:testnet","extra":{"feePayer":"0.0.7162784"}}`.
 
-Note that Hedera's official PoC defaults **testnet** to `x402.org/facilitator` and
-only uses Blocky402 on mainnet — copying it verbatim would target the wrong
-facilitator. See [HARNESS-NOTES.md](./HARNESS-NOTES.md).
+The endpoint is worth stating explicitly: Hedera's reference implementation defaults
+**testnet** to `x402.org/facilitator` and reaches for Blocky402 only on mainnet, and
+Blocky402's own site does not publish a testnet URL. Following either one alone lands
+you somewhere other than where you meant to be. See [HARNESS-NOTES.md](./HARNESS-NOTES.md).
 
 ---
 

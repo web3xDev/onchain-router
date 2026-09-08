@@ -24,7 +24,8 @@ dotenv.config();
  * not the architecture. Real agents carry a wallet managed by a wallet kit.
  */
 
-const TOOL_URL = process.env.TOOL_URL ?? "http://localhost:3000/api/tools/test";
+const TOOL_URL = process.env.TOOL_URL ?? "http://localhost:3000/api/tools/lending-rates";
+const TOOL_BODY = process.env.TOOL_BODY ?? '{"asset":"USDC","chain":"ethereum"}';
 const HEDERA_NETWORK = "hedera:testnet";
 const ARC_NETWORK = "eip155:5042002";
 const ARC_USDC = "0x3600000000000000000000000000000000000000";
@@ -107,13 +108,14 @@ async function main() {
 
   console.log(`hedera  : ${process.env.HEDERA_AGENT_ACCOUNT_ID}`);
   console.log(`tool    : ${TOOL_URL}`);
+  console.log(`body    : ${TOOL_BODY}`);
   console.log(`rail    : ${preferred ?? "first offered"}`);
   console.log("");
 
   const response = await fetchWithPayment(TOOL_URL, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({}),
+    body: TOOL_BODY,
   });
 
   console.log(`status  : ${response.status}`);

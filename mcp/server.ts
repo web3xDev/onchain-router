@@ -3,6 +3,7 @@ import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { z } from "zod";
 import { agentWalletFromEnv } from "@/lib/payment/agent-wallet";
+import { TOOLS } from "@/lib/tools/registry";
 
 /**
  * Onchain Router MCP server.
@@ -125,42 +126,25 @@ async function respond(slug: string, body: Record<string, unknown>, payment?: st
 
 const server = new McpServer({ name: "onchain-router", version: "0.1.0" });
 
-server.registerTool(
-  "lending_rates",
-  {
-    title: "Lending rates across every indexed protocol",
-    description:
-      "Where to lend or borrow an asset, decided across every lending protocol indexed on a chain. " +
-      "Returns a judgment rather than a table: the best rate weighed against the liquidity behind it, " +
-      "and an explanation of any higher rate that was discarded as too thin or stale to trust. " +
-      "Costs a fraction of a cent, settled with x402 from the calling agent's own wallet.",
-    inputSchema: {
-      asset: z.string().describe("Asset symbol, e.g. USDC or WETH"),
-      chain: z
-        .enum(["ethereum", "arbitrum", "base", "optimism", "polygon", "avalanche"])
-        .describe("Chain to search"),
-      payment: z.string().optional().describe("x402 payment receipt, if already settled"),
+// Registered from the same registry the HTTP API and the site catalogue read, so a
+// new tool appears in Claude, on the endpoint and in the catalogue from one entry.
+for (const tool of TOOLS) {
+  server.registerTool(
+    tool.slug.replace(/-/g, "_"),
+    {
+      title: tool.summary,
+      description: `${tool.description} Covers ${tool.coverage}. Costs ${tool.price} per call, settled with x402.`,
+      inputSchema: {
+        ...tool.inputSchema,
+        payment: z.string().optional().describe("x402 payment receipt, if already settled"),
+      },
     },
-  },
-  async ({ asset, chain, payment }) => respond("lending-rates", { asset, chain }, payment),
-);
-
-server.registerTool(
-  "governance_power",
-  {
-    title: "How concentrated a protocol's governance is",
-    description:
-      "Who actually controls a protocol. Measures the delegate table against the protocol's own quorum: " +
-      "how few delegates could carry a vote between them, how much of the voting power the top ten hold, " +
-      "and how much of it has never voted. " +
-      "Costs a fraction of a cent, settled with x402 from the calling agent's own wallet.",
-    inputSchema: {
-      protocol: z.string().describe("Protocol name, e.g. uniswap, compound, ens, maker"),
-      payment: z.string().optional().describe("x402 payment receipt, if already settled"),
+    async (args: Record<string, unknown>) => {
+      const { payment, ...input } = args;
+      return respond(tool.slug, input, payment as string | undefined);
     },
-  },
-  async ({ protocol, payment }) => respond("governance-power", { protocol }, payment),
-);
+  );
+}
 
 async function main() {
   // stderr: stdout is the MCP transport.

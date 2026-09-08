@@ -81,18 +81,32 @@ right failure — better than a router that fronts the money and invoices later.
 visitor without one still needs to see the thing work. It is the only place a key of
 ours exists.
 
-### 3.2 Two surfaces, two wallet models
+### 3.2 Three ways to arrange payment, and the operator picks
 
-| Surface | Wallet | Why |
+The money is always the caller's. What varies is whose process holds the signing
+material, and that is a judgment call about trust rather than a technical one — so it
+is left to whoever runs the server.
+
+| Arrangement | Key lives | Suits |
 |---|---|---|
-| Connect Your Agent | the user's own agent wallet, under their policies | it is their agent and their money |
-| Playground | an agent wallet we fund, tightly capped | anyone can try it with no setup |
+| Quote only (default) | nowhere here | an agent that already has a wallet |
+| Server settles via Circle | inside Circle | one-step calls without a key on disk |
+| Server settles with a raw key | in a config file | quick local work, nothing more |
 
-The Playground is not a separate demo stack. It drives the same MCP server and the
-same Router API as a real agent would, so what it shows is what actually happens.
+The first is the default because it is the only one where a mistake in this code
+cannot cost anyone money. The second is the recommended way to have the server pay:
+Circle holds the key and enforces limits beside it, so the credentials here command a
+wallet rather than being one. The third works and is honestly labelled as the weakest.
 
-**Given up:** running a funded wallet for anonymous visitors needs spend limits. For
-now the Playground is rate-limited and capped.
+**Given up:** three paths is more surface than one, and the quote-only default means
+the common case takes two round trips rather than one. Both are worth it — a router
+that quietly required your private key would be the wrong default no matter how
+convenient.
+
+**The Playground is the one exception.** It funds a wallet of its own so a visitor
+without one can still see the thing work. It is not a separate demo stack: it drives
+the same MCP server and the same API a real agent would, so what it shows is what
+actually happens. Anonymous spending needs limits, so it is capped and rate-limited.
 
 ### 3.3 Multiple payment networks, one interface
 

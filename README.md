@@ -14,17 +14,19 @@ Built at ETHOnline 2026 (From Scratch track).
 
 ## Status
 
-Day 1 of 6. The payment rail comes first; tools and MCP follow.
+Everything below is running against live data and settling real payments on testnet.
 
 | | |
 |---|---|
-| ✅ | x402-gated endpoint offering Hedera and Arc in a single 402 |
-| ✅ | Real payment settled on Hedera testnet via Blocky402 |
-| ✅ | Real payment settled on Arc testnet via Circle Gateway |
-| ⬜ | Agent wallets (Hedera Agent Kit, Circle Agent Stack) |
-| ⬜ | MCP server |
-| ⬜ | Graph-backed tools (`token-risk`, `wallet-profile`, `exit-liquidity`) |
-| ⬜ | Playground |
+| ✅ | One 402 offering both Hedera and Arc; the agent pays on whichever it holds |
+| ✅ | Payment settled on Hedera testnet via Blocky402, verified on HashScan |
+| ✅ | Payment settled on Arc testnet via Circle Gateway, verified by balance |
+| ✅ | Arc signed by a Circle agent wallet — the key never reaches this machine |
+| ✅ | `lending_rates` — best rate across every indexed lending protocol on a chain |
+| ✅ | `governance_power` — how concentrated a protocol's voting power is |
+| ✅ | MCP server, with three ways to arrange payment |
+| ⬜ | Playground — try it without a wallet of your own |
+| ⬜ | Landing page and tool catalogue |
 
 ---
 

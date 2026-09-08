@@ -120,3 +120,55 @@ export function paymentOptions(): PaymentOption[] {
 
   return options;
 }
+
+export type Rail = {
+  id: string;
+  name: string;
+  network: string;
+  asset: string;
+  amount: string;
+  payTo: string;
+  settlement: string;
+};
+
+/**
+ * The rails as the site describes them, read off the same payment options the
+ * server actually advertises. A rail that is not configured cannot be shown as
+ * live, because there is nothing to read it from.
+ */
+export function rails(): Rail[] {
+  // The site is readable even where the payment env is not set, e.g. a build step or
+  // a fork someone cloned. An unconfigured rail is simply not shown as live.
+  let options: PaymentOption[];
+  try {
+    options = paymentOptions();
+  } catch {
+    return [];
+  }
+
+  return options.map((option) => {
+    const price = option.price as { asset?: string; amount?: string } | string;
+    const asset = typeof price === "string" ? price : (price.asset ?? "");
+    const amount = typeof price === "string" ? price : (price.amount ?? "");
+
+    return option.network === HEDERA_NETWORK
+      ? {
+          id: "hedera",
+          name: "Hedera testnet",
+          network: option.network,
+          asset: `HBAR (${asset})`,
+          amount: `${amount} tinybar`,
+          payTo: String(option.payTo),
+          settlement: "Blocky402 facilitator, which also sponsors the gas",
+        }
+      : {
+          id: "arc",
+          name: "Arc testnet",
+          network: option.network,
+          asset: `USDC (${asset})`,
+          amount: `${amount} (6 decimals)`,
+          payTo: String(option.payTo),
+          settlement: "Circle Gateway, gasless from a deposited balance",
+        };
+  });
+}

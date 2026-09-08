@@ -30,8 +30,40 @@ export type AgentWallet = {
   describe: string;
 };
 
-export function agentWalletFromEnv(): AgentWallet | null {
-  const client = new x402Client();
+/** What the facilitator reports back once a payment has settled. */
+export type Settlement = {
+  success?: boolean;
+  network?: string;
+  payer?: string;
+  transaction?: string;
+};
+
+export type AgentWalletOptions = {
+  /** Forces a rail. Without it the first option the server advertises wins. */
+  preferNetwork?: string;
+  /** Receives the settlement receipt, for surfacing a real transaction to a caller. */
+  onSettle?: (settlement: Settlement) => void;
+};
+
+export function agentWalletFromEnv(options: AgentWalletOptions = {}): AgentWallet | null {
+  const { preferNetwork, onSettle } = options;
+
+  const client = preferNetwork
+    ? new x402Client((_version, requirements) => {
+        // Falling back rather than failing: a rail that is asked for but not offered
+        // should still get an answer, just on the other rail.
+        return requirements.find((r) => r.network === preferNetwork) ?? requirements[0];
+      })
+    : new x402Client();
+
+  if (onSettle) {
+    // Reading X-PAYMENT-RESPONSE off the response is unreliable through Next, so the
+    // receipt is taken from the client hook instead.
+    client.onPaymentResponse(async (context) => {
+      onSettle((context as { settleResponse?: Settlement }).settleResponse ?? {});
+    });
+  }
+
   const registered: string[] = [];
 
   // Spend limits. Neither native HBAR nor Arc USDC is a "default asset" the client

@@ -16,4 +16,4 @@ next-env.d.ts
 npm-debug.log*
 
 # Circle entity secret recovery file — never commit
-circle-recovery.dat
+circle-recovery/

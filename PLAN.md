@@ -346,6 +346,18 @@ visible immediately on HashScan. Arc clears through Circle Gateway in batches, v
 as a Gateway balance moving from 4.98 to 4.97 USDC against a $0.01 price. Same
 interface, two settlement models, and a tool never learns which one paid.
 
+**The Arc rail now signs through a Circle agent wallet.** The key is held by Circle and
+never exists on this machine; the payment layer asks for a signer, and the adapter
+forwards each EIP-712 request to Circle and returns the signature. Verified by the
+wallet's own Gateway balance moving from 3.00 to 2.99 USDC against a $0.01 price, with
+the settlement recording that address as the payer.
+
+Two details worth keeping. Circle takes typed data as a JSON string, so the BigInt
+fields EIP-712 uses have to be written as decimal strings and the `EIP712Domain` type
+has to be stated explicitly — viem infers both, a raw payload cannot. And Gateway lets
+one address fund another's balance, so the local key deposits on the agent wallet's
+behalf and the Circle-held wallet never needs USDC or gas of its own. It only signs.
+
 ### 10 Sept — Playground
 
 *pending — a funded wallet lives here and only here, so the work can be tried without

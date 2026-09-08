@@ -22,7 +22,7 @@ dotenv.config();
  */
 
 const ENV_FILE = ".env.local";
-const RECOVERY_FILE = "circle-recovery.dat";
+const RECOVERY_DIR = "circle-recovery";
 
 function setEnvVar(name: string, value: string) {
   let contents = fs.readFileSync(ENV_FILE, "utf8");
@@ -47,25 +47,32 @@ async function main() {
     console.log("entity secret : already set, reusing");
   } else {
     entitySecret = crypto.randomBytes(32).toString("hex");
-    console.log("entity secret : generated");
+
+    // Persist before registering. Registration can succeed and still fail on the way
+    // back — writing the recovery file, say — and a secret that Circle has accepted
+    // but we never wrote down is unrecoverable.
+    setEnvVar("CIRCLE_ENTITY_SECRET", entitySecret);
+    console.log("entity secret : generated and saved to .env.local");
+
+    fs.mkdirSync(RECOVERY_DIR, { recursive: true });
 
     try {
       await registerEntitySecretCiphertext({
         apiKey,
         entitySecret,
-        recoveryFileDownloadPath: RECOVERY_FILE,
+        recoveryFileDownloadPath: RECOVERY_DIR,
       });
-      console.log(`registered    : recovery file written to ${RECOVERY_FILE}`);
+      console.log(`registered    : recovery file written under ${RECOVERY_DIR}/`);
       console.log("                keep it — it is the only way to recover the secret");
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
       console.error(`\nCould not register the entity secret: ${message}`);
-      console.error("If one is already registered on this Circle account, put it in");
-      console.error("CIRCLE_ENTITY_SECRET and run this again.");
+      console.error("");
+      console.error("The secret is saved in .env.local either way. If Circle says one is");
+      console.error("already registered, either reuse that secret or reset it in the");
+      console.error("Circle console, then run this again.");
       process.exit(1);
     }
-
-    setEnvVar("CIRCLE_ENTITY_SECRET", entitySecret);
   }
 
   const client = initiateDeveloperControlledWalletsClient({ apiKey, entitySecret });

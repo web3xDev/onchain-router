@@ -11,6 +11,17 @@ import type { Address, Hex } from "viem";
  * key could simply skip.
  */
 
+/**
+ * viem derives the domain type from the domain object; a raw EIP-712 payload has to
+ * state it. All four fields are always present in the Gateway domain.
+ */
+const EIP712_DOMAIN_FIELDS = [
+  { name: "name", type: "string" },
+  { name: "version", type: "string" },
+  { name: "chainId", type: "uint256" },
+  { name: "verifyingContract", type: "address" },
+];
+
 export type CircleAgentWalletConfig = {
   apiKey: string;
   entitySecret: string;
@@ -58,10 +69,22 @@ export function circleAgentWallet(config: CircleAgentWalletConfig): BatchEvmSign
     address: config.address,
 
     async signTypedData({ domain, types, primaryType, message }) {
-      // Circle takes the typed data as a JSON string and returns the signature.
+      // Circle takes the typed data as a JSON string. EIP-712 numeric fields arrive
+      // as BigInt, which JSON cannot represent, so they are written as decimal
+      // strings — the encoding EIP-712 uses for uint256 anyway.
+      const data = JSON.stringify(
+        {
+          domain,
+          types: { ...types, EIP712Domain: EIP712_DOMAIN_FIELDS },
+          primaryType,
+          message,
+        },
+        (_key, value) => (typeof value === "bigint" ? value.toString() : value),
+      );
+
       const response = await client.signTypedData({
         walletId: config.walletId,
-        data: JSON.stringify({ domain, types, primaryType, message }),
+        data,
         memo: "x402 payment",
       });
 

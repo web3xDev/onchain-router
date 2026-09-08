@@ -93,7 +93,7 @@ async function main() {
   const text = (paid.content as { text?: string }[])[0]?.text ?? "";
   try {
     const data = JSON.parse(text) as { assessment?: string; responded?: number };
-    console.log(`   PAID — ${data.responded} protocols answered`);
+    console.log(`   PAID · ${data.responded} protocols answered`);
     console.log("");
     console.log(data.assessment);
   } catch {

@@ -3,7 +3,7 @@ import { CATEGORIES } from "@/lib/tools/registry";
 import { SubmitForm } from "@/components/submit-form";
 
 export const metadata: Metadata = {
-  title: "Submit a tool — Onchain Router",
+  title: "Submit a tool · Onchain Router",
   description: "Propose an onchain tool for the router and earn on every call agents make.",
 };
 
@@ -15,7 +15,7 @@ export default function SubmitPage() {
         <h1>List your tool on the router</h1>
         <p>
           If you can answer a question about onchain state, agents will pay you per call for
-          it. No revenue share to negotiate up front — payments settle straight to the
+          it. No revenue share to negotiate up front. Payments settle straight to the
           address you name.
         </p>
       </div>
@@ -35,7 +35,7 @@ export default function SubmitPage() {
 
       <h2>Propose it</h2>
       <p>
-        This opens a prefilled issue on the repo — nothing is sent anywhere until you press
+        This opens a prefilled issue on the repo. Nothing is sent anywhere until you press
         the button on GitHub.
       </p>
 

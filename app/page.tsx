@@ -72,7 +72,7 @@ export default function Home() {
               </span>
               {"\n"}
               <span className="t-key">
-                {'   iron-bank reports 75.10% — stale data\n   from an abandoned protocol,'}
+                {'   iron-bank reports 75.10%, stale data\n   from an abandoned protocol,'}
               </span>
               {"\n"}
               <span className="t-key">{'   not an offer."'}</span>

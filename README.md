@@ -3,7 +3,7 @@
 **OpenRouter for onchain tools.**
 
 AI agents connect once through MCP and gain access to a network of onchain
-capabilities, paying per call with x402 — no signup, no API keys, no subscriptions.
+capabilities, paying per call with x402. No signup, no API keys, no subscriptions.
 
 > **Onchain Router handles:** Discovery → Routing → Payment → Execution
 > **The agent handles:** Reasoning → Decision → User interaction
@@ -21,12 +21,13 @@ Everything below is running against live data and settling real payments on test
 | ✅ | One 402 offering both Hedera and Arc; the agent pays on whichever it holds |
 | ✅ | Payment settled on Hedera testnet via Blocky402, verified on HashScan |
 | ✅ | Payment settled on Arc testnet via Circle Gateway, verified by balance |
-| ✅ | Arc signed by a Circle agent wallet — the key never reaches this machine |
-| ✅ | `lending_rates` — best rate across every indexed lending protocol on a chain |
-| ✅ | `governance_power` — how concentrated a protocol's voting power is |
+| ✅ | Arc signed by a Circle agent wallet, so the key never reaches this machine |
+| ✅ | `lending_rates`: best rate across every indexed lending protocol on a chain |
+| ✅ | `governance_power`: how concentrated a protocol's voting power is |
 | ✅ | MCP server, with three ways to arrange payment |
-| ⬜ | Playground — try it without a wallet of your own |
-| ⬜ | Landing page and tool catalogue |
+| ✅ | Site: catalogue, tool pages, connect, submit |
+| ✅ | Playground, funded by us, so it can be tried without a wallet |
+| ✅ | Coverage measured rather than claimed (`npm run probe`) |
 
 ---
 
@@ -36,7 +37,7 @@ Everything below is running against live data and settling real payments on test
 Agent
   │  HTTP
   ▼
-POST /api/tools/test
+POST /api/tools/lending-rates
   │
   ├─ 402 Payment Required   (accepts: hedera:testnet)
   │
@@ -45,7 +46,7 @@ POST /api/tools/test
   ├─ Blocky402 verifies, adds the fee-payer signature, submits
   │
   ▼
-200 { ok: true }
+200 { "assessment": "Best supply rate: 4.51% on compound-v3…" }
 ```
 
 The facilitator sponsors network fees, so the agent needs no HBAR for gas beyond
@@ -73,7 +74,7 @@ Whether it also settles is your choice, and there are three ways to arrange it.
 
 **Bring your own wallet (default).** Configured as above, the server holds nothing. A
 tool call returns the price and the networks accepted, and your agent pays from
-whatever wallet it already has — a Circle agent wallet, a Hedera wallet MCP, any x402
+whatever wallet it already has: a Circle agent wallet, a Hedera wallet MCP, any x402
 client. Nothing here ever touches a key.
 
 **Let the server settle, through Circle.** Add `CIRCLE_API_KEY`, `CIRCLE_ENTITY_SECRET`,
@@ -106,8 +107,8 @@ Payment required before this tool returns data.
 
 Endpoint: POST /api/tools/lending-rates
 Accepted payment options:
-  • hedera:testnet    — 0.1 HBAR
-  • eip155:5042002    — 0.01 USDC on Arc
+  • hedera:testnet    · 0.1 HBAR
+  • eip155:5042002    · 0.01 USDC on Arc
 
 Settle one of these from your own wallet with x402, then call this tool again
 with the payment receipt, or pay the endpoint directly.
@@ -124,7 +125,7 @@ The agent has its own wallet, the way a contractor has a company card: it spends
 its own, within limits someone set.
 
 Nothing here holds that key. The MCP server carries no wallet and no funds pass through
-it — a router that paid on your agent's behalf would put its balance in the middle of
+it. A router that paid on your agent's behalf would put its balance in the middle of
 your transaction and turn a payment protocol into a billing relationship.
 
 ```
@@ -137,8 +138,8 @@ Onchain Router  402 → verify → settle
 Hedera / Arc
 ```
 
-A model cannot compute a signature itself, but that is how every agent action works —
-it cannot fetch a page either, it calls a tool that fetches. Signing is the same, and
+A model cannot compute a signature itself, but that is how every agent action works.
+It cannot fetch a page either, it calls a tool that fetches. Signing is the same, and
 each network has a wallet kit for it:
 
 | Network | Agent wallet |
@@ -161,8 +162,8 @@ each network has a wallet kit for it:
 Create **two ECDSA accounts** at [portal.hedera.com](https://portal.hedera.com) and
 fund both with testnet HBAR.
 
-- **agent** — pays for tool calls
-- **service** — receives payments
+- **agent** pays for tool calls
+- **service** receives payments
 
 ### 2. Configure
 
@@ -180,8 +181,8 @@ USDC (`X402_ASSET=usdc`) only after associating the service wallet with token
 
 ```bash
 npm install
-npm run dev        # terminal 1 — the router
-npm run pay        # terminal 2 — the paying agent
+npm run dev        # terminal 1, the router
+npm run pay        # terminal 2, the paying agent
 ```
 
 A successful run prints the settlement and a HashScan link.
@@ -209,12 +210,22 @@ you somewhere other than where you meant to be. See [HARNESS-NOTES.md](./HARNESS
 
 ```
 app/
-  api/tools/test/route.ts   x402-gated smoke-test tool
-  page.tsx                  landing
+  page.tsx                  catalogue, the landing page
+  tools/[slug]/page.tsx     one page per tool, generated from the registry
+  connect/, submit/         connect an agent, propose a tool
+  playground/               run a tool against a wallet we fund
+  api/tools/route.ts        the catalogue, free to read
+  api/tools/[slug]/route.ts every paid tool, one handler
+  api/playground/route.ts   the only place the router spends its own money
 lib/
+  tools/registry.ts         every tool declared once
+  graph/verified.ts         what `npm run probe` measured as live
   x402.ts                   facilitator, resource server, pricing
+  payment/agent-wallet.ts   builds a paying fetch from whatever is configured
+mcp/server.ts               the MCP server, registered from the registry
 scripts/
   pay.ts                    paying-agent test client
+  probe-coverage.ts         measures which subgraphs still answer
 HARNESS-NOTES.md            Hedera DX friction log
 ```
 
@@ -224,9 +235,9 @@ HARNESS-NOTES.md            Hedera DX friction log
 
 | Layer | Sponsor |
 |---|---|
-| Data | The Graph — Subgraphs on standardized (Messari) schemas |
-| Payment | Hedera — x402 via Blocky402 |
-| Payment | Arc — x402 via Circle, Circle Agent Stack wallet |
+| Data | The Graph. Subgraphs on standardized (Messari) schemas |
+| Payment | Hedera. x402 via Blocky402 |
+| Payment | Arc. x402 via Circle, Circle Agent Stack wallet |
 
 ---
 

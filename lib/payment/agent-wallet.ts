@@ -12,7 +12,7 @@ import { circleAgentWalletFromEnv } from "@/lib/wallets/circle-agent-wallet";
  *
  * Configuring one is a convenience, not a requirement: with a wallet the router settles
  * on the caller's behalf and returns data in one step; without one it returns the price
- * and the caller's own wallet pays. Either way the money is the caller's — the only
+ * and the caller's own wallet pays. Either way the money is the caller's. The only
  * question is whose process holds the signing material.
  *
  * Preference order is deliberate. A Circle agent wallet keeps the key out of this
@@ -67,7 +67,7 @@ export function agentWalletFromEnv(options: AgentWalletOptions = {}): AgentWalle
   const registered: string[] = [];
 
   // Spend limits. Neither native HBAR nor Arc USDC is a "default asset" the client
-  // recognises, so both have to be allowlisted — which is the right shape anyway: an
+  // recognises, so both have to be allowlisted, which is the right shape anyway: an
   // agent wallet should carry an allowlist rather than a blank cheque.
   client.setSpendControls({
     allowedAssets: [

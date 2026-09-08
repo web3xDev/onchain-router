@@ -45,7 +45,7 @@ export function ToolCatalogue({
       <div className="filters">
         <input
           className="search"
-          placeholder="Search tools — lending rates, quorum, delegates…"
+          placeholder="Search tools: lending rates, quorum, delegates…"
           value={query}
           onChange={(event) => setQuery(event.target.value)}
           aria-label="Search tools"

@@ -8,7 +8,7 @@ import { findTool, TOOLS } from "@/lib/tools/registry";
  * Every paid tool, served from one handler.
  *
  * Tools are declared in the registry, so a new capability is one entry there rather
- * than another route file — and the catalogue the site renders is guaranteed to
+ * than another route file, and the catalogue the site renders is guaranteed to
  * describe what this endpoint actually serves, because both read the same source.
  */
 function slugOf(request: NextRequest): string {

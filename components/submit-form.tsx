@@ -114,7 +114,7 @@ export function SubmitForm({ categories }: { categories: string[] }) {
           id="source"
           value={fields.source}
           onChange={set("source")}
-          placeholder="Subgraph id, RPC, or an existing API — and how fresh it is."
+          placeholder="Subgraph id, RPC, or an existing API, and how fresh it is."
         />
         {touched && !fields.source.trim() && <span className="error">Required</span>}
       </div>

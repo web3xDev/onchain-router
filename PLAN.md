@@ -47,7 +47,7 @@ The agent spends its own money. You give it a wallet the way you would give a
 contractor a company card, and it spends within limits you set.
 
 That decides what this project must not do. A router that held the key and paid on the
-agent's behalf would be an intermediary nobody asked for — it would put our balance in
+agent's behalf would be an intermediary nobody asked for. It would put our balance in
 the middle of someone else's transaction and quietly turn a payment protocol into a
 billing relationship. So the MCP server carries no key and no funds pass through it.
 It advertises what exists and what each capability costs, and stops.
@@ -63,7 +63,7 @@ Hedera / Arc
 ```
 
 A language model cannot compute a signature itself, but that is not a limitation of
-this design — it is how every agent action works. An agent cannot fetch a page either;
+this design: it is how every agent action works. An agent cannot fetch a page either;
 it calls a tool that fetches. Signing is the same: the agent calls its wallet, and the
 wallet is under its control. Wallet kits exist for exactly this, and each network has
 one:
@@ -75,7 +75,7 @@ one:
 
 **Given up:** the router cannot guarantee a call succeeds, because it does not control
 whether the agent can pay. An unfunded agent gets a price and nothing else. That is the
-right failure — better than a router that fronts the money and invoices later.
+right failure, and better than a router that fronts the money and invoices later.
 
 **One exception, deliberately.** The Playground funds a wallet of its own, because a
 visitor without one still needs to see the thing work. It is the only place a key of
@@ -84,7 +84,7 @@ ours exists.
 ### 3.2 Three ways to arrange payment, and the operator picks
 
 The money is always the caller's. What varies is whose process holds the signing
-material, and that is a judgment call about trust rather than a technical one — so it
+material, and that is a judgment call about trust rather than a technical one, so it
 is left to whoever runs the server.
 
 | Arrangement | Key lives | Suits |
@@ -99,7 +99,7 @@ Circle holds the key and enforces limits beside it, so the credentials here comm
 wallet rather than being one. The third works and is honestly labelled as the weakest.
 
 **Given up:** three paths is more surface than one, and the quote-only default means
-the common case takes two round trips rather than one. Both are worth it — a router
+the common case takes two round trips rather than one. Both are worth it: a router
 that quietly required your private key would be the wrong default no matter how
 convenient.
 
@@ -137,7 +137,7 @@ So `lending_rates` does not return a table of markets. It returns:
 ```
 Best supply rate: 4.86% on compound-v3, backed by $375.4M of liquidity.
 iron-bank reports 75.10%, far outside what every live market on this
-chain pays — read as stale data from an abandoned protocol, not an
+chain pays. Read as stale data from an abandoned protocol, not an
 offer. Next best is aave-v3 at 3.62%, 1.23 points behind.
 ```
 
@@ -201,7 +201,7 @@ Hedera testnet, but the endpoint is not published on their site. Confirmed by qu
 **The standard EVM scheme cannot pay through Circle Gateway.** Arc settles through
 Circle's Gateway, which expects the EIP-712 signature to name the Gateway Wallet
 contract. `@x402/evm`'s `ExactEvmScheme` never reads `extra.verifyingContract` from
-the facilitator — in its compiled code that field is always derived locally, as
+the facilitator: in its compiled code that field is always derived locally, as
 `PERMIT2_ADDRESS`, or the token address, or its own batch-settlement contract. The
 signature would therefore be valid but over the wrong domain, and Circle would reject
 it. Circle publishes `GatewayEvmScheme` for exactly this, and says so in its own
@@ -222,8 +222,8 @@ comment rather than worked around.
 **The x402 client refuses unfamiliar assets by default.** Payment attempts in native
 HBAR were rejected client-side before ever reaching the network: spend controls allow
 only assets in the SDK's default table, which on Hedera is USDC alone. The fix is to
-allowlist the asset explicitly with a per-payment cap. This is a good default — an
-agent wallet should carry an allowlist rather than a blank cheque — but the failure
+allowlist the asset explicitly with a per-payment cap. This is a good default, since an
+agent wallet should carry an allowlist rather than a blank cheque, but the failure
 surfaces as a payload-creation error rather than a policy decision, which sends you
 looking in the wrong place.
 
@@ -238,14 +238,14 @@ first payment can be proven without that detour.
 
 ## 5. Build log
 
-### 7 Sept — payment rail
+### 7 Sept: payment rail
 
 Project scaffolded. x402 resource server wired to the Blocky402 testnet facilitator.
 A single deliberately-boring endpoint, `POST /api/tools/test`, gated behind payment.
 
 Verified: the endpoint returns a well-formed 402 whose `accepts` array carries
 `hedera:testnet`, the `exact` scheme, and a fee payer that the facilitator itself
-supplied — which is what confirms the facilitator handshake actually happened rather
+supplied, which is what confirms the facilitator handshake actually happened rather
 than being assumed.
 
 **Closed the loop with a real payment.** An agent paid 0.1 HBAR for a tool call and
@@ -259,19 +259,19 @@ network : hedera:testnet
 ```
 
 On-chain, the transfer shows the agent debited, the service credited, and the
-facilitator's own account paying the network fee — which is the part that confirms
+facilitator's own account paying the network fee, which is the part that confirms
 the facilitator is genuinely in the path rather than assumed to be.
 
 Three obstacles on the way, none of them where we expected: `dotenv` does not read
 `.env.local`, the client's spend controls rejected HBAR as a non-default asset, and
 `new x402Client(config)` silently ignores a config object because the constructor
-takes a selector function — configuration goes through `setSpendControls` instead.
+takes a selector function. Configuration goes through `setSpendControls` instead.
 
 **Revised the wallet model.** The plan originally described the MCP server as the
 place the wallet lives, which conflated two separate things: where signing happens
 (the MCP server, necessarily, since a model cannot sign) and what the wallet *is*.
 The wallet belongs to the agent and should be managed by a wallet kit that enforces
-policy — Hedera Agent Kit on Hedera, Circle Agent Stack on Arc — not a private key in
+policy (Hedera Agent Kit on Hedera, Circle Agent Stack on Arc), not a private key in
 a config file. Section 3.1 now says that. The smoke-test client written today uses a
 raw key deliberately: it exists to prove the payment path, not to be the architecture.
 
@@ -304,7 +304,7 @@ scheme support that never mentions the environment. And the deposit step is real
 in the wallet is not spendable until it sits inside Gateway, so `npm run arc:deposit`
 now does that in one command.
 
-### 8 Sept — first Graph-backed tool
+### 8 Sept: first Graph-backed tool
 
 *pending*
 
@@ -314,19 +314,19 @@ question. On Ethereum it reaches 27 deployments, 24 answer, 23 have a market.
 
 Two things had to be verified before any of it was written, and the order mattered.
 
-**Which data actually exists.** Holder distribution — the basis of the token-risk tool
-sketched earlier — is not in these schemas at all; they model protocols, not tokens.
+**Which data actually exists.** Holder distribution, the basis of the token-risk tool
+sketched earlier, is not in these schemas at all; they model protocols, not tokens.
 That tool was designed from imagination and had to go. Lending, by contrast, is
 richly covered: markets, positions, rates, LTVs, utilisation.
 
 **Which deployments actually work.** Schema coverage is not availability. Of ten DEX
 deployments sampled, three returned nothing and one reported a pool holding $406
-quadrillion. Lending held up far better — eight of ten answered with figures that
+quadrillion. Lending held up far better: eight of ten answered with figures that
 match reality ($24.7B and 4.5M users on Aave v3). So the first tool was built on
 lending, not on the DEX data the plan originally assumed.
 
 **And then the tool was wrong anyway.** Its first answer recommended Iron Bank at a
-75% USDC supply rate — an abandoned protocol still publishing to its subgraph, whose
+75% USDC supply rate, an abandoned protocol still publishing to its subgraph, whose
 $21.6M of reported liquidity sailed past the depth check. Depth alone does not make a
 rate real. Rates that sit far outside what every live market on the chain pays are now
 treated as artefacts, and the tool explains what it discarded rather than silently
@@ -338,7 +338,7 @@ That failure is the argument for the whole product in one line: the raw query re
 **Second tool, and the MCP server.** `governance-power` measures a protocol's delegate
 table against its own quorum: how few delegates could carry a vote between them, how
 much the top ten hold, how much of that has never voted. Governance turned out to be
-the cleanest data available — it carries no prices, so none of the inflated figures
+the cleanest data available: it carries no prices, so none of the inflated figures
 that spoil some DeFi subgraphs can occur there.
 
 It was wrong on its first run too, in a quieter way than the last one: it pulled
@@ -349,7 +349,7 @@ writes a sentence needs that sentence checked against the numbers behind it.
 
 **The MCP server is a catalogue, not a cashier.** It advertises what exists and what
 each capability costs, then stops. No key is configured in it and no funds pass through
-it — an agent that spends should spend its own money, and a router holding the money
+it. An agent that spends should spend its own money, and a router holding the money
 would be an intermediary nobody asked for.
 
 The loop is proven end to end: ask over MCP, receive a price, sign from the agent's own
@@ -369,20 +369,52 @@ the settlement recording that address as the payer.
 
 Two details worth keeping. Circle takes typed data as a JSON string, so the BigInt
 fields EIP-712 uses have to be written as decimal strings and the `EIP712Domain` type
-has to be stated explicitly — viem infers both, a raw payload cannot. And Gateway lets
+has to be stated explicitly: viem infers both, a raw payload cannot. And Gateway lets
 one address fund another's balance, so the local key deposits on the agent wallet's
 behalf and the Circle-held wallet never needs USDC or gas of its own. It only signs.
 
-### 10 Sept — Playground
+### 8 Sept: one registry, and the site
 
-*pending — a funded wallet lives here and only here, so the work can be tried without
-one of your own*
+Every tool now comes from a single declaration. The HTTP route, the MCP server and the
+catalogue on the site read the same entry, so a new capability is one edit rather than
+three kept in sync by hand. A catalogue that can drift from what the router serves is
+not a catalogue, it is a brochure.
 
-### 11 Sept — agent wallets and polish
+Two things moved in front of the paywall while doing it. An unknown tool slug used to
+return 402, so an agent could pay for a tool that does not exist; a malformed argument
+did too, so it could pay to be told it made a typo. Both are answered for free now, and
+only a well-formed call to a real tool reaches the price.
+
+The site is the product rather than a proof page: the landing page is the catalogue
+with search and filters, each tool has a page documenting the arguments the endpoint
+actually validates (read from the same zod shape, so the docs cannot drift), connect
+explains the three payment arrangements, and submit opens a prefilled issue instead of
+collecting addresses into a database nobody audits.
+
+**Coverage was a claim, not a measurement.** The catalogue advertised 22 governance
+protocols because 22 subgraphs are listed on the network. Seven of them serve nothing.
+An agent asking about Aave would have paid, waited, and got a 502. `npm run probe` now
+calls every subgraph, writes down what answered, and the catalogue reads from that.
+Fifteen governance protocols, fifty of fifty-nine lending deployments. The probe runs
+sequentially with a retry, because firing all twenty-two at the gateway at once gets
+some throttled, and a throttled protocol looks exactly like a dead one.
+
+### 9 Sept: Playground
+
+Done early. The one place the router spends its own money, so the work can be tried
+without a wallet of your own. Real settlement on either rail, capped per visitor and
+per day, and the Arc receipt is shown as a Gateway transfer id rather than linked to an
+explorer that would not resolve it.
+
+### 10 Sept: more tools
 
 *pending*
 
-### 12 Sept — documentation and demo
+### 11 Sept: agent wallets and polish
+
+*pending*
+
+### 12 Sept: documentation and demo
 
 *pending*
 
@@ -399,7 +431,7 @@ where, since the line matters.
   behaviour was faster to establish by reading the shipped type definitions and the
   reference implementation than by searching for documentation.
 - Boilerplate: project scaffolding, config, the shape of a first route handler.
-- Drafting prose — this file, the README, the friction notes — from decisions already
+- Drafting prose (this file, the README, the friction notes) from decisions already
   made.
 
 **Where the decisions were made by hand**
@@ -429,6 +461,6 @@ facilitator. Catching that took reading the reference's `.env.example` against t
 requirement rather than trusting the generated code, and then verifying the correct
 endpoint against a live `/supported` response.
 
-That pattern — generated code that is plausible, compiles, and is subtly wrong about
-something only the docs or the network can tell you — is the main reason every
+That pattern, generated code that is plausible, compiles, and is subtly wrong about
+something only the docs or the network can tell you, is the main reason every
 integration here is verified against a live response before it is called done.

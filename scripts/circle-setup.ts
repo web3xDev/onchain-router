@@ -49,7 +49,7 @@ async function main() {
     entitySecret = crypto.randomBytes(32).toString("hex");
 
     // Persist before registering. Registration can succeed and still fail on the way
-    // back — writing the recovery file, say — and a secret that Circle has accepted
+    // back (writing the recovery file, say) and a secret that Circle has accepted
     // but we never wrote down is unrecoverable.
     setEnvVar("CIRCLE_ENTITY_SECRET", entitySecret);
     console.log("entity secret : generated and saved to .env.local");
@@ -63,7 +63,7 @@ async function main() {
         recoveryFileDownloadPath: RECOVERY_DIR,
       });
       console.log(`registered    : recovery file written under ${RECOVERY_DIR}/`);
-      console.log("                keep it — it is the only way to recover the secret");
+      console.log("                keep it, it is the only way to recover the secret");
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
       console.error(`\nCould not register the entity secret: ${message}`);
@@ -103,7 +103,7 @@ async function main() {
   console.log("");
   console.log("Written to .env.local. Next:");
   console.log("  1. Send Arc testnet USDC to that address (faucet.circle.com)");
-  console.log("  2. npm run arc:deposit          — move it into the Gateway balance");
+  console.log("  2. npm run arc:deposit          move it into the Gateway balance");
   console.log("  3. PAY_NETWORK=eip155:5042002 npm run pay");
 }
 

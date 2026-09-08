@@ -4,7 +4,7 @@ import type { Address, Hex } from "viem";
 /**
  * An agent wallet on Arc, backed by Circle rather than by a key in a file.
  *
- * The payment layer asks for a signer, not a key — an address and the ability to sign
+ * The payment layer asks for a signer, not a key: an address and the ability to sign
  * EIP-712 typed data. That is a small enough surface that the key never has to exist
  * on this machine: Circle holds it, this adapter asks Circle to sign, and the spend
  * limits live beside the key instead of in application code that an attacker with the
@@ -71,7 +71,7 @@ export function circleAgentWallet(config: CircleAgentWalletConfig): BatchEvmSign
     async signTypedData({ domain, types, primaryType, message }) {
       // Circle takes the typed data as a JSON string. EIP-712 numeric fields arrive
       // as BigInt, which JSON cannot represent, so they are written as decimal
-      // strings — the encoding EIP-712 uses for uint256 anyway.
+      // strings, the encoding EIP-712 uses for uint256 anyway.
       const data = JSON.stringify(
         {
           domain,

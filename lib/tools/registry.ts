@@ -54,8 +54,8 @@ export const TOOLS: ToolDefinition[] = [
       request: { asset: "USDC", chain: "ethereum" },
       answer:
         "Best supply rate: 4.86% on compound-v3, backed by $375.4M of liquidity. " +
-        "iron-bank reports 75.10%, far outside what every live market on this chain pays — " +
-        "read as stale data from an abandoned protocol, not an offer. " +
+        "iron-bank reports 75.10%, far outside what every live market on this chain pays. " +
+        "Read as stale data from an abandoned protocol, not an offer. " +
         "Next best is aave-v3 at 3.62%, 1.23 points behind.",
     },
     run: (input) => lendingRates(String(input.asset ?? "USDC"), String(input.chain ?? "ethereum")),
@@ -83,7 +83,7 @@ export const TOOLS: ToolDefinition[] = [
     example: {
       request: { protocol: "uniswap" },
       answer:
-        "4 delegates acting together reach quorum — concentrated, but not captured by two " +
+        "4 delegates acting together reach quorum: concentrated, but not captured by two " +
         "or three. The ten largest delegates hold 53.8% of delegated votes. One of them has " +
         "never cast a vote, holding 5.5% on its own.",
     },
@@ -127,7 +127,7 @@ export function describeInputs(tool: ToolDefinition): InputField[] {
 
 export const CATEGORIES = [...new Set(TOOLS.map((t) => t.category))];
 
-/** The catalogue as the site and any client sees it — everything but the code. */
+/** The catalogue as the site and any client sees it: everything but the code. */
 export function catalogue() {
   return TOOLS.map(({ run: _run, inputSchema, ...rest }) => ({
     ...rest,

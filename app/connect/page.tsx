@@ -4,7 +4,7 @@ import { TOOLS } from "@/lib/tools/registry";
 import { rails } from "@/lib/x402";
 
 export const metadata: Metadata = {
-  title: "Connect your agent — Onchain Router",
+  title: "Connect your agent · Onchain Router",
   description:
     "Add the router as an MCP server and let your agent pay for onchain tools from its own wallet.",
 };
@@ -25,7 +25,7 @@ export default function ConnectPage() {
 
       <h2>1. Add the MCP server</h2>
       <p>
-        Anything that speaks MCP works — Claude Code, Claude Desktop, or your own client.
+        Anything that speaks MCP works: Claude Code, Claude Desktop, or your own client.
         Clone the repo and point your client at the server:
       </p>
       <pre className="code">
@@ -52,7 +52,7 @@ cd onchain-router && npm install`}
       </p>
 
       <div className="callout">
-        <strong style={{ color: "var(--text)" }}>Quote only — nothing configured.</strong>
+        <strong style={{ color: "var(--text)" }}>Quote only, nothing configured.</strong>
         <br />
         The tool returns the price and the accepted networks and stops. Your agent settles
         with whatever wallet it already has and calls again with the receipt. The router
@@ -60,7 +60,7 @@ cd onchain-router && npm install`}
       </div>
 
       <div className="callout">
-        <strong style={{ color: "var(--text)" }}>Circle agent wallet — recommended.</strong>
+        <strong style={{ color: "var(--text)" }}>Circle agent wallet (recommended).</strong>
         <br />
         Give the MCP server a Circle wallet id and API credentials. Signing happens inside
         Circle, so the private key never reaches your machine at all, and the payment layer

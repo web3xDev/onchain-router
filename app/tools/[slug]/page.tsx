@@ -18,9 +18,9 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const tool = findTool((await params).slug);
-  if (!tool) return { title: "Tool not found — Onchain Router" };
+  if (!tool) return { title: "Tool not found · Onchain Router" };
 
-  return { title: `${tool.name} — Onchain Router`, description: tool.summary };
+  return { title: `${tool.name} · Onchain Router`, description: tool.summary };
 }
 
 export default async function ToolPage({ params }: { params: Promise<{ slug: string }> }) {

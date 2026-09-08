@@ -9,7 +9,7 @@ dotenv.config();
  *
  * Gateway payments draw on a balance held inside the Gateway contract, not on the
  * wallet balance. USDC sitting in the wallet is not spendable over x402 until it has
- * been deposited once — the deposit costs gas, every payment afterwards does not.
+ * been deposited once: the deposit costs gas, every payment afterwards does not.
  *
  *   npm run arc:deposit          deposits 5 USDC
  *   npm run arc:deposit 12.5     deposits 12.5 USDC
@@ -39,7 +39,7 @@ async function main() {
 
   // When a Circle agent wallet is configured, the balance is credited to it rather
   // than to the key doing the depositing. Gateway lets one address fund another's
-  // balance, so the Circle wallet never needs USDC or gas of its own — it only ever
+  // balance, so the Circle wallet never needs USDC or gas of its own, it only ever
   // signs. In production the agent wallet would be funded directly; here the local
   // key pays so the wallet under Circle's custody stays a pure signer.
   const beneficiary = process.env.CIRCLE_WALLET_ADDRESS as `0x${string}` | undefined;

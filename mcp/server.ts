@@ -12,7 +12,7 @@ import { TOOLS } from "@/lib/tools/registry";
  * Whether it also settles is the operator's choice.
  *
  * With no wallet configured it returns the price and stops, and the calling agent
- * pays from its own wallet — a Circle agent wallet, a Hedera wallet MCP, anything that
+ * pays from its own wallet: a Circle agent wallet, a Hedera wallet MCP, anything that
  * speaks x402. With a wallet configured it settles in one step, from the wallet whose
  * credentials sit in this server's own config.
  *
@@ -81,7 +81,7 @@ async function callTool(
 
 function renderQuote(quote: Quote): string {
   const options = quote.accepts
-    .map((a) => `  • ${a.network} — ${a.amount} of ${a.asset} to ${a.payTo}`)
+    .map((a) => `  • ${a.network} · ${a.amount} of ${a.asset} to ${a.payTo}`)
     .join("\n");
 
   return [
@@ -92,7 +92,7 @@ function renderQuote(quote: Quote): string {
     options || "  (none advertised)",
     ``,
     `Settle one of these from your own wallet with x402, then call this tool again`,
-    `with the payment receipt, or pay the endpoint directly — for example with an`,
+    `with the payment receipt, or pay the endpoint directly, for example with an`,
     `agent wallet that speaks x402.`,
   ].join("\n");
 }

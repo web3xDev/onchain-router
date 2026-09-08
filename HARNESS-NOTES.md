@@ -4,7 +4,7 @@ Running log of friction hit while building Onchain Router on Hedera.
 Written **at the moment it happens**, not reconstructed afterwards.
 
 Target: a meaningful contribution to [hedera-dev/hedera-harness](https://github.com/hedera-dev/hedera-harness)
-(ETHOnline 2026 — "Open Source: Improve the Hedera Harness").
+(ETHOnline 2026, "Open Source: Improve the Hedera Harness").
 
 ---
 
@@ -35,10 +35,10 @@ Blocky402's own site says Hedera Testnet is supported but does not publish the U
 1. Clone `hedera-dev/x402-inference-pay-per-request-poc`
 2. `cat .env.example` and `packages/service/src/x402.ts`
 3. Observe the testnet default is not Blocky402
-4. Search Blocky402's site for a testnet endpoint — not listed
+4. Search Blocky402's site for a testnet endpoint: not listed
 
 **How I resolved it**
-`https://api.testnet.blocky402.com` — confirmed by hitting `/supported`, which returns:
+`https://api.testnet.blocky402.com`, confirmed by hitting `/supported`, which returns:
 
 ```json
 {"x402Version":2,"scheme":"exact","network":"hedera:testnet","extra":{"feePayer":"0.0.7162784"}}

@@ -39,7 +39,7 @@ export const ARC_USDC = "0x3600000000000000000000000000000000000000";
 // BatchFacilitatorClient defaults to https://gateway-api.circle.com, which is
 // mainnet. Left alone on a testnet build it reports no support for Arc testnet and
 // route configuration fails with "Facilitator does not support scheme exact on
-// network eip155:5042002" — an error that says nothing about being pointed at the
+// network eip155:5042002", an error that says nothing about being pointed at the
 // wrong environment.
 export const CIRCLE_TESTNET_GATEWAY_URL = "https://gateway-api-testnet.circle.com";
 
@@ -51,7 +51,7 @@ const hederaFacilitator = new HTTPFacilitatorClient({
 // @x402/core inlined, so its FacilitatorClient is structurally incompatible with the
 // installed one (`resource.description` is optional here, required there). Only one
 // @x402/core is actually installed, so this is a declaration mismatch, not a runtime
-// one — asserted rather than worked around.
+// one, so it is asserted rather than worked around.
 const circleFacilitator = new BatchFacilitatorClient({
   url: process.env.CIRCLE_GATEWAY_URL ?? CIRCLE_TESTNET_GATEWAY_URL,
 }) as unknown as FacilitatorClient;

@@ -8,8 +8,9 @@ import { LENDING_DEPLOYMENTS, SUPPORTED_CHAINS } from "@/lib/graph/deployments";
  * answers the question across all of them. There is no per-protocol integration: add
  * a deployment id and it joins the comparison.
  *
- * The tool returns a decision rather than a table. A rate on its own is misleading —
- * a thin market can advertise a high rate it cannot honour at size — so rates are
+ * The tool returns a decision rather than a table. A rate on its own is
+ * misleading, because a thin market can advertise a high rate it cannot honour at
+ * size, so rates are
  * weighed against the liquidity behind them.
  */
 
@@ -21,7 +22,7 @@ const MIN_TRUSTWORTHY_TVL_USD = 250_000;
  *
  * Depth alone does not make a rate real. Abandoned protocols keep publishing to their
  * subgraph, and a market that stopped being maintained can report a healthy TVL beside
- * a rate nothing could actually pay — 75% on a stablecoin while every live market sits
+ * a rate nothing could actually pay: 75% on a stablecoin while every live market sits
  * near 4%. Ranking on the raw number recommends the dead protocol with confidence.
  */
 const OUTLIER_MULTIPLE = 5;
@@ -62,7 +63,7 @@ export type LendingMarket = {
   borrowRate: number | null;
   maxLtv: number;
   trustworthy: boolean;
-  /** Rate is a statistical outlier against the rest of the chain — treated as stale. */
+  /** Rate is a statistical outlier against the rest of the chain, treated as stale. */
   anomalous?: boolean;
 };
 
@@ -174,7 +175,7 @@ function assess(
   const outlier = all.find((m) => m.anomalous && (m.supplyRate ?? 0) > best.supplyRate!);
   if (outlier) {
     lines.push(
-      `${outlier.protocol} reports ${outlier.supplyRate!.toFixed(2)}%, far outside what every live market on this chain pays — read as stale data from an abandoned protocol, not an offer.`,
+      `${outlier.protocol} reports ${outlier.supplyRate!.toFixed(2)}%, far outside what every live market on this chain pays. Read as stale data from an abandoned protocol, not an offer.`,
     );
   }
 

@@ -92,7 +92,7 @@ export async function governancePower(protocolInput: string): Promise<Governance
 
   const data = await querySubgraph<RawGovernance>(deployment.id, GOVERNANCE_QUERY, undefined, 15000);
   if (!data?.governances?.length) {
-    throw new Error(`No governance data available for "${protocol}" — the subgraph is not currently served.`);
+    throw new Error(`No governance data available for "${protocol}". The subgraph is not currently served.`);
   }
 
   const g = data.governances[0];
@@ -167,14 +167,14 @@ function assess(
   } else if (toQuorum === 1) {
     // "1 delegate acting together" reads as a bug even when the number is right.
     lines.push(
-      `The largest delegate reaches quorum alone — this protocol can be governed by a single address.`,
+      `The largest delegate reaches quorum alone. This protocol can be governed by a single address.`,
     );
   } else if (toQuorum <= 3) {
     lines.push(
-      `${toQuorum} delegates acting together reach quorum — governance is effectively controlled by a handful of addresses.`,
+      `${toQuorum} delegates acting together reach quorum. Governance is effectively controlled by a handful of addresses.`,
     );
   } else if (toQuorum <= 10) {
-    lines.push(`${toQuorum} delegates acting together reach quorum — concentrated, but not captured by two or three.`);
+    lines.push(`${toQuorum} delegates acting together reach quorum: concentrated, but not captured by two or three.`);
   } else {
     lines.push(`It takes more than ${examined} of the largest delegates to reach quorum on their own.`);
   }
@@ -185,8 +185,8 @@ function assess(
   if (dormant.length > 0) {
     lines.push(
       dormant.length === 1
-        ? `One of them has never cast a vote, holding ${pct(dormantShare)} on its own — power that exists on paper but has never moved.`
-        : `${dormant.length} of them have never cast a vote, holding ${pct(dormantShare)} between them — power that exists on paper but has never moved.`,
+        ? `One of them has never cast a vote, holding ${pct(dormantShare)} on its own, power that exists on paper but has never moved.`
+        : `${dormant.length} of them have never cast a vote, holding ${pct(dormantShare)} between them, power that exists on paper but has never moved.`,
     );
   }
 

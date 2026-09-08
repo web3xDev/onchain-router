@@ -132,7 +132,7 @@ export function Playground({
             <select id="tool" value={slug} onChange={(event) => setSlug(event.target.value)}>
               {tools.map((option) => (
                 <option key={option.slug} value={option.slug}>
-                  {option.name} — {option.price}
+                  {option.name} · {option.price}
                 </option>
               ))}
             </select>

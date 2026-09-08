@@ -264,7 +264,7 @@ export const SUPPORTED_CHAINS = Object.keys(LENDING_DEPLOYMENTS);
  * Messari standardized governance deployments.
  *
  * Governance data carries no prices, so it cannot produce the inflated figures that
- * make some DeFi subgraphs unusable — every field is a count or a token amount read
+ * make some DeFi subgraphs unusable: every field is a count or a token amount read
  * straight from events.
  */
 export const GOVERNANCE_DEPLOYMENTS: Deployment[] = [

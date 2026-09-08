@@ -4,7 +4,7 @@ import { rails } from "@/lib/x402";
 import { Playground } from "@/components/playground";
 
 export const metadata: Metadata = {
-  title: "Playground — Onchain Router",
+  title: "Playground · Onchain Router",
   description:
     "Call a paid onchain tool and watch a real payment settle, without needing a wallet.",
 };

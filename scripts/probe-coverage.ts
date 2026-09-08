@@ -24,8 +24,8 @@ async function main() {
   console.log("probing governance subgraphs…");
 
   // Sequentially, with a retry. Firing all twenty-two at the gateway at once gets some
-  // of them throttled, and a throttled protocol is indistinguishable from a dead one —
-  // which would quietly delete working tools from the catalogue.
+  // of them throttled, and a throttled protocol is indistinguishable from a dead
+  // one, which would quietly delete working tools from the catalogue.
   const governance: { protocol: string; live: boolean }[] = [];
 
   for (const protocol of GOVERNANCE_PROTOCOLS) {

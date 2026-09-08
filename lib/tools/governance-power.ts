@@ -164,9 +164,14 @@ function assess(
 
   if (toQuorum === null) {
     lines.push(`Quorum is not published on chain for ${protocol}, so capture cannot be measured directly.`);
+  } else if (toQuorum === 1) {
+    // "1 delegate acting together" reads as a bug even when the number is right.
+    lines.push(
+      `The largest delegate reaches quorum alone — this protocol can be governed by a single address.`,
+    );
   } else if (toQuorum <= 3) {
     lines.push(
-      `${toQuorum} ${toQuorum === 1 ? "delegate" : "delegates"} acting together reach quorum — governance is effectively controlled by a handful of addresses.`,
+      `${toQuorum} delegates acting together reach quorum — governance is effectively controlled by a handful of addresses.`,
     );
   } else if (toQuorum <= 10) {
     lines.push(`${toQuorum} delegates acting together reach quorum — concentrated, but not captured by two or three.`);

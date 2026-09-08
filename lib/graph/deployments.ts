@@ -259,3 +259,103 @@ export const LENDING_DEPLOYMENTS: Record<string, Deployment[]> = {
 };
 
 export const SUPPORTED_CHAINS = Object.keys(LENDING_DEPLOYMENTS);
+
+/**
+ * Messari standardized governance deployments.
+ *
+ * Governance data carries no prices, so it cannot produce the inflated figures that
+ * make some DeFi subgraphs unusable — every field is a count or a token amount read
+ * straight from events.
+ */
+export const GOVERNANCE_DEPLOYMENTS: Deployment[] = [
+  {
+    "protocol": "aave",
+    "id": "8EBbn3tNayccBZrnW9ae6Q4NLHfVEcozvkB3YAp5Qatr"
+  },
+  {
+    "protocol": "ampleforth",
+    "id": "B7zUhfTTV7mi2QZgUL661D714NGqeLtk6h3q3Mf2xNNa"
+  },
+  {
+    "protocol": "angle",
+    "id": "94D1g2jHHqKUS5uhbEPHWyRgfp4bYeZPn5Cr5R3zvoYH"
+  },
+  {
+    "protocol": "compound",
+    "id": "7nuSuPhUgKSg5uKRh8g5jyjZWE8DnvQw1mQtvDWpxrnh"
+  },
+  {
+    "protocol": "cryptex",
+    "id": "AnAnCpeyy2ZbP2BLZw9u7VjGtVtRorvYuGU3vME1na7F"
+  },
+  {
+    "protocol": "dydx",
+    "id": "FFK9Fa8fdBrAugNVFqRZVAtrej7FjsQNq1s9LVBhF4FX"
+  },
+  {
+    "protocol": "ens",
+    "id": "GyijYxW9yiSRcEd5u2gfquSvneQKi5QuvU3WZgFyfFSn"
+  },
+  {
+    "protocol": "euler",
+    "id": "F94CS4mephx6noem4KsXxeGDSufCGUH5fXrqUX5ZiFk2"
+  },
+  {
+    "protocol": "gitcoin",
+    "id": "By35hUZiWiHNzRsdDnxFU9T47YUNZwPjfhwD1iBbNGQL"
+  },
+  {
+    "protocol": "hifi",
+    "id": "ANAXtqRM9cUySpQZ8xuaFTdu1oFCj4HYaRXXiChTihAM"
+  },
+  {
+    "protocol": "hop",
+    "id": "9RFPnB3zNjtc7x9kowTyBU2YVGUFSJRe27EBJWLMVgy6"
+  },
+  {
+    "protocol": "maker",
+    "id": "FXpCdSzUbRFzovJLW8hrwFXA2E3Bj915w99TtTSMm88p"
+  },
+  {
+    "protocol": "ousd",
+    "id": "BwcFTZJskUwk6WXKteMAEqn6CQFWsPsqq8A8YGcqnWkK"
+  },
+  {
+    "protocol": "pooltogether",
+    "id": "8rW1keThqpvtoBz7V2iNbo3wqcPCJZTBGuc3frGKbyi2"
+  },
+  {
+    "protocol": "radicle",
+    "id": "8jQvvEWJffzA48kxnPhuG7dqv4MWwPatVKKbxzr66xiN"
+  },
+  {
+    "protocol": "rarible",
+    "id": "2oGCcncW9v7AAExqpZ9T1W1GecSjGVmi7XGet3P9JiNn"
+  },
+  {
+    "protocol": "reflexer",
+    "id": "wWdwntxsEd21qDdhkzDn9ycNs5kvYamkndwv3GwLfPp"
+  },
+  {
+    "protocol": "silo",
+    "id": "8qztgeMTJrq2kQHK7LzmbmDUpuBvDc6eFASDqN8SJBM5"
+  },
+  {
+    "protocol": "threshold",
+    "id": "Bk9fLLKttYoM4fE1cXXCq61owGqFtX1RsS8kEtDnDELC"
+  },
+  {
+    "protocol": "truefi",
+    "id": "DbD7U3k8trdQUC2KqC2Fu2WcS42QUZHr2YXJzZXjH719"
+  },
+  {
+    "protocol": "uniswap",
+    "id": "7WXaWRE2GbBpmokFAnQfugpVsC61D9dfR6fHgjQFqpq5"
+  },
+  {
+    "protocol": "unlock",
+    "id": "7ziHxbouaMXhSzxf5nfTXLYYASajU9bTCcxWoTKEAkBe"
+  }
+];
+
+export const GOVERNANCE_PROTOCOLS = GOVERNANCE_DEPLOYMENTS.map((d) => d.protocol);

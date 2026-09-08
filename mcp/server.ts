@@ -2,19 +2,28 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { z } from "zod";
+import { agentWalletFromEnv } from "@/lib/payment/agent-wallet";
 
 /**
  * Onchain Router MCP server.
  *
- * A catalogue, not a cashier. It tells an agent what onchain capabilities exist,
- * what each costs, and where to pay — then gets out of the way. The agent settles
- * from its own wallet, so no key is configured here and no funds pass through.
+ * A catalogue first: it says what onchain capabilities exist and what each costs.
+ * Whether it also settles is the operator's choice.
  *
- * That separation is deliberate. An agent that spends should spend its own money;
- * a router that holds the money would be an intermediary nobody asked for.
+ * With no wallet configured it returns the price and stops, and the calling agent
+ * pays from its own wallet — a Circle agent wallet, a Hedera wallet MCP, anything that
+ * speaks x402. With a wallet configured it settles in one step, from the wallet whose
+ * credentials sit in this server's own config.
+ *
+ * The money is the caller's either way. The only thing that changes is whose process
+ * holds the signing material, which is why the Circle path is preferred where
+ * available: the key never reaches this machine at all.
  */
 
 const ROUTER_URL = process.env.ONCHAIN_ROUTER_URL ?? "http://localhost:3000";
+
+/** Configured once at startup; null means quote-only. */
+const wallet = agentWalletFromEnv();
 
 type PaymentOption = {
   scheme: string;
@@ -40,7 +49,11 @@ async function callTool(
 ): Promise<{ paid: true; data: unknown } | { paid: false; quote: Quote }> {
   const url = `${ROUTER_URL}/api/tools/${slug}`;
 
-  const response = await fetch(url, {
+  // A configured wallet settles the 402 transparently; without one this is plain
+  // fetch and the 402 comes back for the caller to handle.
+  const send = wallet?.fetch ?? fetch;
+
+  const response = await send(url, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -150,6 +163,8 @@ server.registerTool(
 );
 
 async function main() {
+  // stderr: stdout is the MCP transport.
+  console.error(wallet ? `onchain-router: settling via ${wallet.describe}` : "onchain-router: quote-only, no wallet configured");
   await server.connect(new StdioServerTransport());
 }
 

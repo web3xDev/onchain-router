@@ -1,5 +1,12 @@
+import dotenv from "dotenv";
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js";
+
+// QUOTE_ONLY=1 starts the server with no wallet, to check the unpaid path.
+if (!process.env.QUOTE_ONLY) {
+  dotenv.config({ path: ".env.local" });
+  dotenv.config();
+}
 
 /**
  * Speaks MCP to the router's own server the way an agent would: list what is on

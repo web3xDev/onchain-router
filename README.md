@@ -54,9 +54,8 @@ the payment itself. Settlement details reach the client through its
 
 ## Connect your agent
 
-The MCP server is a catalogue, not a cashier. It tells an agent what is available and
-what each capability costs, and the agent settles from its own wallet. No key is
-configured in the server and no funds pass through it.
+The MCP server always tells an agent what is available and what each capability costs.
+Whether it also settles is your choice, and there are three ways to arrange it.
 
 ```json
 {
@@ -68,6 +67,33 @@ configured in the server and no funds pass through it.
     }
   }
 }
+```
+
+**Bring your own wallet (default).** Configured as above, the server holds nothing. A
+tool call returns the price and the networks accepted, and your agent pays from
+whatever wallet it already has — a Circle agent wallet, a Hedera wallet MCP, any x402
+client. Nothing here ever touches a key.
+
+**Let the server settle, through Circle.** Add `CIRCLE_API_KEY`, `CIRCLE_ENTITY_SECRET`,
+`CIRCLE_WALLET_ID` and `CIRCLE_WALLET_ADDRESS` and Arc calls settle in one step. The
+private key stays inside Circle and never reaches this machine; these credentials
+command it rather than being it. This is the recommended way to have the server pay.
+
+**Let the server settle, with a raw key.** `HEDERA_AGENT_ACCOUNT_ID` and
+`HEDERA_AGENT_PRIVATE_KEY` work the same way for the Hedera rail. It is the weakest of
+the three: a private key in a config file is readable by anything that can read the
+file.
+
+> Whichever you choose, fund a wallet that exists only for this. Never point it at a
+> key you would mind losing. Per-payment caps are set in
+> [`lib/payment/agent-wallet.ts`](./lib/payment/agent-wallet.ts) and default to 0.2 HBAR
+> and $0.05.
+
+On start the server says which arrangement is live:
+
+```
+onchain-router: settling via Arc via Circle agent wallet 0x266b…, Hedera via local key 0.0.10407265
+onchain-router: quote-only, no wallet configured
 ```
 
 Two tools appear: `lending_rates` and `governance_power`. Calling one without payment

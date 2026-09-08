@@ -10,18 +10,23 @@
     "start": "next start",
     "typecheck": "tsc --noEmit",
     "pay": "tsx scripts/pay.ts",
-    "arc:deposit": "tsx scripts/arc-deposit.ts"
+    "arc:deposit": "tsx scripts/arc-deposit.ts",
+    "mcp": "tsx mcp/server.ts",
+    "mcp:check": "tsx scripts/mcp-check.ts"
   },
   "dependencies": {
     "@circle-fin/x402-batching": "^3.4.0",
+    "@modelcontextprotocol/sdk": "^1.30.0",
     "@x402/core": "^2.18.0",
     "@x402/evm": "^2.25.0",
     "@x402/fetch": "^2.18.0",
     "@x402/hedera": "^2.18.0",
+    "@x402/mcp": "^2.25.0",
     "@x402/next": "^2.18.0",
     "next": "^16.2.6",
     "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "react-dom": "^19.0.0",
+    "zod": "^4.5.4"
   },
   "devDependencies": {
     "@types/node": "^22.0.0",

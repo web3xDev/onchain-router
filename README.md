@@ -50,6 +50,46 @@ The facilitator sponsors network fees, so the agent needs no HBAR for gas beyond
 the payment itself. Settlement details reach the client through its
 `onPaymentResponse` hook.
 
+---
+
+## Connect your agent
+
+The MCP server is a catalogue, not a cashier. It tells an agent what is available and
+what each capability costs, and the agent settles from its own wallet. No key is
+configured in the server and no funds pass through it.
+
+```json
+{
+  "mcpServers": {
+    "onchain-router": {
+      "command": "npx",
+      "args": ["tsx", "mcp/server.ts"],
+      "env": { "ONCHAIN_ROUTER_URL": "http://localhost:3000" }
+    }
+  }
+}
+```
+
+Two tools appear: `lending_rates` and `governance_power`. Calling one without payment
+returns its price and the networks it accepts:
+
+```
+Payment required before this tool returns data.
+
+Endpoint: POST /api/tools/lending-rates
+Accepted payment options:
+  • hedera:testnet    — 0.1 HBAR
+  • eip155:5042002    — 0.01 USDC on Arc
+
+Settle one of these from your own wallet with x402, then call this tool again
+with the payment receipt, or pay the endpoint directly.
+```
+
+An agent with an x402-capable wallet pays whichever rail it holds funds on and calls
+again. Check the server is responding with `npm run mcp:check`.
+
+---
+
 ### Where the wallet lives
 
 The agent has its own wallet, the way a contractor has a company card: it spends on

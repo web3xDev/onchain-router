@@ -44,7 +44,11 @@ async function callTool(
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      ...(paymentHeader ? { "X-PAYMENT": paymentHeader } : {}),
+      // v2 reads PAYMENT-SIGNATURE, v1 reads X-PAYMENT. Sending both costs nothing
+      // and lets the same receipt work against either.
+      ...(paymentHeader
+        ? { "PAYMENT-SIGNATURE": paymentHeader, "X-PAYMENT": paymentHeader }
+        : {}),
     },
     body: JSON.stringify(body),
   });

@@ -1,0 +1,261 @@
+/**
+ * Messari standardized lending deployments on The Graph's decentralized network.
+ *
+ * Generated from messari/subgraphs deployment/decentralized_network_deployments.csv.
+ * Every entry answers the same query, which is the point: one schema, many protocols,
+ * no per-protocol integration.
+ */
+export type Deployment = { protocol: string; id: string };
+
+export const LENDING_DEPLOYMENTS: Record<string, Deployment[]> = {
+  "ethereum": [
+    {
+      "protocol": "aave-amm",
+      "id": "41ooPWnDYKwckqyG1mvg7ZEndy5zMemXinx6uQxscrBS"
+    },
+    {
+      "protocol": "aave-arc",
+      "id": "5hyqnEzjZbwFBU1rk4JBknCeiF2Mj93qBzsyQfpAa3QA"
+    },
+    {
+      "protocol": "aave-rwa",
+      "id": "C8ynQrjVKcmqxb9fWrLvSCBFNf2ChFkxCg7Q8gknJrza"
+    },
+    {
+      "protocol": "aave-v2",
+      "id": "C2zniPn45RnLDGzVeGZCx2Sw3GXrbc9gL4ZfL8B8Em2j"
+    },
+    {
+      "protocol": "aave-v3",
+      "id": "JCNWRypm7FYwV8fx5HhzZPSFaMxgkPuw4TnR3Gpi81zk"
+    },
+    {
+      "protocol": "abracadabra",
+      "id": "GLAu42kvVs7ixfXcmkAsRiS7Xt1NCpgkKsnz3qiriuvV"
+    },
+    {
+      "protocol": "compound-v2",
+      "id": "4TbqVA8p2DoBd5qDbPMwmDZv3CsJjWtxo8nVSqF2tA9a"
+    },
+    {
+      "protocol": "compound-v3",
+      "id": "AwoxEZbiWLvv6e3QdvdMZw4WDURdGbvPfHmZRc8Dpfz9"
+    },
+    {
+      "protocol": "cream-finance",
+      "id": "43NeT7UTACLUkohKBaG7auvkhsj4Kwux9kNTJr6sFdNe"
+    },
+    {
+      "protocol": "dforce",
+      "id": "6PaB6tKFqrL6YoAELEhFGU6Gc39cEynLbo6ETZMF3sCy"
+    },
+    {
+      "protocol": "euler-finance",
+      "id": "95nyAWFFaiz6gykko3HtBCyhRuP5vZzuKYsZiLxHxLhr"
+    },
+    {
+      "protocol": "goldfinch",
+      "id": "GRwpFCPYyQPdz84sCnKemzrNvgFPuKkFLcRLR6jsRxHr"
+    },
+    {
+      "protocol": "inverse-finance",
+      "id": "EXuutY6qkZbXjYeJZdiDBf2imJswTNdfm8YZCqhAthfW"
+    },
+    {
+      "protocol": "iron-bank",
+      "id": "5YoxED3bbWV9byvn3x3S3ebZ3idrQmQmsJhL5LMyY26v"
+    },
+    {
+      "protocol": "liquity",
+      "id": "2D2dFCLjUt3MfFgTKW8cBxiRQ3Adss7KUtYh2rTcFVY"
+    },
+    {
+      "protocol": "makerdao",
+      "id": "8sE6rTNkPhzZXZC6c8UQy2ghFTu5PPdGauwUBm4t7HZ1"
+    },
+    {
+      "protocol": "maple-finance-v1",
+      "id": "J9dtvE11PWNZH74frWyx9QZonyC1Db2UWDMUegmT3zkG"
+    },
+    {
+      "protocol": "maple-finance-v2",
+      "id": "94swSaaFChsQoZzb9Vc7Lo6FWFV6YZUMNSdFVTMAeRgj"
+    },
+    {
+      "protocol": "morpho-aave-v2",
+      "id": "DsznTYxGdsqxWB6a474rSksvB7qWSth5Ff1PcxW28vZy"
+    },
+    {
+      "protocol": "morpho-aave-v3",
+      "id": "FKe6ANnWmGPE6hajGLoTgPrVF2jYPHiRu2Jwcg9ZmG9A"
+    },
+    {
+      "protocol": "morpho-compound",
+      "id": "9dTy23tkahyiap1THgwnJuMwxNHVnQM57jFQQiUzjcY6"
+    },
+    {
+      "protocol": "qidao",
+      "id": "BmQSQaXsivq866kUobQSbyxycjk3D7CiaczKgu3P9ifB"
+    },
+    {
+      "protocol": "rari-fuse",
+      "id": "kecp6SPMvbB4GTqg9r5PXvztYriexj5F3ZCaATpjmb2"
+    },
+    {
+      "protocol": "spark-lend",
+      "id": "GbKdmBe4ycCYCQLQSjqGg6UHYoYfbyJyq5WrG35pv1si"
+    },
+    {
+      "protocol": "truefi",
+      "id": "39F8fYCvLYmutjqpzEwx3dcEJTtFFVupvBzJqkEzftA7"
+    },
+    {
+      "protocol": "uwu-lend",
+      "id": "CZBD7e8VGvNa6WkBHZAaC688bsZ35UvAM1AuDdVng2aE"
+    },
+    {
+      "protocol": "zerolend",
+      "id": "4Zf4doH54RDit9KVsfCp3MkjrP3szhJZwvw2z5PHczx9"
+    }
+  ],
+  "avalanche": [
+    {
+      "protocol": "aave-v2",
+      "id": "9nh6Ums63wFcoZpmegyPcAFtY3CAzQc3S6cuERALYMqa"
+    },
+    {
+      "protocol": "aave-v3",
+      "id": "72Cez54APnySAn6h8MswzYkwaL9KjvuuKnKArnPJ8yxb"
+    },
+    {
+      "protocol": "abracadabra",
+      "id": "3Gkei7B24o9C2bCoAbQpApZqMStPta7oCAnNhmNv5dab"
+    },
+    {
+      "protocol": "banker-joe",
+      "id": "9NjYuG2BFU1BPacNdKymd9eNdfVCaJM6LhsgD8zSQgDK"
+    },
+    {
+      "protocol": "benqi",
+      "id": "8ZjJGsaKea7WwLJPJNdHXPGsvXDe3iq2231aRjgBPisi"
+    },
+    {
+      "protocol": "iron-bank",
+      "id": "9YiJM9oHy25estSJjB1Z71Hdz5C814R3vDoS2ezpN27C"
+    },
+    {
+      "protocol": "qidao",
+      "id": "98GG74FxxsG25Ltd8qvJ9BRfFmQWyN1AkS92MZBG1BsR"
+    }
+  ],
+  "polygon": [
+    {
+      "protocol": "aave-v2",
+      "id": "GrZQJ7sWdTqiNUD8Vh2THaeBM4wGwiF8mFv9FBfyzwxm"
+    },
+    {
+      "protocol": "aave-v3",
+      "id": "6yuf1C49aWEscgk5n9D1DekeG1BCk5Z9imJYJT3sVmAT"
+    },
+    {
+      "protocol": "compound-v3",
+      "id": "5wfoWBpfYv59b99wDxJmyFiKBu9brXESeqJAzw8WP5Cz"
+    },
+    {
+      "protocol": "cream-finance",
+      "id": "CBeERkhQNwPwU3jSWdKHeAtPQh4TFucUyUMcqAJk19ij"
+    },
+    {
+      "protocol": "dforce",
+      "id": "9CFGPWpntYisBp7NpHMrgYzFrBmtVxSw58haGyZ3ewoZ"
+    },
+    {
+      "protocol": "qidao",
+      "id": "5UxEcMvYW4vVYP81tkPQMAvJv1e4m1xU8BJkDXBnpc6x"
+    }
+  ],
+  "arbitrum": [
+    {
+      "protocol": "aave-v3",
+      "id": "4xyasjQeREe7PxnF6wVdobZvCw5mhoHZq3T7guRpuNPf"
+    },
+    {
+      "protocol": "abracadabra",
+      "id": "3m97d2dJ2pXwPFuiHrm8T37V9TCoAHBpMqRwdguyUZXF"
+    },
+    {
+      "protocol": "compound-v3",
+      "id": "5MjRndNWGhqvNX7chUYLQDnvEgc8DaH8eisEkcJt71SR"
+    },
+    {
+      "protocol": "cream-finance",
+      "id": "GzHkVNf7BBqUjV8Sy6U6xUaWdGheFMdin1cB6sNvfdzs"
+    },
+    {
+      "protocol": "dforce",
+      "id": "Dpk4Gen22wxQ3Laojf7DR2me8wGzjaHwjsKAsLf2rCFV"
+    },
+    {
+      "protocol": "qidao",
+      "id": "Duw2tSACo9uRGFctAGsCc9pF7ZGMyqpjkAHPwm49dZe6"
+    },
+    {
+      "protocol": "radiant-capital",
+      "id": "5HTkKJNSm72tUGakwj8yroDGHxc6fBhmLaA5oJepZGL3"
+    },
+    {
+      "protocol": "rari-fuse",
+      "id": "HnV3fhwsWfmQGdD2AeGzqvRVTDBqnMH74jCsDVq1DXYP"
+    },
+    {
+      "protocol": "vesta-finance",
+      "id": "zGuPrsVqtY5ehJDCmweb9ZnBrae3tSQWRux8Mz1M4Gn"
+    }
+  ],
+  "base": [
+    {
+      "protocol": "aave-v3",
+      "id": "D7mapexM5ZsQckLJai2FawTKXJ7CqYGKM8PErnS3cJi9"
+    },
+    {
+      "protocol": "compound-v3",
+      "id": "AwoxEZbiWLvv6e3QdvdMZw4WDURdGbvPfHmZRc8Dpfz9"
+    },
+    {
+      "protocol": "moonwell",
+      "id": "33ex1ExmYQtwGVwri1AP3oMFPGSce6YbocBP7fWbsBrg"
+    },
+    {
+      "protocol": "qidao",
+      "id": "9NHJ9k31qaGCYXppm9isJTiEoiB6v3tJDnR6SrQrxcjw"
+    },
+    {
+      "protocol": "seamless-protocol",
+      "id": "2u4mWUV4xS19ef1MbnxZHWLLMwdPxtVifH46JbonXwXP"
+    }
+  ],
+  "optimism": [
+    {
+      "protocol": "aave-v3",
+      "id": "3RWFxWNstn4nP3dXiDfKi9GgBoHx7xzc7APkXs1MLEgi"
+    },
+    {
+      "protocol": "dforce",
+      "id": "6AmkakXwadWiZ2jN7oJcFreWmKG1nZrT5P8om52upYPd"
+    },
+    {
+      "protocol": "iron-bank",
+      "id": "4WKePP5QfwrW6Hfd8YKWHuivivmdxPubuP45BryeGo4g"
+    },
+    {
+      "protocol": "qidao",
+      "id": "4JbWxzxBNCpAaVz72Gt2UthgiwcWZQLKDBhmSE7wKY2K"
+    },
+    {
+      "protocol": "sonne-finance",
+      "id": "DQqb7FiQ1joLhESkAwvAYiuXhwfz4zf6qHmbt7stnec8"
+    }
+  ]
+};
+
+export const SUPPORTED_CHAINS = Object.keys(LENDING_DEPLOYMENTS);

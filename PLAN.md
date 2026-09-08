@@ -294,9 +294,34 @@ now does that in one command.
 
 *pending*
 
-### 9 Sept — first real tool
+**First tool live on real data.** `lending-rates` answers where to lend or borrow an
+asset by asking every indexed lending protocol on a chain the same standardized
+question. On Ethereum it reaches 27 deployments, 24 answer, 23 have a market.
 
-*pending*
+Two things had to be verified before any of it was written, and the order mattered.
+
+**Which data actually exists.** Holder distribution — the basis of the token-risk tool
+sketched earlier — is not in these schemas at all; they model protocols, not tokens.
+That tool was designed from imagination and had to go. Lending, by contrast, is
+richly covered: markets, positions, rates, LTVs, utilisation.
+
+**Which deployments actually work.** Schema coverage is not availability. Of ten DEX
+deployments sampled, three returned nothing and one reported a pool holding $406
+quadrillion. Lending held up far better — eight of ten answered with figures that
+match reality ($24.7B and 4.5M users on Aave v3). So the first tool was built on
+lending, not on the DEX data the plan originally assumed.
+
+**And then the tool was wrong anyway.** Its first answer recommended Iron Bank at a
+75% USDC supply rate — an abandoned protocol still publishing to its subgraph, whose
+$21.6M of reported liquidity sailed past the depth check. Depth alone does not make a
+rate real. Rates that sit far outside what every live market on the chain pays are now
+treated as artefacts, and the tool explains what it discarded rather than silently
+dropping it. It now answers Compound v3 at 5.14%, and says why not Iron Bank.
+
+That failure is the argument for the whole product in one line: the raw query returns
+75%, and acting on it loses money.
+
+### 10 Sept — remaining tools
 
 ### 10 Sept — remaining tools
 

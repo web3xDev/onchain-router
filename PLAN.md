@@ -321,13 +321,38 @@ dropping it. It now answers Compound v3 at 5.14%, and says why not Iron Bank.
 That failure is the argument for the whole product in one line: the raw query returns
 75%, and acting on it loses money.
 
-### 10 Sept — remaining tools
+**Second tool, and the MCP server.** `governance-power` measures a protocol's delegate
+table against its own quorum: how few delegates could carry a vote between them, how
+much the top ten hold, how much of that has never voted. Governance turned out to be
+the cleanest data available — it carries no prices, so none of the inflated figures
+that spoil some DeFi subgraphs can occur there.
 
-### 10 Sept — remaining tools
+It was wrong on its first run too, in a quieter way than the last one: it pulled
+twenty-five delegates, wrote a sentence about ten, and counted across all twenty-five.
+"Nine of them have never voted" should have been one. Both tools have now shipped
+wrong in their first version, and both times the raw data caught it. A tool that
+writes a sentence needs that sentence checked against the numbers behind it.
 
-*pending*
+**The MCP server is a catalogue, not a cashier.** It advertises what exists and what
+each capability costs, then stops. No key is configured in it and no funds pass through
+it — an agent that spends should spend its own money, and a router holding the money
+would be an intermediary nobody asked for.
 
-### 11 Sept — agent flow and Playground
+The loop is proven end to end: ask over MCP, receive a price, sign from the agent's own
+wallet, ask again with the receipt, receive the data. The payment settles on chain and
+the server never sees the key.
+
+**Both rails verified, and they settle differently.** Hedera clears per transaction,
+visible immediately on HashScan. Arc clears through Circle Gateway in batches, visible
+as a Gateway balance moving from 4.98 to 4.97 USDC against a $0.01 price. Same
+interface, two settlement models, and a tool never learns which one paid.
+
+### 10 Sept — Playground
+
+*pending — a funded wallet lives here and only here, so the work can be tried without
+one of your own*
+
+### 11 Sept — agent wallets and polish
 
 *pending*
 

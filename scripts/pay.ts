@@ -5,6 +5,7 @@ import { ExactHederaScheme } from "@x402/hedera/exact/client";
 import { createClientHederaSigner, HBAR_ASSET_ID, PrivateKey } from "@x402/hedera";
 import { registerBatchScheme } from "@circle-fin/x402-batching/client";
 import { privateKeyToAccount } from "viem/accounts";
+import { circleAgentWalletFromEnv } from "@/lib/wallets/circle-agent-wallet";
 import type { PaymentRequirements } from "@x402/core/types";
 
 // Next.js reads .env.local; plain `dotenv/config` does not. Load it explicitly,
@@ -87,13 +88,19 @@ async function main() {
   client.register("hedera:*", new ExactHederaScheme(hederaSigner));
 
   // ── Arc rail ───────────────────────────────────────────────────────────────
-  // Registered only when a key is configured, so the Hedera rail keeps working
-  // while Arc is still being set up.
+  // A Circle agent wallet is used when one is configured, so the key stays with
+  // Circle rather than in this process. A local key is the fallback, and the payment
+  // layer cannot tell the difference: both are just a signer.
+  const circleWallet = circleAgentWalletFromEnv();
   const arcKey = process.env.ARC_AGENT_PRIVATE_KEY;
-  if (arcKey) {
+
+  if (circleWallet) {
+    registerBatchScheme(client, { signer: circleWallet });
+    console.log(`arc     : ${circleWallet.address} (Circle agent wallet)`);
+  } else if (arcKey) {
     const account = privateKeyToAccount(arcKey as `0x${string}`);
     registerBatchScheme(client, { signer: account });
-    console.log(`arc     : ${account.address}`);
+    console.log(`arc     : ${account.address} (local key)`);
   }
 
   const fetchWithPayment = wrapFetchWithPayment(fetch, client);

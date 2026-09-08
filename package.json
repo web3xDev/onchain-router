@@ -13,7 +13,8 @@
     "arc:deposit": "tsx scripts/arc-deposit.ts",
     "mcp": "tsx mcp/server.ts",
     "mcp:check": "tsx scripts/mcp-check.ts",
-    "mcp:pay": "tsx scripts/mcp-pay-check.ts"
+    "mcp:pay": "tsx scripts/mcp-pay-check.ts",
+    "circle:setup": "tsx scripts/circle-setup.ts"
   },
   "dependencies": {
     "@circle-fin/developer-controlled-wallets": "^10.8.0",

@@ -95,33 +95,32 @@ again. Check the server is responding with `npm run mcp:check`.
 The agent has its own wallet, the way a contractor has a company card: it spends on
 its own, within limits someone set.
 
-A language model cannot sign a transaction, so the **MCP server acts as the x402
-client** — it handles the 402 over plain HTTP against this API and hands a finished
-result back. That also sidesteps a real constraint: MCP has no HTTP status channel,
-so `tools/call` could not carry a 402 even if we wanted it to. It never needs to.
+Nothing here holds that key. The MCP server carries no wallet and no funds pass through
+it — a router that paid on your agent's behalf would put its balance in the middle of
+your transaction and turn a payment protocol into a billing relationship.
 
-The wallet itself is not a private key in a config file. It is an agent wallet whose
-policy — per-payment caps, asset allowlists, audit trail — is enforced by the wallet
-kit rather than by application code, using each network's own tooling.
+```
+Agent           holds a wallet, decides, signs, pays
+  │ MCP
+MCP server      catalogue: what exists, what it costs, where to pay
+  │ HTTP + x402
+Onchain Router  402 → verify → settle
+  │
+Hedera / Arc
+```
+
+A model cannot compute a signature itself, but that is how every agent action works —
+it cannot fetch a page either, it calls a tool that fetches. Signing is the same, and
+each network has a wallet kit for it:
 
 | Network | Agent wallet |
 |---|---|
 | Hedera | Hedera Agent Kit |
 | Arc | Circle Agent Stack |
 
-```
-Claude          reasons and calls a tool, holds nothing
-  │ MCP
-MCP server      x402 client; talks to the agent's wallet
-  │ HTTP + x402
-Onchain Router  402 → pay → settle
-  │
-Hedera / Arc
-```
-
-The payment layer takes a signer rather than a key, so the wallet backend stays a
-contained choice.
-
+> The Playground is the one exception: it funds a wallet of its own so the work can be
+> tried without one of yours.
+>
 > `scripts/pay.ts` signs with a raw key on purpose. It is a smoke test for the payment
 > rail, not the architecture.
 

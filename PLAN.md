@@ -41,46 +41,45 @@ removing the reason it has to stop.
 Decisions are listed with what we gave up, because the tradeoff is the interesting
 part.
 
-### 3.1 The agent owns a wallet; the MCP server is the x402 client
+### 3.1 The agent pays; the router is a catalogue, not a cashier
 
-The agent needs its own wallet. That is the premise: you give your agent a wallet the
-way you would give a contractor a company card, and it spends within limits you set.
+The agent spends its own money. You give it a wallet the way you would give a
+contractor a company card, and it spends within limits you set.
 
-Two things follow from that, and they are easy to conflate.
-
-**Where signing happens.** A language model cannot sign a transaction. Something with
-access to key material has to. So the MCP server is the x402 *client*: it speaks plain
-HTTP to the Router API, handles the 402 there, and returns a finished result upward.
-This also dissolves the apparent blocker that MCP has no HTTP status channel and so
-`tools/call` cannot carry a 402 — the 402 never needs to travel over MCP at all.
-
-**What the wallet is.** Not a private key pasted into a config file. An agent wallet,
-managed by a wallet kit that enforces policy at the wallet rather than in application
-code: per-payment caps, asset allowlists, audit trails. One per network, using each
-network's own tooling.
-
-| Network | Agent wallet |
-|---|---|
-| Hedera | Hedera Agent Kit (policy-based guardrails) |
-| Arc | Circle Agent Stack |
+That decides what this project must not do. A router that held the key and paid on the
+agent's behalf would be an intermediary nobody asked for — it would put our balance in
+the middle of someone else's transaction and quietly turn a payment protocol into a
+billing relationship. So the MCP server carries no key and no funds pass through it.
+It advertises what exists and what each capability costs, and stops.
 
 ```
-Claude          reasons, calls a tool, holds nothing
+Agent           holds a wallet, decides, signs, pays
   │ MCP
-MCP server      x402 client; talks to the agent's wallet
+MCP server      catalogue: what exists, what it costs, where to pay
   │ HTTP + x402
-Onchain Router  402 → pay → settle
+Onchain Router  402 → verify → settle
   │
 Hedera / Arc
 ```
 
-The payment layer takes a *signer*, not a key, so the wallet backend is a contained
-choice: nothing above it — routing, MCP, tools — knows or cares which one is in use.
+A language model cannot compute a signature itself, but that is not a limitation of
+this design — it is how every agent action works. An agent cannot fetch a page either;
+it calls a tool that fetches. Signing is the same: the agent calls its wallet, and the
+wallet is under its control. Wallet kits exist for exactly this, and each network has
+one:
 
-**Given up:** the model never sees the price, so it cannot decide mid-task that a tool
-costs more than the answer is worth. Spend limits live at the wallet instead, which
-bounds the damage but is blunter than judgment. Budget-aware agents are a later
-problem.
+| Network | Agent wallet |
+|---|---|
+| Hedera | Hedera Agent Kit |
+| Arc | Circle Agent Stack |
+
+**Given up:** the router cannot guarantee a call succeeds, because it does not control
+whether the agent can pay. An unfunded agent gets a price and nothing else. That is the
+right failure — better than a router that fronts the money and invoices later.
+
+**One exception, deliberately.** The Playground funds a wallet of its own, because a
+visitor without one still needs to see the thing work. It is the only place a key of
+ours exists.
 
 ### 3.2 Two surfaces, two wallet models
 

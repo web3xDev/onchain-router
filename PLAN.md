@@ -132,16 +132,17 @@ PaymentRail
 A tool that forwards a query result is not worth paying for; the agent could have run
 that query itself. What is worth paying for is the interpretation.
 
-So `token-risk` does not return a holder list. It returns:
+So `lending_rates` does not return a table of markets. It returns:
 
 ```
-Risk: HIGH
-Top 10 wallets hold 64% of supply.
-3 major wallets show similar creation timing.
-
-Assessment: high holder concentration creates elevated
-dump and manipulation risk.
+Best supply rate: 4.86% on compound-v3, backed by $375.4M of liquidity.
+iron-bank reports 75.10%, far outside what every live market on this
+chain pays — read as stale data from an abandoned protocol, not an
+offer. Next best is aave-v3 at 3.62%, 1.23 points behind.
 ```
+
+The second sentence is the one worth paying for. The table alone would have ranked an
+abandoned protocol first, and an agent acting on it would have lost money.
 
 **Given up:** opinionated output is harder to defend than raw data. Every tool has to
 state its reasoning so the agent can weigh it, and say when confidence is low.

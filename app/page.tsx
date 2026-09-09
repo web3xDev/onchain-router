@@ -17,10 +17,6 @@ export default function Home() {
       <section className="hero">
         <div className="page hero-grid">
           <div>
-            <span className="eyebrow">
-              <span className="dot-live" /> {live.length} payment rails live
-            </span>
-
             <h1>
               The <span className="accent">OpenRouter</span>
               <br />

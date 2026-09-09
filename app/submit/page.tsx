@@ -2,9 +2,14 @@ import type { Metadata } from "next";
 import { CATEGORIES } from "@/lib/tools/registry";
 import { SubmitForm } from "@/components/submit-form";
 
+const DESCRIPTION =
+  "Propose an onchain tool for the router and earn on every call agents make.";
+
 export const metadata: Metadata = {
-  title: "Submit a tool · Onchain Router",
-  description: "Propose an onchain tool for the router and earn on every call agents make.",
+  title: "Submit a tool",
+  description: DESCRIPTION,
+  openGraph: { title: "Submit a tool", description: DESCRIPTION },
+  twitter: { title: "Submit a tool", description: DESCRIPTION },
 };
 
 export default function SubmitPage() {

@@ -3,10 +3,14 @@ import { describeInputs, TOOLS } from "@/lib/tools/registry";
 import { rails } from "@/lib/x402";
 import { Playground } from "@/components/playground";
 
+const DESCRIPTION =
+  "Call a paid onchain tool and watch a real payment settle, without needing a wallet.";
+
 export const metadata: Metadata = {
-  title: "Playground · Onchain Router",
-  description:
-    "Call a paid onchain tool and watch a real payment settle, without needing a wallet.",
+  title: "Playground",
+  description: DESCRIPTION,
+  openGraph: { title: "Playground", description: DESCRIPTION },
+  twitter: { title: "Playground", description: DESCRIPTION },
 };
 
 export default async function PlaygroundPage({

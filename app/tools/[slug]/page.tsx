@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { describeInputs, findTool, TOOLS } from "@/lib/tools/registry";
 import { rails } from "@/lib/x402";
+import { siteUrl } from "@/lib/site";
 
 // Same reason as the catalogue: the price and the accepted networks come from the
 // running deployment's configuration, not from whatever was set when it was built.
@@ -18,9 +19,14 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const tool = findTool((await params).slug);
-  if (!tool) return { title: "Tool not found · Onchain Router" };
+  if (!tool) return { title: "Tool not found" };
 
-  return { title: `${tool.name} · Onchain Router`, description: tool.summary };
+  return {
+    title: tool.name,
+    description: tool.summary,
+    openGraph: { title: `${tool.name}, ${tool.price} per call`, description: tool.summary },
+    twitter: { title: `${tool.name}, ${tool.price} per call`, description: tool.summary },
+  };
 }
 
 export default async function ToolPage({ params }: { params: Promise<{ slug: string }> }) {
@@ -30,6 +36,7 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
   const inputs = describeInputs(tool);
   const live = rails();
   const requestJson = JSON.stringify(tool.example.request);
+  const base = siteUrl();
 
   return (
     <div className="page">
@@ -106,14 +113,14 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
               the request with the receipt.
             </p>
             <pre className="code">
-              {`curl -X POST https://onchain-router.app/api/tools/${tool.slug} \\
+              {`curl -X POST ${base}/api/tools/${tool.slug} \\
   -H 'Content-Type: application/json' \\
   -d '${requestJson}'
 
 ← 402 Payment Required
   PAYMENT-REQUIRED: ${live.map((r) => r.network).join(", ") || "no rail configured"}
 
-curl -X POST https://onchain-router.app/api/tools/${tool.slug} \\
+curl -X POST ${base}/api/tools/${tool.slug} \\
   -H 'Content-Type: application/json' \\
   -H "PAYMENT-SIGNATURE: $RECEIPT" \\
   -d '${requestJson}'

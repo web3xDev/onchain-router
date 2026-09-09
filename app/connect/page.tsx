@@ -2,15 +2,21 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { TOOLS } from "@/lib/tools/registry";
 import { rails } from "@/lib/x402";
+import { siteUrl } from "@/lib/site";
+
+const DESCRIPTION =
+  "Add the router as an MCP server and let your agent pay for onchain tools from its own wallet.";
 
 export const metadata: Metadata = {
-  title: "Connect your agent · Onchain Router",
-  description:
-    "Add the router as an MCP server and let your agent pay for onchain tools from its own wallet.",
+  title: "Connect your agent",
+  description: DESCRIPTION,
+  openGraph: { title: "Connect your agent", description: DESCRIPTION },
+  twitter: { title: "Connect your agent", description: DESCRIPTION },
 };
 
 export default function ConnectPage() {
   const live = rails();
+  const base = siteUrl();
 
   return (
     <div className="page prose">
@@ -39,7 +45,7 @@ cd onchain-router && npm install`}
       "command": "npx",
       "args": ["tsx", "mcp/server.ts"],
       "cwd": "/path/to/onchain-router",
-      "env": { "ONCHAIN_ROUTER_URL": "https://onchain-router.app" }
+      "env": { "ONCHAIN_ROUTER_URL": "${base}" }
     }
   }
 }`}

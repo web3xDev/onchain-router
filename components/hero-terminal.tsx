@@ -21,32 +21,33 @@ const RAILS: Record<RailId, { label: string; settled: string; via: string }> = {
   },
 };
 
-type Line = { text: string; tone: "dim" | "warn" | "ok" | "key" };
+type Line = { text: string; tone: "dim" | "warn" | "ok" | "key"; group: number };
 
 function script(rail: RailId): Line[] {
   const current = RAILS[rail];
+  // Grouped the way the exchange actually happens: request, 402, signing, answer.
   return [
-    { text: "$ POST /api/tools/lending-rates", tone: "key" },
-    { text: '  { "asset": "USDC", "chain": "ethereum" }', tone: "dim" },
-    { text: "", tone: "dim" },
-    { text: "← 402 Payment Required", tone: "warn" },
-    { text: "  accepts: hedera:testnet, eip155:5042002", tone: "dim" },
-    { text: "", tone: "dim" },
-    { text: "  agent signs from its own wallet", tone: "dim" },
-    { text: `  ↳ ${current.settled}`, tone: "dim" },
-    { text: `    ${current.via}`, tone: "dim" },
-    { text: "", tone: "dim" },
-    { text: "← 200 OK", tone: "ok" },
-    { text: '  "Best supply rate: 4.51% on compound-v3,', tone: "key" },
-    { text: "   backed by $376.0M of liquidity.", tone: "key" },
-    { text: "   iron-bank reports 75.10%, stale data", tone: "key" },
-    { text: "   from an abandoned protocol,", tone: "key" },
-    { text: '   not an offer."', tone: "key" },
+    { text: "$ POST /api/tools/lending-rates", tone: "key", group: 0 },
+    { text: '  { "asset": "USDC", "chain": "ethereum" }', tone: "dim", group: 0 },
+    { text: "", tone: "dim", group: 0 },
+    { text: "← 402 Payment Required", tone: "warn", group: 1 },
+    { text: "  accepts: hedera:testnet, eip155:5042002", tone: "dim", group: 1 },
+    { text: "", tone: "dim", group: 1 },
+    { text: "  agent signs from its own wallet", tone: "dim", group: 2 },
+    { text: `  ↳ ${current.settled}`, tone: "dim", group: 2 },
+    { text: `    ${current.via}`, tone: "dim", group: 2 },
+    { text: "", tone: "dim", group: 2 },
+    { text: "← 200 OK", tone: "ok", group: 3 },
+    { text: '  "Best supply rate: 4.51% on compound-v3,', tone: "key", group: 3 },
+    { text: "   backed by $376.0M of liquidity.", tone: "key", group: 3 },
+    { text: "   iron-bank reports 75.10%, stale data", tone: "key", group: 3 },
+    { text: "   from an abandoned protocol,", tone: "key", group: 3 },
+    { text: '   not an offer."', tone: "key", group: 3 },
   ];
 }
 
-/** Lines arrive one after another, the way they do in the playground. */
-const STAGGER_MS = 60;
+/** Each step lands as a block, a beat apart, the way it does in the playground. */
+const STEP_MS = 260;
 
 export function HeroTerminal() {
   const [rail, setRail] = useState<RailId>("hedera");
@@ -80,7 +81,7 @@ export function HeroTerminal() {
           <span
             key={index}
             className={`log-line t-${line.tone}`}
-            style={{ animationDelay: `${index * STAGGER_MS}ms` }}
+            style={{ animationDelay: `${line.group * STEP_MS}ms` }}
           >
             {line.text || " "}
           </span>

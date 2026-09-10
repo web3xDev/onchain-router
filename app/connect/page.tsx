@@ -39,7 +39,7 @@ export default function ConnectPage() {
           href="https://github.com/web3xDev/onchain-router#readme"
           target="_blank"
           rel="noreferrer"
-          style={{ color: "var(--accent)" }}
+          className="link"
         >
           README
         </a>

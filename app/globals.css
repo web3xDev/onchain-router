@@ -65,6 +65,15 @@ a {
   text-decoration: none;
 }
 
+/* An inline text link in the accent colour. */
+.link {
+  color: var(--accent);
+}
+
+.link:hover {
+  color: #60a5fa;
+}
+
 a,
 button,
 .btn,

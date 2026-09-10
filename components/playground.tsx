@@ -198,7 +198,7 @@ export function Playground({
 
           <p className="hint" style={{ margin: 0 }}>
             Funded by us so you do not need a wallet.{" "}
-            <Link href="/connect" style={{ color: "var(--accent)" }}>
+            <Link href="/connect" className="link">
               Connect your own agent
             </Link>{" "}
             to pay from yours.
@@ -256,7 +256,7 @@ export function Playground({
                   href={result.payment.explorer}
                   target="_blank"
                   rel="noreferrer"
-                  style={{ color: "var(--accent)" }}
+                  className="link"
                 >
                   View the payment on the explorer →
                 </a>

@@ -75,7 +75,7 @@ export function ToolCatalogue({
       {shown.length === 0 ? (
         <div className="empty">
           Nothing matches that yet.{" "}
-          <Link href="/submit" style={{ color: "var(--accent)" }}>
+          <Link href="/submit" className="link">
             Submit the tool
           </Link>{" "}
           you were looking for.

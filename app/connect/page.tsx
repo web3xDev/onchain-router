@@ -27,7 +27,7 @@ export default function ConnectPage() {
       <h2>The endpoint</h2>
       <pre className="code">{`${base}/mcp`}</pre>
 
-      <h2>Connect</h2>
+      <h2 style={{ marginBottom: 14 }}>Connect</h2>
       <ConnectPaths base={base} />
 
       <h2>The wallet</h2>

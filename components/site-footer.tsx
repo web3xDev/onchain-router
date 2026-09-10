@@ -4,7 +4,7 @@ export function SiteFooter() {
   return (
     <footer className="footer">
       <div className="page footer-inner">
-        <span>Onchain Router · pay per call, no account.</span>
+        <span>OnchainRouter</span>
         <div className="footer-links">
           <Link href="/connect">Connect an agent</Link>
           <Link href="/submit">Submit a tool</Link>

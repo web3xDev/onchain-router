@@ -533,14 +533,6 @@ pre {
   font-weight: 560;
 }
 
-.dot-live {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: var(--accent);
-  box-shadow: 0 0 0 3px var(--accent-glow);
-}
-
 .rail dl {
   margin: 16px 0 0;
   display: grid;

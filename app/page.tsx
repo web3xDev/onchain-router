@@ -162,10 +162,7 @@ export default function Home() {
         <div className="rails">
           {live.map((rail) => (
             <div key={rail.id} className="rail">
-              <div className="rail-head">
-                <span className="dot-live" />
-                {rail.name}
-              </div>
+              <div className="rail-head">{rail.name}</div>
               <dl>
                 <dt>network</dt>
                 <dd>{rail.network}</dd>

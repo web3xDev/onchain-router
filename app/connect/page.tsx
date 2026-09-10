@@ -46,14 +46,14 @@ export default function ConnectPage() {
         .
       </p>
 
-      <p style={{ marginTop: 32 }}>
+      <div className="hero-actions" style={{ marginTop: 32 }}>
         <Link href="/" className="btn">
           Browse the catalogue
-        </Link>{" "}
+        </Link>
         <Link href="/playground" className="btn">
           Try it without a wallet
         </Link>
-      </p>
+      </div>
     </div>
   );
 }

@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { TOOLS } from "@/lib/tools/registry";
 import { siteUrl } from "@/lib/site";
 import { ConnectPaths } from "@/components/connect-paths";
 
@@ -21,7 +20,7 @@ export default function ConnectPage() {
     <div className="page prose">
       <div className="page-head">
         <span className="label">Connect</span>
-        <h1>One URL, {TOOLS.length} tools, no account</h1>
+        <h1>One URL, every tool, no account</h1>
         <p>Add the endpoint. Your agent sees every tool, calls one, pays for it, gets the answer.</p>
       </div>
 

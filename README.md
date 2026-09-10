@@ -8,6 +8,11 @@ capabilities, paying per call with x402. No signup, no API keys, no subscription
 > **Onchain Router handles:** Discovery → Routing → Payment → Execution
 > **The agent handles:** Reasoning → Decision → User interaction
 
+**0% commission.** Every tool names the address its revenue lands on, per rail, and
+each call settles straight from the agent's wallet to it. The router is never in the
+middle of the money: no invoice, no payout run, no minimum. Its own tools settle to its
+own addresses; a submitted tool settles to its author.
+
 **No answer, no charge.** A tool that cannot give a verdict says so, and the payment
 signed for that call is never settled. You buy answers, not attempts. Both transports
 enforce it: HTTP refuses to settle on any 4xx, MCP on `isError`, and a tool with
@@ -35,6 +40,7 @@ Everything below is running against live data and settling real payments on test
 | ✅ | Playground, funded by us, so it can be tried without a wallet |
 | ✅ | Coverage measured rather than claimed (`npm run probe`) |
 | ✅ | No answer, no charge: a call with no verdict is never settled |
+| ✅ | Per-tool payout: each tool settles straight to its author, 0% commission |
 
 ---
 

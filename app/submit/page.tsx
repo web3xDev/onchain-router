@@ -20,8 +20,8 @@ export default function SubmitPage() {
         <h1>List your tool on the router</h1>
         <p>
           If you can answer a question about onchain state, agents will pay you per call for
-          it. No revenue share to negotiate up front. Payments settle straight to the
-          address you name.
+          it. Every payment settles straight from the agent&apos;s wallet to the address you
+          name. The router takes 0% commission, for now.
         </p>
       </div>
 

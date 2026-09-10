@@ -13,11 +13,26 @@ import { LIVE_GOVERNANCE_PROTOCOLS, LIVE_LENDING_TOTAL } from "@/lib/graph/verif
  * actually serves is not a catalogue, it is a brochure.
  */
 
+/**
+ * Where a tool's revenue lands, per rail.
+ *
+ * Settlement goes straight from the calling agent to this address. The router takes
+ * nothing and holds nothing in between: 0% commission, no invoice, no payout run.
+ * A tool without one is the router's own and settles to the router's addresses.
+ */
+export type Payout = {
+  hedera?: string;
+  arc?: string;
+};
+
 export type ToolDefinition = {
   /** URL segment and MCP tool name stem. */
   slug: string;
   name: string;
   category: string;
+  /** Who built it. Shown on the card; the payout goes to them. */
+  author: string;
+  payTo?: Payout;
   /** One line, for a catalogue card. */
   summary: string;
   /** What question it answers and how, for the detail page and MCP description. */
@@ -37,6 +52,7 @@ export const TOOLS: ToolDefinition[] = [
     slug: "lending-rates",
     name: "Lending rates",
     category: "lending",
+    author: "Onchain Router",
     summary: "Best place to lend or borrow an asset, weighed against liquidity depth.",
     description:
       "Asks every lending protocol indexed on a chain the same standardized question and " +
@@ -65,6 +81,7 @@ export const TOOLS: ToolDefinition[] = [
     slug: "governance-power",
     name: "Governance power",
     category: "governance",
+    author: "Onchain Router",
     summary: "How concentrated a protocol's voting power is, and how much of it never votes.",
     description:
       "Measures a protocol's delegate table against its own on-chain quorum: how few " +

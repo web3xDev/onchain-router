@@ -4,7 +4,7 @@ import { createPaymentWrapper } from "@x402/mcp";
 import type { PaymentRequirements, PaymentPayload } from "@x402/core/types";
 import type { ResourceConfig } from "@x402/core/server";
 import { paymentOptions, resourceServer } from "@/lib/x402";
-import { TOOLS } from "@/lib/tools/registry";
+import { TOOLS, type Payout } from "@/lib/tools/registry";
 import { SITE_NAME } from "@/lib/site";
 import { isNoAnswer } from "@/lib/tools/no-answer";
 
@@ -23,27 +23,30 @@ import { isNoAnswer } from "@/lib/tools/no-answer";
 
 const MCP_PAYMENT_META_KEY = "x402/payment";
 
-let acceptsPromise: Promise<PaymentRequirements[]> | null = null;
+const acceptsCache = new Map<string, Promise<PaymentRequirements[]>>();
 
 /**
- * The payment requirements every tool advertises, built once per process.
+ * The payment requirements a tool advertises, built once per tool per process.
  *
+ * Each tool pays out to its own author, so the requirements differ per tool.
  * `buildPaymentRequirements` needs the facilitators' supported kinds, which is a
  * network round trip, so the result is cached rather than rebuilt per request.
  */
-function accepts(): Promise<PaymentRequirements[]> {
-  if (!acceptsPromise) {
-    acceptsPromise = (async () => {
+function acceptsFor(slug: string, payout?: Payout): Promise<PaymentRequirements[]> {
+  let cached = acceptsCache.get(slug);
+  if (!cached) {
+    cached = (async () => {
       await resourceServer.initialize();
       const built = await Promise.all(
-        paymentOptions().map((option) =>
+        paymentOptions(payout).map((option) =>
           resourceServer.buildPaymentRequirements(option as ResourceConfig),
         ),
       );
       return built.flat();
     })();
+    acceptsCache.set(slug, cached);
   }
-  return acceptsPromise;
+  return cached;
 }
 
 /**
@@ -119,11 +122,11 @@ function explainPaymentRequired(result: ToolResult, toolName: string): ToolResul
 }
 
 export async function buildRemoteServer(): Promise<McpServer> {
-  const requirements = await accepts();
   const server = new McpServer({ name: SITE_NAME.toLowerCase().replace(/\s+/g, "-"), version: "0.1.0" });
 
   for (const tool of TOOLS) {
     const name = tool.slug.replace(/-/g, "_");
+    const requirements = await acceptsFor(tool.slug, tool.payTo);
 
     const gated = createPaymentWrapper(resourceServer, {
       accepts: requirements,

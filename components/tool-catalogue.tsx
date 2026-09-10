@@ -11,6 +11,7 @@ export type CatalogueEntry = {
   description: string;
   price: string;
   coverage: string;
+  author: string;
   inputs: string[];
 };
 
@@ -86,7 +87,7 @@ export function ToolCatalogue({
               <div className="card-top">
                 <div>
                   <h3>{tool.name}</h3>
-                  <div className="card-slug">{tool.slug}</div>
+                  <div className="card-slug">by {tool.author}</div>
                 </div>
                 <span className="price">{tool.price}</span>
               </div>

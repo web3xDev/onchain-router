@@ -2,7 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { describeInputs, findTool, TOOLS } from "@/lib/tools/registry";
-import { rails } from "@/lib/x402";
+import { rails, resolvePayout } from "@/lib/x402";
 import { siteUrl } from "@/lib/site";
 
 // Same reason as the catalogue: the price and the accepted networks come from the
@@ -35,6 +35,7 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
 
   const inputs = describeInputs(tool);
   const live = rails();
+  const payout = resolvePayout(tool.payTo);
   const requestJson = JSON.stringify(tool.example.request);
   const base = siteUrl();
 
@@ -53,6 +54,8 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
               <span>{tool.slug}</span>
               <span>·</span>
               <span>{tool.coverage}</span>
+              <span>·</span>
+              <span>by {tool.author}</span>
             </div>
           </div>
         </div>
@@ -157,6 +160,26 @@ curl -X POST ${base}/api/tools/${tool.slug} \\
             <div className="aside-row">
               <span>coverage</span>
               <span>{tool.coverage}</span>
+            </div>
+            <div className="aside-row">
+              <span>pays out to</span>
+              <span>{tool.author}</span>
+            </div>
+            {payout.hedera && (
+              <div className="aside-row">
+                <span>on Hedera</span>
+                <span>{payout.hedera}</span>
+              </div>
+            )}
+            {payout.arc && (
+              <div className="aside-row">
+                <span>on Arc</span>
+                <span>{payout.arc}</span>
+              </div>
+            )}
+            <div className="aside-row">
+              <span>router commission</span>
+              <span>0%</span>
             </div>
           </div>
 

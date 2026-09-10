@@ -134,6 +134,22 @@ export default function Home() {
       <section className="section page" style={{ paddingTop: 0 }}>
         <div className="section-head">
           <div>
+            <span className="label">For tool authors</span>
+            <h2 style={{ marginTop: 8 }}>List a tool, get paid per call, straight to your wallet</h2>
+            <p>
+              Every call an agent makes settles directly from its wallet to yours. No invoice,
+              no payout run, no minimum. The router takes 0% commission, for now.
+            </p>
+          </div>
+          <Link href="/submit" className="btn btn-sm">
+            Submit a tool
+          </Link>
+        </div>
+      </section>
+
+      <section className="section page" style={{ paddingTop: 0 }}>
+        <div className="section-head">
+          <div>
             <span className="label">Payment rails</span>
             <h2 style={{ marginTop: 8 }}>Pay on whichever chain your agent already funds</h2>
             <p>

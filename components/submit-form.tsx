@@ -133,7 +133,7 @@ export function SubmitForm({ categories }: { categories: string[] }) {
             onChange={set("payTo")}
             placeholder="0x… or 0.0.…"
           />
-          <span className="hint">Where settlement lands. Public either way.</span>
+          <span className="hint">Where every call settles, directly. Hedera account or Arc address.</span>
         </div>
       </div>
 

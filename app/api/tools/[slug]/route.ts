@@ -39,11 +39,13 @@ const handler = async (request: NextRequest): Promise<NextResponse<unknown>> => 
   }
 };
 
+// One route, many tools, each paid to its own author. The address in the 402 is
+// resolved from the slug in the path at request time.
 const paidHandler = withX402(
   handler,
   {
     "/api/tools/[slug]": {
-      accepts: paymentOptions(),
+      accepts: paymentOptions((path) => findTool(path.split("/").pop() ?? "")?.payTo),
       description: "Onchain intelligence for agents, priced per call",
     },
   },

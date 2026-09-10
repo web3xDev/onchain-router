@@ -467,6 +467,16 @@ settled. It cost nothing to build because x402 already refuses to settle a faile
 call; the work was making "I do not know" a deliberate outcome rather than an
 accident.
 
+**0% commission, paid straight to the author.** The supply side needed an incentive
+too, and cashback for callers was the wrong shape: fractions of a cent, a ledger to
+keep, and a router that suddenly sends money. What a marketplace actually needs is
+tool authors, and what an author wants is to be paid without asking. Each tool now
+names its payout address per rail and the 402 quotes that address, resolved from the
+slug at request time on HTTP and per tool on MCP. Verified on Arc: the same endpoint
+quoted two different addresses for two tools, and a payment to the second one settled
+from the Circle wallet to it. The router never touches the money, which makes 0% the
+natural number rather than a promotion.
+
 ### 11 Sept: more tools
 
 *pending*

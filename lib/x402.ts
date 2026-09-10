@@ -92,28 +92,58 @@ function required(name: string): string {
   return value;
 }
 
+/** Where a tool's revenue lands, per rail. Mirrors the registry's Payout type. */
+export type Payout = { hedera?: string; arc?: string };
+
+/** The router's own receiving addresses, used for tools that name no payout. */
+export function routerPayout(): Payout {
+  return {
+    hedera: required("HEDERA_SERVICE_ACCOUNT_ID"),
+    arc: process.env.ARC_SERVICE_ADDRESS || undefined,
+  };
+}
+
+/** A tool's payout with the router's addresses filling any rail it left out. */
+export function resolvePayout(payout?: Payout): Payout {
+  const own = routerPayout();
+  return { hedera: payout?.hedera ?? own.hedera, arc: payout?.arc ?? own.arc };
+}
+
 /**
- * Payment options offered on every paid route.
+ * Payment options offered on a paid route.
  *
- * Arc is only advertised once a receiving address is configured, so the Hedera rail
- * keeps working on its own while Arc is still being set up.
+ * `payout` may be fixed, for a single tool, or a resolver from the request path, for
+ * one handler serving many tools. Either way the address in the 402 is the tool
+ * author's: settlement goes straight to them and the router keeps no cut.
+ *
+ * Arc is only advertised once a receiving address exists, so the Hedera rail keeps
+ * working on its own while Arc is still being set up.
  */
-export function paymentOptions(): PaymentOption[] {
+export function paymentOptions(
+  payout?: Payout | ((path: string) => Payout | undefined),
+): PaymentOption[] {
+  const fixed = typeof payout === "function" ? undefined : resolvePayout(payout);
+  const resolve = typeof payout === "function" ? payout : undefined;
+
+  const payToFor = (rail: keyof Payout): PaymentOption["payTo"] =>
+    resolve
+      ? (context) => resolvePayout(resolve(context.path))[rail] ?? ""
+      : (fixed![rail] ?? "");
+
   const options: PaymentOption[] = [
     {
       scheme: "exact",
       network: HEDERA_NETWORK,
-      payTo: required("HEDERA_SERVICE_ACCOUNT_ID"),
+      payTo: payToFor("hedera"),
       price: hederaPrice(),
     },
   ];
 
-  const arcPayTo = process.env.ARC_SERVICE_ADDRESS;
-  if (arcPayTo) {
+  if (routerPayout().arc) {
     options.push({
       scheme: "exact",
       network: ARC_NETWORK,
-      payTo: arcPayTo,
+      payTo: payToFor("arc"),
       price: arcPrice(),
     });
   }
@@ -141,7 +171,7 @@ export function rails(): Rail[] {
   // a fork someone cloned. An unconfigured rail is simply not shown as live.
   let options: PaymentOption[];
   try {
-    options = paymentOptions();
+    options = paymentOptions(routerPayout());
   } catch {
     return [];
   }

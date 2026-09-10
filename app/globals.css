@@ -68,6 +68,7 @@ button,
 .btn,
 .chip,
 .card,
+.terminal-tab,
 .search,
 .field input,
 .field textarea,
@@ -289,6 +290,34 @@ pre {
   font-family: var(--mono);
   font-size: 12px;
   color: var(--text-3);
+}
+
+.terminal-tabs {
+  margin-left: auto;
+  display: flex;
+  gap: 4px;
+}
+
+.terminal-tab {
+  height: 22px;
+  padding: 0 9px;
+  border-radius: 6px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--text-3);
+  font-family: var(--mono);
+  font-size: 11px;
+  cursor: pointer;
+}
+
+.terminal-tab:hover {
+  color: var(--text);
+}
+
+.terminal-tab[aria-pressed="true"] {
+  color: var(--text);
+  background: var(--surface);
+  border-color: var(--border-strong);
 }
 
 .terminal-dot {

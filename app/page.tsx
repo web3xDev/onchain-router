@@ -2,6 +2,7 @@ import Link from "next/link";
 import { catalogue, CATEGORIES, TOOLS } from "@/lib/tools/registry";
 import { rails } from "@/lib/x402";
 import { ToolCatalogue } from "@/components/tool-catalogue";
+import { HeroTerminal } from "@/components/hero-terminal";
 
 // The rails are read from the deployment's own configuration, so this renders per
 // request rather than being frozen into the build. A page that says "0 rails live"
@@ -39,40 +40,7 @@ export default function Home() {
             <p className="hero-note">No account, no API key, no subscription. No answer, no charge.</p>
           </div>
 
-          <div className="terminal">
-            <div className="terminal-bar">
-              <span className="terminal-dot" />
-              <span className="terminal-dot" />
-              <span className="terminal-dot" />
-              <span style={{ marginLeft: 6 }}>agent · lending-rates</span>
-            </div>
-            <pre className="terminal-body">
-              <span className="t-dim">$ </span>
-              <span className="t-key">POST /api/tools/lending-rates</span>
-              {"\n"}
-              <span className="t-dim">{'  { "asset": "USDC", "chain": "ethereum" }'}</span>
-              {"\n\n"}
-              <span className="t-warn">← 402 Payment Required</span>
-              {"\n"}
-              <span className="t-dim">{"  accepts: hedera:testnet, eip155:5042002"}</span>
-              {"\n\n"}
-              <span className="t-dim">{"  agent signs from its own wallet"}</span>
-              {"\n"}
-              <span className="t-dim">{"  ↳ settled 0.1 HBAR"}</span>
-              {"\n\n"}
-              <span className="t-ok">← 200 OK</span>
-              {"\n"}
-              <span className="t-key">
-                {'  "Best supply rate: 4.51% on compound-v3,\n   backed by $376.0M of liquidity.'}
-              </span>
-              {"\n"}
-              <span className="t-key">
-                {'   iron-bank reports 75.10%, stale data\n   from an abandoned protocol,'}
-              </span>
-              {"\n"}
-              <span className="t-key">{'   not an offer."'}</span>
-            </pre>
-          </div>
+          <HeroTerminal />
         </div>
       </section>
 

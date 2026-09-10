@@ -24,8 +24,7 @@ export default function Home() {
             </h1>
 
             <p className="hero-sub">
-              Point your agent at one MCP endpoint. It discovers what onchain tools exist,
-              calls the one it needs, and pays for that call from its own wallet.
+              Onchain tools for agents. Call one, pay a cent, get an answer.
             </p>
 
             <div className="hero-actions">

@@ -34,7 +34,7 @@ export default async function PlaygroundPage({
       <div className="page-head">
         <span className="label">Playground</span>
         <h1>Watch an agent pay for an answer</h1>
-        <p>
+        <p style={{ maxWidth: "none", whiteSpace: "nowrap" }}>
           A real x402 payment on testnet, paid from our wallet so you can try it without one.
         </p>
       </div>

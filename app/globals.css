@@ -2,31 +2,36 @@
  * One stylesheet, tokens first.
  *
  * The palette is almost entirely greyscale on purpose: the only colour in the
- * product marks money moving. A price, a settled payment, a live network. Those
- * are lime. Everything else stays out of the way.
+ * product marks an action. A button, a link, a call to attention. Everything
+ * else stays out of the way. Success and destructive are separate semantic
+ * tones, reserved for status, not decoration.
  */
 
 :root {
-  --bg: #08080a;
-  --surface: #0e0e11;
-  --surface-2: #131317;
-  --border: #1e1e24;
-  --border-strong: #2b2b33;
+  --bg: #141414;
+  --surface: #222222;
+  --surface-2: #2a2a2a;
+  --border: rgba(255, 255, 255, 0.1);
+  --border-strong: rgba(255, 255, 255, 0.16);
 
-  --text: #f2f2f5;
-  --text-2: #9a9aa6;
-  --text-3: #66666f;
+  --text: oklch(0.95 0 0);
+  --text-2: oklch(0.63 0 0);
+  --text-3: oklch(0.45 0 0);
 
-  --accent: #cdf548;
-  --accent-dim: #8fa838;
-  --accent-glow: rgba(205, 245, 72, 0.12);
+  --accent: #3b82f6;
+  --accent-dim: #2563eb;
+  --accent-glow: rgba(59, 130, 246, 0.12);
+  --accent-fg: #ffffff;
+
+  --success: oklch(0.72 0.17 145);
+  --destructive: oklch(0.7 0.19 22);
 
   --radius: 10px;
   --radius-lg: 14px;
 
   --mono: ui-monospace, "SF Mono", SFMono-Regular, "JetBrains Mono", Menlo, monospace;
-  --sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial,
-    sans-serif;
+  --sans: var(--font-inter), ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
+    Helvetica, Arial, sans-serif;
 
   --page: 1120px;
 }
@@ -61,7 +66,7 @@ h3 {
   margin: 0;
   letter-spacing: -0.025em;
   line-height: 1.15;
-  font-weight: 560;
+  font-weight: 600;
 }
 
 code,
@@ -94,7 +99,7 @@ pre {
   top: 0;
   z-index: 40;
   border-bottom: 1px solid var(--border);
-  background: rgba(8, 8, 10, 0.82);
+  background: rgba(20, 20, 20, 0.82);
   backdrop-filter: blur(12px);
 }
 
@@ -121,7 +126,7 @@ pre {
   background: var(--accent);
   display: grid;
   place-items: center;
-  color: #0b0f02;
+  color: var(--accent-fg);
   font-family: var(--mono);
   font-size: 12px;
   font-weight: 700;
@@ -171,20 +176,20 @@ pre {
 }
 
 .btn:hover {
-  background: #1a1a20;
-  border-color: #3a3a44;
+  background: #333333;
+  border-color: rgba(255, 255, 255, 0.22);
 }
 
 .btn-primary {
   background: var(--accent);
   border-color: var(--accent);
-  color: #0b0f02;
+  color: var(--accent-fg);
   font-weight: 600;
 }
 
 .btn-primary:hover {
-  background: #d9ff60;
-  border-color: #d9ff60;
+  background: #60a5fa;
+  border-color: #60a5fa;
 }
 
 .btn-ghost {
@@ -275,7 +280,7 @@ pre {
   width: 9px;
   height: 9px;
   border-radius: 50%;
-  background: #2b2b33;
+  background: var(--border-strong);
 }
 
 .terminal-body {
@@ -293,7 +298,7 @@ pre {
 }
 
 .t-ok {
-  color: var(--accent);
+  color: var(--success);
 }
 
 .t-warn {
@@ -904,7 +909,7 @@ pre {
 
 .field .error {
   font-size: 12.5px;
-  color: #ff8080;
+  color: var(--destructive);
 }
 
 .two-up {

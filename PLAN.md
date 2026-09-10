@@ -406,7 +406,29 @@ without a wallet of your own. Real settlement on either rail, capped per visitor
 per day, and the Arc receipt is shown as a Gateway transfer id rather than linked to an
 explorer that would not resolve it.
 
-### 10 Sept: more tools
+### 10 Sept: the MCP loop, and a second kind of dead market
+
+First end-to-end run from a Claude Code session: Claude called `lending_rates` over
+MCP, the server paid on Hedera, the answer came back. Claude then added "Rari Fuse is
+dead post-hack, don't touch it" from its own memory, because the tool had returned
+Rari Fuse as trustworthy.
+
+The rate check catches an abandoned protocol whose numbers drifted somewhere absurd.
+It does not catch one whose numbers froze looking normal. Rari Fuse publishes 3% on
+USDC beside $8M of TVL, and its last recorded activity was four years ago. The
+indexer sits at the chain head, so the subgraph looks fresh; only the market's own
+last daily snapshot says nobody has touched it.
+
+Each market now carries `lastActivityDays`, and anything past 30 days is stale and
+excluded. Rari Fuse, Euler (1277 days, hacked in 2023) and Morpho Aave v3 (525 days)
+fall out on Ethereum. On WETH it is the staleness check, not the rate check, that
+catches Iron Bank: 27% listed, no activity in 77 days. The two checks cover different
+failure modes and both are needed.
+
+The lesson is the one from 8 Sept again. A tool that needs the calling model to know
+which protocols are dead is not finished.
+
+### 11 Sept: more tools
 
 *pending*
 

@@ -27,6 +27,17 @@ const MIN_TRUSTWORTHY_TVL_USD = 250_000;
  */
 const OUTLIER_MULTIPLE = 5;
 
+/**
+ * A market with no activity for this long is treated as dead.
+ *
+ * The rate check above catches an abandoned protocol whose numbers drifted somewhere
+ * absurd. It does not catch one whose numbers froze looking normal: Rari Fuse still
+ * publishes a 3% USDC rate beside $8M of TVL, and its last recorded activity was four
+ * years ago. The indexer is at the chain head, so the subgraph looks fresh; only the
+ * market's own last snapshot says nobody has touched it.
+ */
+const STALE_AFTER_DAYS = 30;
+
 const MARKETS_QUERY = `
   query Markets($symbol: String!) {
     markets(
@@ -41,6 +52,7 @@ const MARKETS_QUERY = `
       totalBorrowBalanceUSD
       maximumLTV
       rates { side type rate }
+      dailySnapshots(first: 1, orderBy: timestamp, orderDirection: desc) { timestamp }
     }
   }
 `;
@@ -52,6 +64,7 @@ type RawMarket = {
   totalBorrowBalanceUSD: string;
   maximumLTV: string;
   rates: { side: string; type: string; rate: string }[];
+  dailySnapshots?: { timestamp: string }[];
 };
 
 export type LendingMarket = {
@@ -63,6 +76,10 @@ export type LendingMarket = {
   borrowRate: number | null;
   maxLtv: number;
   trustworthy: boolean;
+  /** Days since the market last recorded any activity; null when it never has. */
+  lastActivityDays: number | null;
+  /** No activity for longer than STALE_AFTER_DAYS. A frozen number, not an offer. */
+  stale: boolean;
   /** Rate is a statistical outlier against the rest of the chain, treated as stale. */
   anomalous?: boolean;
 };
@@ -91,6 +108,20 @@ function medianRate(rates: number[]): number {
   return sorted.length % 2 === 0 ? (sorted[mid - 1] + sorted[mid]) / 2 : sorted[mid];
 }
 
+function daysSince(timestamp: string | undefined): number | null {
+  if (!timestamp) return null;
+  return Math.floor((Date.now() / 1000 - Number(timestamp)) / 86400);
+}
+
+function ago(days: number): string {
+  if (days >= 365) {
+    const years = Math.floor(days / 365);
+    return years === 1 ? "over a year" : `over ${years} years`;
+  }
+  if (days >= 60) return `${Math.floor(days / 30)} months`;
+  return `${days} days`;
+}
+
 function money(value: number): string {
   if (value >= 1_000_000_000) return `$${(value / 1_000_000_000).toFixed(1)}B`;
   if (value >= 1_000_000) return `$${(value / 1_000_000).toFixed(1)}M`;
@@ -114,6 +145,8 @@ export async function lendingRates(assetInput: string, chainInput: string): Prom
       .filter((m) => m.isActive)
       .map((m) => {
         const tvlUsd = Number(m.totalValueLockedUSD);
+        const lastActivityDays = daysSince(m.dailySnapshots?.[0]?.timestamp);
+        const stale = lastActivityDays === null || lastActivityDays > STALE_AFTER_DAYS;
         return {
           protocol,
           market: m.name,
@@ -122,7 +155,9 @@ export async function lendingRates(assetInput: string, chainInput: string): Prom
           supplyRate: pickRate(m.rates, "LENDER"),
           borrowRate: pickRate(m.rates, "BORROWER"),
           maxLtv: Number(m.maximumLTV),
-          trustworthy: tvlUsd >= MIN_TRUSTWORTHY_TVL_USD,
+          trustworthy: tvlUsd >= MIN_TRUSTWORTHY_TVL_USD && !stale,
+          lastActivityDays,
+          stale,
         };
       }),
   );
@@ -179,7 +214,16 @@ function assess(
     );
   }
 
-  const thin = all.find((m) => !m.trustworthy && (m.supplyRate ?? 0) > best.supplyRate!);
+  const dead = all.find((m) => m.stale && (m.supplyRate ?? 0) > best.supplyRate!);
+  if (dead) {
+    lines.push(
+      dead.lastActivityDays === null
+        ? `${dead.protocol} lists ${dead.supplyRate!.toFixed(2)}% but has never recorded any activity. Not an offer.`
+        : `${dead.protocol} lists ${dead.supplyRate!.toFixed(2)}% but has seen no activity in ${ago(dead.lastActivityDays)}. A frozen number, not an offer.`,
+    );
+  }
+
+  const thin = all.find((m) => !m.trustworthy && !m.stale && (m.supplyRate ?? 0) > best.supplyRate!);
   if (thin) {
     lines.push(
       `${thin.protocol} advertises ${thin.supplyRate!.toFixed(2)}% but holds only ${money(thin.tvlUsd)}, too thin to rely on at size.`,

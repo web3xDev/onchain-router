@@ -32,9 +32,11 @@
   /* One duration for every interactive element, so nothing feels faster or slower. */
   --ease: 160ms ease;
 
-  --mono: ui-monospace, "SF Mono", SFMono-Regular, "JetBrains Mono", Menlo, monospace;
-  --sans: var(--font-inter), ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
-    Helvetica, Arial, sans-serif;
+  --mono:
+    ui-monospace, "SF Mono", SFMono-Regular, "JetBrains Mono", Menlo, monospace;
+  --sans:
+    var(--font-inter), ui-sans-serif, system-ui, -apple-system, "Segoe UI",
+    Roboto, Helvetica, Arial, sans-serif;
 
   --page: 1120px;
 }
@@ -208,8 +210,8 @@ pre {
 }
 
 .btn-primary:hover {
-  background: #60a5fa;
-  border-color: #60a5fa;
+  background: #4194fa;
+  border-color: #4194fa;
 }
 
 .btn-ghost {
@@ -862,6 +864,16 @@ pre {
 .prose {
   max-width: 72ch;
   padding-bottom: 40px;
+}
+
+/* A prose page that needs the full width for a side-by-side block. */
+.prose-wide {
+  max-width: none;
+}
+
+.prose-wide .page-head,
+.prose-wide > p {
+  max-width: 72ch;
 }
 
 .prose h2 {

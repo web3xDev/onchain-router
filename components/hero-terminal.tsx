@@ -46,7 +46,7 @@ function script(rail: RailId): Line[] {
 }
 
 /** Lines arrive one after another, the way they do in the playground. */
-const STAGGER_MS = 70;
+const STAGGER_MS = 130;
 
 export function HeroTerminal() {
   const [rail, setRail] = useState<RailId>("hedera");

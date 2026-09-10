@@ -119,7 +119,7 @@ export function SubmitForm({ categories }: { categories: string[] }) {
         {touched && !fields.source.trim() && <span className="error">Required</span>}
       </div>
 
-      <div className="two-up">
+      <div className="two-up" style={{ gridTemplateColumns: "150px 1fr" }}>
         <div className="field">
           <label htmlFor="price">Price per call</label>
           <input id="price" value={fields.price} onChange={set("price")} placeholder="$0.01" />

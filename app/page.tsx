@@ -18,7 +18,7 @@ export default function Home() {
         <div className="page hero-grid">
           <div>
             <h1>
-              The <span className="accent">OpenRouter</span>
+              The OpenRouter
               <br />
               for onchain tools
             </h1>

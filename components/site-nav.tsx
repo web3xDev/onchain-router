@@ -18,7 +18,7 @@ export function SiteNav() {
       <div className="page nav-inner">
         <Link href="/" className="brand">
           <span className="brand-mark">R</span>
-          Onchain Router
+          OnchainRouter
         </Link>
 
         <div className="nav-links">

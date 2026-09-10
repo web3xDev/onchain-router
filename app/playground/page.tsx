@@ -35,9 +35,7 @@ export default async function PlaygroundPage({
         <span className="label">Playground</span>
         <h1>Watch an agent pay for an answer</h1>
         <p>
-          The call below is a real x402 payment on testnet, settled on chain. The only
-          difference from your own agent is whose wallet pays: here it is ours, so you can
-          try it without funding anything.
+          A real x402 payment on testnet, paid from our wallet so you can try it without one.
         </p>
       </div>
 

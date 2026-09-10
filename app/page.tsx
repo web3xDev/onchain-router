@@ -44,7 +44,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="section page">
+      <section className="section page" id="tools" style={{ scrollMarginTop: 72 }}>
         <div className="section-head">
           <div>
             <span className="label">Catalogue</span>

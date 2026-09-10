@@ -83,37 +83,32 @@ claude mcp add onchain-wallet -- sh -c "cd /path/to/onchain-router && npx tsx mc
         works in its place. <code>npm run mcp:wallet:check</code> replays the three steps a chat
         client would take, with no x402 library on the client side at all.
       </p>
-      <p>
-        If you would rather the server pay on Claude&apos;s behalf, the local server in{" "}
-        <code>mcp/server.ts</code> still does that from a configured wallet.
-      </p>
-
       <h2>Who signs</h2>
       <p>
-        The money is always the caller&apos;s. The only question is which process holds the
-        signing material.
+        Always the agent&apos;s own wallet. The router holds no keys and no balances; it
+        receives a signed payment inside the call and settles it. What the wallet is
+        backed by is the agent&apos;s choice.
       </p>
 
       <div className="callout">
-        <strong style={{ color: "var(--text)" }}>Your agent, its own wallet.</strong>
+        <strong style={{ color: "var(--text)" }}>Circle agent wallet.</strong>
         <br />
-        The remote endpoint, with an x402 client or a wallet MCP beside the agent. The
-        router never sees a key; it sees a signed payment and settles it.
-      </div>
-
-      <div className="callout">
-        <strong style={{ color: "var(--text)" }}>Circle agent wallet (recommended for the local server).</strong>
-        <br />
-        Give the local server a Circle wallet id and API credentials. Signing happens
-        inside Circle, so the private key never reaches your machine, and the payment
-        layer cannot tell the difference between that and a local key.
+        The reference wallet takes a Circle wallet id and API credentials. Signing happens
+        inside Circle, so the private key never reaches the machine the agent runs on.
       </div>
 
       <div className="callout">
         <strong style={{ color: "var(--text)" }}>Local key.</strong>
         <br />
-        A Hedera account and key in the local server&apos;s environment. Simplest to set
-        up, and the key sits on your machine, which is the trade you are making.
+        A Hedera account and key, or an Arc key, in the wallet&apos;s environment. Simplest
+        to set up, and the key sits on that machine, which is the trade you are making.
+      </div>
+
+      <div className="callout">
+        <strong style={{ color: "var(--text)" }}>Any other x402 wallet.</strong>
+        <br />
+        The router speaks standard x402. A wallet MCP or an x402 client from anywhere
+        else works in place of the reference one; nothing here is specific to it.
       </div>
 
       <h2>Fund it</h2>

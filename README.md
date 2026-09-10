@@ -91,69 +91,32 @@ whatever is in `.env.local`. It knows nothing about the router; it signs x402 re
 so any x402 service can be paid through it. `npm run mcp:wallet:check` replays the three
 steps with a plain MCP client and no x402 library on the client side.
 
-### Locally, server pays
+### What backs the wallet
 
-If you would rather the server pay on the agent's behalf, `mcp/server.ts` does that from
-a wallet you configure. It always tells the agent what is available and what each
-capability costs; whether it also settles is your choice, and there are three ways to
-arrange it.
+The reference wallet reads `.env.local` and signs with whatever is there.
 
-```json
-{
-  "mcpServers": {
-    "onchain-router": {
-      "command": "npx",
-      "args": ["tsx", "mcp/server.ts"],
-      "env": { "ONCHAIN_ROUTER_URL": "http://localhost:3000" }
-    }
-  }
-}
-```
+**Circle agent wallet.** `CIRCLE_API_KEY`, `CIRCLE_ENTITY_SECRET`, `CIRCLE_WALLET_ID`
+and `CIRCLE_WALLET_ADDRESS`. The private key stays inside Circle and never reaches the
+machine; these credentials command it rather than being it.
 
-**Bring your own wallet (default).** Configured as above, the server holds nothing. A
-tool call returns the price and the networks accepted, and your agent pays from
-whatever wallet it already has: a Circle agent wallet, a Hedera wallet MCP, any x402
-client. Nothing here ever touches a key.
+**Local key.** `HEDERA_AGENT_ACCOUNT_ID` and `HEDERA_AGENT_PRIVATE_KEY` for Hedera,
+`ARC_AGENT_PRIVATE_KEY` for Arc. Simplest, and the key sits on the machine, which is
+the trade you are making.
 
-**Let the server settle, through Circle.** Add `CIRCLE_API_KEY`, `CIRCLE_ENTITY_SECRET`,
-`CIRCLE_WALLET_ID` and `CIRCLE_WALLET_ADDRESS` and Arc calls settle in one step. The
-private key stays inside Circle and never reaches this machine; these credentials
-command it rather than being it. This is the recommended way to have the server pay.
-
-**Let the server settle, with a raw key.** `HEDERA_AGENT_ACCOUNT_ID` and
-`HEDERA_AGENT_PRIVATE_KEY` work the same way for the Hedera rail. It is the weakest of
-the three: a private key in a config file is readable by anything that can read the
-file.
+**Something else.** The router speaks standard x402. Any wallet MCP or x402 client that
+signs payment requests works in place of the reference one.
 
 > Whichever you choose, fund a wallet that exists only for this. Never point it at a
 > key you would mind losing. Per-payment caps are set in
 > [`lib/payment/agent-wallet.ts`](./lib/payment/agent-wallet.ts) and default to 0.2 HBAR
 > and $0.05.
 
-On start the server says which arrangement is live:
+On start the wallet says what it can sign with:
 
 ```
-onchain-router: settling via Arc via Circle agent wallet 0x266b…, Hedera via local key 0.0.10407265
-onchain-router: quote-only, no wallet configured
+onchain-wallet: Arc via Circle agent wallet 0x266b…, Hedera via local key 0.0.10407265
+onchain-wallet: no wallet configured
 ```
-
-Two tools appear: `lending_rates` and `governance_power`. Calling one without payment
-returns its price and the networks it accepts:
-
-```
-Payment required before this tool returns data.
-
-Endpoint: POST /api/tools/lending-rates
-Accepted payment options:
-  • hedera:testnet    · 0.1 HBAR
-  • eip155:5042002    · 0.01 USDC on Arc
-
-Settle one of these from your own wallet with x402, then call this tool again
-with the payment receipt, or pay the endpoint directly.
-```
-
-An agent with an x402-capable wallet pays whichever rail it holds funds on and calls
-again. Check the server is responding with `npm run mcp:check`.
 
 ---
 
@@ -162,16 +125,16 @@ again. Check the server is responding with `npm run mcp:check`.
 The agent has its own wallet, the way a contractor has a company card: it spends on
 its own, within limits someone set.
 
-Nothing here holds that key. The MCP server carries no wallet and no funds pass through
-it. A router that paid on your agent's behalf would put its balance in the middle of
-your transaction and turn a payment protocol into a billing relationship.
+Nothing on the router side holds that key. No wallet, no balance, no funds passing
+through. A router that paid on your agent's behalf would put its balance in the middle
+of your transaction and turn a payment protocol into a billing relationship.
 
 ```
-Agent           holds a wallet, decides, signs, pays
-  │ MCP
-MCP server      catalogue: what exists, what it costs, where to pay
-  │ HTTP + x402
-Onchain Router  402 → verify → settle
+Agent            decides, calls, carries the signed payment back
+  │  MCP                       │  MCP
+Onchain Router   /mcp          Wallet MCP   signs x402 requests
+  payment required             (the agent's own; never meets the router)
+  verify → run → settle
   │
 Hedera / Arc
 ```
@@ -260,8 +223,7 @@ lib/
   graph/verified.ts         what `npm run probe` measured as live
   x402.ts                   facilitator, resource server, pricing
   payment/agent-wallet.ts   builds a paying fetch from whatever is configured
-mcp/wallet.ts               the agent's wallet as an MCP server: sign_x402_payment
-mcp/server.ts               local MCP server that pays on the agent's behalf, if configured
+mcp/wallet.ts               reference wallet as an MCP server: sign_x402_payment
 lib/mcp/remote.ts           remote MCP server, served at /mcp, caller pays over x402
 app/mcp/route.ts            the /mcp endpoint
 scripts/

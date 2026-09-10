@@ -452,6 +452,11 @@ Verified with `scripts/mcp-wallet-check.ts`: a plain MCP client, no x402 library
 three calls, settled on both rails. This is the architecture that was asked for from
 the start: the router holds nothing, the wallet is the agent's, and they never meet.
 
+The local paying server, `mcp/server.ts`, is gone. It was the arrangement objected
+to at the very start, a process that carried the agent's wallet and paid on its
+behalf, and once the wallet became the agent's own MCP it only muddied the message.
+The router now has exactly one MCP shape: remote, holding nothing.
+
 ### 11 Sept: more tools
 
 *pending*

@@ -2,8 +2,8 @@
 import path from "node:path";
 import dotenv from "dotenv";
 
-// Same reason as mcp/server.ts: the client launches this with no environment, and the
-// wallet lives in the project's .env.local.
+// The client launches this with no environment, and the wallet lives in the
+// project's .env.local, so it is read from there relative to this file.
 dotenv.config({ path: path.resolve(__dirname, "..", ".env.local") });
 
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";

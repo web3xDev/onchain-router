@@ -31,7 +31,7 @@ export default async function PlaygroundPage({
 
   return (
     <div className="page">
-      <div className="page-head">
+      <div className="page-head" style={{ paddingBottom: 32 }}>
         <span className="label">Playground</span>
         <h1>Watch an agent pay for an answer</h1>
         <p style={{ maxWidth: "none", whiteSpace: "nowrap" }}>

@@ -45,7 +45,20 @@ export type AgentWalletOptions = {
   onSettle?: (settlement: Settlement) => void;
 };
 
-export function agentWalletFromEnv(options: AgentWalletOptions = {}): AgentWallet | null {
+export type PaymentClient = {
+  client: x402Client;
+  /** Human-readable description of what is signing, for logs and setup checks. */
+  describe: string;
+};
+
+/**
+ * The x402 client itself, with every configured rail registered.
+ *
+ * This is the piece that signs. `agentWalletFromEnv` wraps it in a fetch for HTTP;
+ * the remote MCP client wraps the same thing in a tool call. Same wallet, same spend
+ * controls, two transports.
+ */
+export function paymentClientFromEnv(options: AgentWalletOptions = {}): PaymentClient | null {
   const { preferNetwork, onSettle } = options;
 
   const client = preferNetwork
@@ -111,8 +124,15 @@ export function agentWalletFromEnv(options: AgentWalletOptions = {}): AgentWalle
 
   if (registered.length === 0) return null;
 
+  return { client, describe: registered.join(", ") };
+}
+
+export function agentWalletFromEnv(options: AgentWalletOptions = {}): AgentWallet | null {
+  const payment = paymentClientFromEnv(options);
+  if (!payment) return null;
+
   return {
-    fetch: wrapFetchWithPayment(fetch, client),
-    describe: registered.join(", "),
+    fetch: wrapFetchWithPayment(fetch, payment.client),
+    describe: payment.describe,
   };
 }

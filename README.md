@@ -24,7 +24,8 @@ Everything below is running against live data and settling real payments on test
 | ✅ | Arc signed by a Circle agent wallet, so the key never reaches this machine |
 | ✅ | `lending_rates`: best rate across every indexed lending protocol on a chain |
 | ✅ | `governance_power`: how concentrated a protocol's voting power is |
-| ✅ | MCP server, with three ways to arrange payment |
+| ✅ | Remote MCP at `/mcp`: one URL, agent pays from its own wallet over x402 |
+| ✅ | Local MCP server for chat clients, with three ways to arrange payment |
 | ✅ | Site: catalogue, tool pages, connect, submit |
 | ✅ | Playground, funded by us, so it can be tried without a wallet |
 | ✅ | Coverage measured rather than claimed (`npm run probe`) |
@@ -57,8 +58,28 @@ the payment itself. Settlement details reach the client through its
 
 ## Connect your agent
 
-The MCP server always tells an agent what is available and what each capability costs.
-Whether it also settles is your choice, and there are three ways to arrange it.
+### By URL
+
+The router is a remote MCP server. An x402-aware client connects to `/mcp`, lists the
+tools for free, and pays for each call from its own wallet. The router never holds a
+key; it receives a signed payment inside the tool call and settles it.
+
+```ts
+const agent = wrapMCPClientWithPayment(new Client({ name: "my-agent", version: "1.0.0" }), paymentClient);
+await agent.connect(new StreamableHTTPClientTransport(new URL("https://<host>/mcp")));
+const result = await agent.callTool("lending_rates", { asset: "USDC", chain: "base" });
+```
+
+`npm run mcp:remote` is a working copy of that: it connects, gets the payment-required
+error, signs on whichever rail is configured, and prints the receipt and the answer.
+Malformed arguments are rejected before the payment step, so a typo costs nothing.
+
+### Locally, for chat clients
+
+A chat client cannot sign a payment itself, so for Claude Code or Claude Desktop the
+local server runs beside it and pays from a wallet you configure. It always tells the
+agent what is available and what each capability costs; whether it also settles is your
+choice, and there are three ways to arrange it.
 
 ```json
 {
@@ -222,9 +243,12 @@ lib/
   graph/verified.ts         what `npm run probe` measured as live
   x402.ts                   facilitator, resource server, pricing
   payment/agent-wallet.ts   builds a paying fetch from whatever is configured
-mcp/server.ts               the MCP server, registered from the registry
+mcp/server.ts               local MCP server for chat clients, pays from a configured wallet
+lib/mcp/remote.ts           remote MCP server, served at /mcp, caller pays over x402
+app/mcp/route.ts            the /mcp endpoint
 scripts/
-  pay.ts                    paying-agent test client
+  pay.ts                    paying-agent test client, HTTP
+  mcp-remote-check.ts       paying-agent test client, remote MCP
   probe-coverage.ts         measures which subgraphs still answer
 HARNESS-NOTES.md            Hedera DX friction log
 ```

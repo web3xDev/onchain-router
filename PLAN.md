@@ -428,6 +428,24 @@ failure modes and both are needed.
 The lesson is the one from 8 Sept again. A tool that needs the calling model to know
 which protocols are dead is not finished.
 
+### 10 Sept, later: one URL
+
+The local MCP server needs a clone and a config file. That is a program to install,
+and the pitch was a URL to add. `/mcp` is now the router as a remote MCP server:
+stateless, one fresh server per request, tools registered from the same registry and
+gated by the same resource server as the HTTP API, so the price cannot differ between
+the two ways in.
+
+Payment travels inside the tool call, in `_meta`, the way `@x402/mcp` defines it. The
+caller's client gets a payment-required error carrying both rails, signs with its own
+wallet, and calls again. Verified from `scripts/mcp-remote-check.ts` acting as a
+stranger's agent: Hedera settled, Arc settled from the Circle wallet, and a bad
+protocol name was rejected by schema validation before any payment happened.
+
+The honest caveat: a chat client cannot sign, so Claude Code still runs the local
+server beside it with a wallet configured. The remote URL is for agents built with an
+x402 client, which is the audience the name promises anyway.
+
 ### 11 Sept: more tools
 
 *pending*

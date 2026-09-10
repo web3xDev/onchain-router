@@ -37,7 +37,7 @@ export default function Home() {
               </Link>
             </div>
 
-            <p className="hero-note">No account. No API key. No subscription.</p>
+            <p className="hero-note">No account. No API key. No subscription. No answer, no charge.</p>
           </div>
 
           <div className="terminal">
@@ -84,7 +84,7 @@ export default function Home() {
             <h2 style={{ marginTop: 8 }}>{TOOLS.length} tools, priced per call</h2>
             <p>
               Every tool answers a question rather than returning a table. You pay when it
-              answers, and nothing when you are only looking.
+              answers. If it cannot give a verdict, the call is free.
             </p>
           </div>
           <Link href="/submit" className="btn btn-sm">
@@ -122,10 +122,10 @@ export default function Home() {
           </div>
           <div className="step">
             <div className="step-n">03</div>
-            <h3>The agent pays</h3>
+            <h3>The agent pays, for an answer</h3>
             <p>
-              It signs the payment with its own wallet and the call returns. The router never
-              holds your keys and never bills you.
+              It signs with its own wallet and the call returns. If the tool has nothing to
+              say, the payment is never settled. You buy verdicts, not attempts.
             </p>
           </div>
         </div>

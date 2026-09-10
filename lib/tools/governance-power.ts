@@ -1,5 +1,6 @@
 import { querySubgraph } from "@/lib/graph/client";
 import { GOVERNANCE_DEPLOYMENTS, GOVERNANCE_PROTOCOLS } from "@/lib/graph/deployments";
+import { NoAnswer } from "@/lib/tools/no-answer";
 
 /**
  * Who actually controls a protocol?
@@ -92,7 +93,7 @@ export async function governancePower(protocolInput: string): Promise<Governance
 
   const data = await querySubgraph<RawGovernance>(deployment.id, GOVERNANCE_QUERY, undefined, 15000);
   if (!data?.governances?.length) {
-    throw new Error(`No governance data available for "${protocol}". The subgraph is not currently served.`);
+    throw new NoAnswer(`No governance data available for "${protocol}". The subgraph is not currently served.`);
   }
 
   const g = data.governances[0];

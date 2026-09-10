@@ -96,7 +96,7 @@ export function ToolCatalogue({
               <div className="card-foot">
                 <span className="tag">{tool.category}</span>
                 <span>{tool.coverage}</span>
-                <span style={{ marginLeft: "auto" }}>{tool.inputs.join(", ")}</span>
+                <span style={{ marginLeft: "auto" }}>no answer, no charge</span>
               </div>
             </Link>
           ))}

@@ -457,6 +457,16 @@ to at the very start, a process that carried the agent's wallet and paid on its
 behalf, and once the wallet became the agent's own MCP it only muddied the message.
 The router now has exactly one MCP shape: remote, holding nothing.
 
+**No answer, no charge.** The question was "what is the incentive for an agent to
+use these tools", and the answer that survived was the simplest: you pay for a verdict,
+not for an attempt. A raw data API charges for an empty result set. Here a tool that
+cannot recommend anything throws `NoAnswer`, which travels as 404 over HTTP and as
+`isError` over MCP, and neither transport settles on those. Verified on both: a
+payment was signed for an asset with no market, and the receipt shows it was never
+settled. It cost nothing to build because x402 already refuses to settle a failed
+call; the work was making "I do not know" a deliberate outcome rather than an
+accident.
+
 ### 11 Sept: more tools
 
 *pending*

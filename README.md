@@ -8,6 +8,11 @@ capabilities, paying per call with x402. No signup, no API keys, no subscription
 > **Onchain Router handles:** Discovery → Routing → Payment → Execution
 > **The agent handles:** Reasoning → Decision → User interaction
 
+**No answer, no charge.** A tool that cannot give a verdict says so, and the payment
+signed for that call is never settled. You buy answers, not attempts. Both transports
+enforce it: HTTP refuses to settle on any 4xx, MCP on `isError`, and a tool with
+nothing to say deliberately takes that path.
+
 Built at ETHOnline 2026 (From Scratch track).
 
 ---
@@ -29,6 +34,7 @@ Everything below is running against live data and settling real payments on test
 | ✅ | Site: catalogue, tool pages, connect, submit |
 | ✅ | Playground, funded by us, so it can be tried without a wallet |
 | ✅ | Coverage measured rather than claimed (`npm run probe`) |
+| ✅ | No answer, no charge: a call with no verdict is never settled |
 
 ---
 

@@ -127,9 +127,17 @@ export async function POST(request: NextRequest) {
   const data = await response.json().catch(() => null);
 
   if (!response.ok) {
+    const body = data as { answer?: null; reason?: string; error?: string } | null;
+    const noAnswer = response.status === 404 && body?.answer === null;
     return NextResponse.json(
-      { error: "The tool did not answer", status: response.status, data },
-      { status: 502 },
+      {
+        error: noAnswer
+          ? `No answer, so nothing was charged. ${body?.reason ?? ""}`.trim()
+          : `The tool did not answer (${body?.error ?? response.status}). Nothing was charged.`,
+        status: response.status,
+        charged: false,
+      },
+      { status: noAnswer ? 404 : 502 },
     );
   }
 

@@ -174,8 +174,8 @@ curl -X POST ${base}/api/tools/${tool.slug} \\
           </div>
 
           <p style={{ fontSize: 12.5, color: "var(--text-3)", marginBottom: 0 }}>
-            Nothing is charged for reading this page or for a 402. You pay when the tool
-            answers.
+            Nothing is charged for reading this page, for a 402, or for a call the tool
+            cannot answer. You pay for a verdict, not an attempt.
           </p>
         </aside>
       </div>

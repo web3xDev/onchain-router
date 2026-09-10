@@ -47,9 +47,11 @@ async function main() {
 
   const result = await agent.callTool(TOOL, ARGS);
 
-  console.log(`paid    : ${result.paymentMade}`);
+  // paymentMade means a signature was sent. Whether it was actually settled is a
+  // separate question, and the answer is "no" whenever the tool had nothing to say.
+  console.log(`signed  : ${result.paymentMade}`);
+  console.log(`settled : ${result.paymentResponse ? result.paymentResponse.success : "no, nothing charged"}`);
   if (result.paymentResponse) {
-    console.log(`settled : ${result.paymentResponse.success}`);
     console.log(`payer   : ${result.paymentResponse.payer}`);
     console.log(`network : ${result.paymentResponse.network}`);
     console.log(`tx      : ${result.paymentResponse.transaction}`);

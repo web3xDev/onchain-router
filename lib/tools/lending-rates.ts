@@ -1,5 +1,6 @@
 import { fanOut } from "@/lib/graph/client";
 import { LENDING_DEPLOYMENTS, SUPPORTED_CHAINS } from "@/lib/graph/deployments";
+import { NoAnswer } from "@/lib/tools/no-answer";
 
 /**
  * Where should an agent lend or borrow a given asset?
@@ -176,6 +177,17 @@ export async function lendingRates(assetInput: string, chainInput: string): Prom
 
   const trustworthy = deep.filter((m) => !m.anomalous);
   const best = trustworthy[0] ?? null;
+
+  // No verdict, no charge. A list of markets that cannot be trusted is not an
+  // answer to "where should I lend", and is not sold as one.
+  if (markets.length === 0) {
+    throw new NoAnswer(`No active ${asset} market on any indexed lending protocol on ${chain}.`);
+  }
+  if (!best) {
+    throw new NoAnswer(
+      `Every ${asset} market on ${chain} is either thinner than ${money(MIN_TRUSTWORTHY_TVL_USD)}, stale, or reporting a rate nothing could pay. Nothing here can be recommended.`,
+    );
+  }
 
   return {
     asset,

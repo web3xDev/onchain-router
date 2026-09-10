@@ -3,6 +3,7 @@ import { z } from "zod";
 import { withX402 } from "@x402/next";
 import { paymentOptions, resourceServer } from "@/lib/x402";
 import { findTool, TOOLS } from "@/lib/tools/registry";
+import { isNoAnswer } from "@/lib/tools/no-answer";
 
 /**
  * Every paid tool, served from one handler.
@@ -23,8 +24,16 @@ const handler = async (request: NextRequest): Promise<NextResponse<unknown>> => 
   try {
     return NextResponse.json(await tool.run(input));
   } catch (error) {
+    // 4xx and up is never settled, so "no verdict" travels as 404 and costs nothing.
+    // It is separated from a real failure so the caller can tell the two apart.
+    if (isNoAnswer(error)) {
+      return NextResponse.json(
+        { answer: null, reason: error.message, charged: false },
+        { status: 404 },
+      );
+    }
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : "Tool failed" },
+      { error: error instanceof Error ? error.message : "Tool failed", charged: false },
       { status: 502 },
     );
   }

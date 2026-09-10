@@ -6,6 +6,7 @@ import type { ResourceConfig } from "@x402/core/server";
 import { paymentOptions, resourceServer } from "@/lib/x402";
 import { TOOLS } from "@/lib/tools/registry";
 import { SITE_NAME } from "@/lib/site";
+import { isNoAnswer } from "@/lib/tools/no-answer";
 
 /**
  * The router as a remote MCP server.
@@ -138,15 +139,11 @@ export async function buildRemoteServer(): Promise<McpServer> {
         const result = await tool.run(input);
         return { content: [{ type: "text" as const, text: JSON.stringify(result, null, 2) }] };
       } catch (error) {
-        return {
-          content: [
-            {
-              type: "text" as const,
-              text: error instanceof Error ? error.message : "Tool failed",
-            },
-          ],
-          isError: true,
-        };
+        // isError cancels settlement, so a tool with nothing to say costs nothing.
+        const text = isNoAnswer(error)
+          ? `No answer, not charged. ${error.message}`
+          : `Tool failed, not charged. ${error instanceof Error ? error.message : String(error)}`;
+        return { content: [{ type: "text" as const, text }], isError: true };
       }
     });
 

@@ -36,7 +36,7 @@ export default function Home() {
               </Link>
             </div>
 
-            <p className="hero-note">No account. No API key. No subscription. No answer, no charge.</p>
+            <p className="hero-note">No account, no API key, no subscription. No answer, no charge.</p>
           </div>
 
           <div className="terminal">

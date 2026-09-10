@@ -102,7 +102,7 @@ pre {
 .page {
   max-width: var(--page);
   margin: 0 auto;
-  padding: 0 96px;
+  padding: 0 40px;
 }
 
 @media (max-width: 620px) {
@@ -870,16 +870,6 @@ pre {
 .prose {
   max-width: 72ch;
   padding-bottom: 40px;
-}
-
-/* A prose page that needs the full width for a side-by-side block. */
-.prose-wide {
-  max-width: none;
-}
-
-.prose-wide .page-head,
-.prose-wide > p {
-  max-width: 72ch;
 }
 
 .prose h2 {

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { TOOLS } from "@/lib/tools/registry";
 import { siteUrl } from "@/lib/site";
+import { ConnectPaths } from "@/components/connect-paths";
 
 const DESCRIPTION =
   "One MCP URL. Your agent discovers the tools, calls the one it needs and pays for that call from its own wallet.";
@@ -17,7 +18,7 @@ export default function ConnectPage() {
   const base = siteUrl();
 
   return (
-    <div className="page prose prose-wide">
+    <div className="page prose">
       <div className="page-head">
         <span className="label">Connect</span>
         <h1>One URL, {TOOLS.length} tools, no account</h1>
@@ -27,35 +28,8 @@ export default function ConnectPage() {
       <h2>The endpoint</h2>
       <pre className="code">{`${base}/mcp`}</pre>
 
-      <div className="two-up" style={{ marginTop: 36, alignItems: "start" }}>
-        <div>
-          <h2 style={{ marginTop: 0 }}>Your own agent</h2>
-          <p>Wrap an MCP client with an x402 payment client and your wallet.</p>
-          <pre className="code">
-            {`const agent = wrapMCPClientWithPayment(
-  new Client({ name: "my-agent", version: "1.0.0" }),
-  paymentClient, // your x402Client + wallet
-);
-
-await agent.connect(
-  new StreamableHTTPClientTransport(new URL("${base}/mcp")),
-);
-
-await agent.callTool("lending_rates", { asset: "USDC", chain: "base" });`}
-          </pre>
-        </div>
-
-        <div>
-          <h2 style={{ marginTop: 0 }}>Claude Code</h2>
-          <p>The router, plus a wallet MCP that signs when a tool asks for payment.</p>
-          <pre className="code">
-            {`claude mcp add --transport http onchain-router ${base}/mcp
-
-claude mcp add onchain-wallet -- \\
-  sh -c "cd onchain-router && npx tsx mcp/wallet.ts"`}
-          </pre>
-        </div>
-      </div>
+      <h2>Connect</h2>
+      <ConnectPaths base={base} />
 
       <h2>The wallet</h2>
       <p>

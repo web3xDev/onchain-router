@@ -245,7 +245,8 @@ export function Playground({
           </button>
 
           <p className="hint" style={{ margin: 0 }}>
-            Funded by us so you do not need a wallet.{" "}
+            Funded by us so you do not need a wallet.
+            <br />
             <Link href="/connect" className="link">
               Connect your own agent
             </Link>{" "}

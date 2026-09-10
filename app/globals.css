@@ -1040,8 +1040,13 @@ pre {
   gap: 18px;
 }
 
+.two-up-price {
+  grid-template-columns: 150px 1fr;
+}
+
 @media (max-width: 620px) {
-  .two-up {
+  .two-up,
+  .two-up-price {
     grid-template-columns: 1fr;
   }
 }

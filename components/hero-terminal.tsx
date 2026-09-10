@@ -47,7 +47,7 @@ function script(rail: RailId): Line[] {
 }
 
 /** Each step lands as a block, a beat apart, the way it does in the playground. */
-const STEP_MS = 295;
+const STEP_MS = 260;
 
 export function HeroTerminal() {
   const [rail, setRail] = useState<RailId>("hedera");

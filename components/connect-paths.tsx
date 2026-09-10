@@ -9,21 +9,11 @@ export function ConnectPaths({ base }: { base: string }) {
 
   return (
     <div>
-      <div className="filters" style={{ marginBottom: 14 }}>
-        <button
-          type="button"
-          className="chip"
-          aria-pressed={path === "sdk"}
-          onClick={() => setPath("sdk")}
-        >
+      <div className="segmented" style={{ marginBottom: 16 }}>
+        <button type="button" aria-pressed={path === "sdk"} onClick={() => setPath("sdk")}>
           Your own agent
         </button>
-        <button
-          type="button"
-          className="chip"
-          aria-pressed={path === "claude"}
-          onClick={() => setPath("claude")}
-        >
+        <button type="button" aria-pressed={path === "claude"} onClick={() => setPath("claude")}>
           Claude Code
         </button>
       </div>

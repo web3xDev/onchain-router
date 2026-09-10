@@ -71,6 +71,7 @@ button,
 .chip,
 .card,
 .terminal-tab,
+.segmented button,
 .search,
 .field input,
 .field textarea,
@@ -404,6 +405,40 @@ pre {
   letter-spacing: 0.09em;
   text-transform: uppercase;
   color: var(--text-3);
+}
+
+/* ── segmented control ───────────────────────────────────────────────────── */
+
+.segmented {
+  display: inline-flex;
+  padding: 3px;
+  gap: 2px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface);
+}
+
+.segmented button {
+  height: 30px;
+  padding: 0 14px;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--text-2);
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.segmented button:hover {
+  color: var(--text);
+}
+
+.segmented button[aria-pressed="true"] {
+  background: var(--surface-2);
+  color: var(--text);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
 }
 
 /* ── catalogue ───────────────────────────────────────────────────────────── */

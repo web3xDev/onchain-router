@@ -100,62 +100,80 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  let settlement: Settlement | null = null;
-  const wallet = agentWalletFromEnv({
-    preferNetwork: network,
-    onSettle: (result) => {
-      settlement = result;
-    },
-  });
-
-  if (!wallet) {
-    return NextResponse.json(
-      { error: "No demo wallet configured on this deployment." },
-      { status: 503 },
-    );
-  }
-
   const origin = new URL(request.url).origin;
   const startedAt = Date.now();
 
-  const response = await wallet.fetch(`${origin}/api/tools/${slug}`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(parsedInput.data),
+  // Progress is streamed as it happens, one JSON object per line. Each event comes
+  // from a real hook on the payment client, so the timing the viewer sees is the
+  // timing the payment actually had.
+  const encoder = new TextEncoder();
+  const stream = new ReadableStream<Uint8Array>({
+    async start(controller) {
+      const emit = (event: Record<string, unknown>) =>
+        controller.enqueue(encoder.encode(JSON.stringify({ ...event, t: Date.now() - startedAt }) + "\n"));
+
+      let settlement: Settlement | null = null;
+      const wallet = agentWalletFromEnv({
+        preferNetwork: network,
+        onQuote: (quote) => emit({ type: "quote", ...quote }),
+        onSigned: (signed) => emit({ type: "signed", ...signed }),
+        onSettle: (result) => {
+          settlement = result;
+        },
+      });
+
+      if (!wallet) {
+        emit({ type: "error", error: "No demo wallet configured on this deployment." });
+        controller.close();
+        return;
+      }
+
+      emit({ type: "request", slug, input: parsedInput.data });
+
+      try {
+        const response = await wallet.fetch(`${origin}/api/tools/${slug}`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(parsedInput.data),
+        });
+
+        const data = await response.json().catch(() => null);
+
+        if (!response.ok) {
+          const body = data as { answer?: null; reason?: string; error?: string } | null;
+          const noAnswer = response.status === 404 && body?.answer === null;
+          emit({
+            type: noAnswer ? "no-answer" : "error",
+            error: noAnswer
+              ? `No answer, so nothing was charged. ${body?.reason ?? ""}`.trim()
+              : `The tool did not answer (${body?.error ?? response.status}). Nothing was charged.`,
+          });
+          controller.close();
+          return;
+        }
+
+        const receipt = settlement as Settlement | null;
+        if (receipt) {
+          emit({
+            type: "settled",
+            settled: receipt.success !== false,
+            network: receipt.network ?? null,
+            payer: receipt.payer ?? null,
+            transaction: receipt.transaction ?? null,
+            explorer: explorer(receipt),
+          });
+        }
+
+        emit({ type: "answer", ms: Date.now() - startedAt, data });
+      } catch (error) {
+        emit({ type: "error", error: error instanceof Error ? error.message : "Request failed" });
+      }
+
+      controller.close();
+    },
   });
 
-  const data = await response.json().catch(() => null);
-
-  if (!response.ok) {
-    const body = data as { answer?: null; reason?: string; error?: string } | null;
-    const noAnswer = response.status === 404 && body?.answer === null;
-    return NextResponse.json(
-      {
-        error: noAnswer
-          ? `No answer, so nothing was charged. ${body?.reason ?? ""}`.trim()
-          : `The tool did not answer (${body?.error ?? response.status}). Nothing was charged.`,
-        status: response.status,
-        charged: false,
-      },
-      { status: noAnswer ? 404 : 502 },
-    );
-  }
-
-  const receipt = settlement as Settlement | null;
-
-  return NextResponse.json({
-    tool: slug,
-    input: parsedInput.data,
-    ms: Date.now() - startedAt,
-    payment: receipt
-      ? {
-          settled: receipt.success !== false,
-          network: receipt.network ?? null,
-          payer: receipt.payer ?? null,
-          transaction: receipt.transaction ?? null,
-          explorer: explorer(receipt),
-        }
-      : null,
-    data,
+  return new Response(stream, {
+    headers: { "Content-Type": "application/x-ndjson", "Cache-Control": "no-store" },
   });
 }

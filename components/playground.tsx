@@ -15,7 +15,7 @@ type PlaygroundTool = {
 
 type Rail = { id: string; name: string; network: string };
 
-type Line = { text: string; tone: "dim" | "warn" | "ok" | "key" | "error" };
+type Line = { text: string; tone: "dim" | "warn" | "ok" | "key" | "error"; pending?: boolean };
 
 type Result = {
   tool: string;
@@ -65,15 +65,25 @@ export function Playground({
     setRunning(true);
     setResult(null);
 
-    const railName = rails.find((rail) => rail.network === network)?.name ?? "first offered";
-    const log: Line[] = [
-      { text: `POST /api/tools/${tool.slug}`, tone: "key" },
-      { text: `  ${JSON.stringify(values)}`, tone: "dim" },
-      { text: "", tone: "dim" },
-      { text: "← 402 Payment Required", tone: "warn" },
-      { text: `  paying on ${railName} from the demo wallet…`, tone: "dim" },
-    ];
-    setLines(log);
+    // Lines are appended as events arrive from the server. The last line carries a
+    // spinner while its step is in progress and is replaced when the step completes.
+    let log: Line[] = [];
+    const show = (next: Line[]) => {
+      log = next;
+      setLines(next);
+    };
+    const push = (line: Line) => show([...log, line]);
+    const settle = (line: Line) => show([...log.filter((l) => !l.pending), line]);
+
+    push({ text: `POST /api/tools/${tool.slug}`, tone: "key" });
+    push({ text: `  ${JSON.stringify(values)}`, tone: "dim" });
+    push({ text: "  waiting for the router…", tone: "dim", pending: true });
+
+    const answer: { payment: Result["payment"]; data: Result["data"]; ms: number } = {
+      payment: null,
+      data: null,
+      ms: 0,
+    };
 
     try {
       const response = await fetch("/api/playground", {
@@ -82,37 +92,75 @@ export function Playground({
         body: JSON.stringify({ slug: tool.slug, input: values, network: network || undefined }),
       });
 
-      const payload = await response.json();
-
-      if (!response.ok) {
-        setLines([...log, { text: "", tone: "dim" }, { text: `✗ ${payload.error}`, tone: "error" }]);
+      if (!response.ok || !response.body) {
+        const payload = await response.json().catch(() => ({ error: `HTTP ${response.status}` }));
+        settle({ text: `✗ ${payload.error}`, tone: "error" });
         return;
       }
 
-      const settled: Line[] = payload.payment
-        ? [
-            {
-              text: `  ↳ settled on ${payload.payment.network}`,
-              tone: "dim",
-            },
-            { text: `  ↳ payer ${payload.payment.payer}`, tone: "dim" },
-          ]
-        : [{ text: "  ↳ no receipt reported", tone: "dim" }];
+      const reader = response.body.getReader();
+      const decoder = new TextDecoder();
+      let buffer = "";
 
-      setLines([
-        ...log,
-        ...settled,
-        { text: "", tone: "dim" },
-        { text: `← 200 OK in ${payload.ms} ms`, tone: "ok" },
-      ]);
-      setResult(payload as Result);
+      const handle = (event: Record<string, unknown>) => {
+        const at = `${event.t} ms`;
+        switch (event.type) {
+          case "quote": {
+            const networks = (event.networks as string[]).join(", ");
+            settle({ text: "", tone: "dim" });
+            push({ text: `← 402 Payment Required   ${at}`, tone: "warn" });
+            push({ text: `  accepts: ${networks}`, tone: "dim" });
+            push({ text: `  signing on ${event.chosen} from the demo wallet…`, tone: "dim", pending: true });
+            break;
+          }
+          case "signed":
+            settle({ text: `  ↳ signed, ${event.amount} on ${event.network}   ${at}`, tone: "dim" });
+            push({ text: "  paid request sent, tool running…", tone: "dim", pending: true });
+            break;
+          case "settled":
+            answer.payment = {
+              settled: Boolean(event.settled),
+              network: (event.network as string) ?? null,
+              payer: (event.payer as string) ?? null,
+              transaction: (event.transaction as string) ?? null,
+              explorer: (event.explorer as string) ?? null,
+            };
+            settle({ text: `  ↳ settled on ${event.network} by ${event.payer}   ${at}`, tone: "dim" });
+            break;
+          case "answer":
+            answer.data = event.data as Result["data"];
+            answer.ms = Number(event.ms);
+            settle({ text: "", tone: "dim" });
+            push({ text: `← 200 OK in ${answer.ms} ms`, tone: "ok" });
+            setResult({ tool: tool.slug, ms: answer.ms, payment: answer.payment, data: answer.data });
+            break;
+          case "no-answer":
+            settle({ text: "", tone: "dim" });
+            push({ text: `← no answer, nothing charged   ${at}`, tone: "warn" });
+            push({ text: `  ${event.error}`, tone: "dim" });
+            break;
+          case "error":
+            settle({ text: "", tone: "dim" });
+            push({ text: `✗ ${event.error}`, tone: "error" });
+            break;
+        }
+      };
+
+      for (;;) {
+        const { value, done } = await reader.read();
+        if (done) break;
+        buffer += decoder.decode(value, { stream: true });
+        let newline: number;
+        while ((newline = buffer.indexOf("\n")) >= 0) {
+          const line = buffer.slice(0, newline).trim();
+          buffer = buffer.slice(newline + 1);
+          if (line) handle(JSON.parse(line));
+        }
+      }
     } catch (error) {
-      setLines([
-        ...log,
-        { text: "", tone: "dim" },
-        { text: `✗ ${error instanceof Error ? error.message : "Request failed"}`, tone: "error" },
-      ]);
+      settle({ text: `✗ ${error instanceof Error ? error.message : "Request failed"}`, tone: "error" });
     } finally {
+      show(log.filter((l) => !l.pending));
       setRunning(false);
     }
   }
@@ -232,6 +280,7 @@ export function Playground({
                             : "t-dim"
                   }`}
                 >
+                  {line.pending && <span className="spin" aria-hidden="true" />}
                   {line.text || " "}
                 </span>
               ))}

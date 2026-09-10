@@ -41,6 +41,10 @@ export type Settlement = {
 export type AgentWalletOptions = {
   /** Forces a rail. Without it the first option the server advertises wins. */
   preferNetwork?: string;
+  /** A 402 arrived and a rail was chosen; signing is about to start. */
+  onQuote?: (quote: { networks: string[]; chosen: string }) => void;
+  /** The payment is signed and about to be sent. */
+  onSigned?: (signed: { network: string; amount: string }) => void;
   /** Receives the settlement receipt, for surfacing a real transaction to a caller. */
   onSettle?: (settlement: Settlement) => void;
 };
@@ -59,7 +63,7 @@ export type PaymentClient = {
  * controls, two transports.
  */
 export function paymentClientFromEnv(options: AgentWalletOptions = {}): PaymentClient | null {
-  const { preferNetwork, onSettle } = options;
+  const { preferNetwork, onQuote, onSigned, onSettle } = options;
 
   const client = preferNetwork
     ? new x402Client((_version, requirements) => {
@@ -68,6 +72,26 @@ export function paymentClientFromEnv(options: AgentWalletOptions = {}): PaymentC
         return requirements.find((r) => r.network === preferNetwork) ?? requirements[0];
       })
     : new x402Client();
+
+  // The client's own hooks are the honest source of progress: each fires when the
+  // thing actually happened, not when a UI guessed it might have.
+  if (onQuote) {
+    client.onBeforePaymentCreation(async (context) => {
+      onQuote({
+        networks: context.paymentRequired.accepts.map((a) => a.network),
+        chosen: context.selectedRequirements.network,
+      });
+    });
+  }
+
+  if (onSigned) {
+    client.onAfterPaymentCreation(async (context) => {
+      onSigned({
+        network: context.selectedRequirements.network,
+        amount: context.selectedRequirements.amount,
+      });
+    });
+  }
 
   if (onSettle) {
     // Reading X-PAYMENT-RESPONSE off the response is unreliable through Next, so the

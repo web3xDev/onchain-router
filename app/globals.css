@@ -185,7 +185,7 @@ pre {
   gap: 8px;
   height: 38px;
   padding: 0 16px;
-  border-radius: var(--radius);
+  border-radius: 6px;
   border: 1px solid var(--border-strong);
   background: var(--surface-2);
   color: var(--text);

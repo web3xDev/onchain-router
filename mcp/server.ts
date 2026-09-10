@@ -1,4 +1,13 @@
 #!/usr/bin/env node
+import path from "node:path";
+import dotenv from "dotenv";
+
+// An MCP client launches this process with whatever environment it feels like, which
+// is usually none. The wallet configuration lives in the project's own .env.local, so
+// it is read from there, relative to this file rather than to wherever the client
+// happened to start the process from.
+dotenv.config({ path: path.resolve(__dirname, "..", ".env.local") });
+
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { z } from "zod";

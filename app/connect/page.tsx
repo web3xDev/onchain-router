@@ -20,7 +20,7 @@ export default function ConnectPage() {
     <div className="page prose">
       <div className="page-head">
         <span className="label">Connect</span>
-        <h1>One URL, every tool, no account</h1>
+        <h1>Give your agent onchain tools</h1>
         <p>Add the endpoint. Your agent sees every tool, calls one, pays for it, gets the answer.</p>
       </div>
 

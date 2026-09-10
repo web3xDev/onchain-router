@@ -21,9 +21,35 @@ const RAILS: Record<RailId, { label: string; settled: string; via: string }> = {
   },
 };
 
+type Line = { text: string; tone: "dim" | "warn" | "ok" | "key" };
+
+function script(rail: RailId): Line[] {
+  const current = RAILS[rail];
+  return [
+    { text: "$ POST /api/tools/lending-rates", tone: "key" },
+    { text: '  { "asset": "USDC", "chain": "ethereum" }', tone: "dim" },
+    { text: "", tone: "dim" },
+    { text: "← 402 Payment Required", tone: "warn" },
+    { text: "  accepts: hedera:testnet, eip155:5042002", tone: "dim" },
+    { text: "", tone: "dim" },
+    { text: "  agent signs from its own wallet", tone: "dim" },
+    { text: `  ↳ ${current.settled}`, tone: "dim" },
+    { text: `    ${current.via}`, tone: "dim" },
+    { text: "", tone: "dim" },
+    { text: "← 200 OK", tone: "ok" },
+    { text: '  "Best supply rate: 4.51% on compound-v3,', tone: "key" },
+    { text: "   backed by $376.0M of liquidity.", tone: "key" },
+    { text: "   iron-bank reports 75.10%, stale data", tone: "key" },
+    { text: "   from an abandoned protocol,", tone: "key" },
+    { text: '   not an offer."', tone: "key" },
+  ];
+}
+
+/** Lines arrive one after another, the way they do in the playground. */
+const STAGGER_MS = 70;
+
 export function HeroTerminal() {
   const [rail, setRail] = useState<RailId>("hedera");
-  const current = RAILS[rail];
 
   return (
     <div className="terminal">
@@ -48,33 +74,17 @@ export function HeroTerminal() {
         </div>
       </div>
 
-      <pre className="terminal-body">
-        <span className="t-dim">$ </span>
-        <span className="t-key">POST /api/tools/lending-rates</span>
-        {"\n"}
-        <span className="t-dim">{'  { "asset": "USDC", "chain": "ethereum" }'}</span>
-        {"\n\n"}
-        <span className="t-warn">← 402 Payment Required</span>
-        {"\n"}
-        <span className="t-dim">{"  accepts: hedera:testnet, eip155:5042002"}</span>
-        {"\n\n"}
-        <span className="t-dim">{"  agent signs from its own wallet"}</span>
-        {"\n"}
-        <span className="t-dim">{`  ↳ ${current.settled}`}</span>
-        {"\n"}
-        <span className="t-dim">{`    ${current.via}`}</span>
-        {"\n\n"}
-        <span className="t-ok">← 200 OK</span>
-        {"\n"}
-        <span className="t-key">
-          {'  "Best supply rate: 4.51% on compound-v3,\n   backed by $376.0M of liquidity.'}
-        </span>
-        {"\n"}
-        <span className="t-key">
-          {'   iron-bank reports 75.10%, stale data\n   from an abandoned protocol,'}
-        </span>
-        {"\n"}
-        <span className="t-key">{'   not an offer."'}</span>
+      {/* Keyed on the rail so a switch remounts the lines and replays the entrance. */}
+      <pre className="terminal-body" key={rail}>
+        {script(rail).map((line, index) => (
+          <span
+            key={index}
+            className={`log-line t-${line.tone}`}
+            style={{ animationDelay: `${index * STAGGER_MS}ms` }}
+          >
+            {line.text || " "}
+          </span>
+        ))}
       </pre>
     </div>
   );

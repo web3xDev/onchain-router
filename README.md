@@ -74,12 +74,29 @@ const result = await agent.callTool("lending_rates", { asset: "USDC", chain: "ba
 error, signs on whichever rail is configured, and prints the receipt and the answer.
 Malformed arguments are rejected before the payment step, so a typo costs nothing.
 
-### Locally, for chat clients
+### From a chat client, with a wallet beside it
 
-A chat client cannot sign a payment itself, so for Claude Code or Claude Desktop the
-local server runs beside it and pays from a wallet you configure. It always tells the
-agent what is available and what each capability costs; whether it also settles is your
-choice, and there are three ways to arrange it.
+Claude Code does not sign anything itself, and does not need to: give it a wallet as a
+second MCP server. When a tool answers "payment required", Claude hands the request to
+the wallet, gets a signature back, and calls the tool again with it as the `payment`
+argument. `.mcp.json` in this repo registers exactly that pair.
+
+```
+claude mcp add --transport http onchain-router https://<host>/mcp
+claude mcp add onchain-wallet -- sh -c "cd /path/to/onchain-router && npx tsx mcp/wallet.ts"
+```
+
+`mcp/wallet.ts` is a reference wallet with one tool, `sign_x402_payment`, backed by
+whatever is in `.env.local`. It knows nothing about the router; it signs x402 requests,
+so any x402 service can be paid through it. `npm run mcp:wallet:check` replays the three
+steps with a plain MCP client and no x402 library on the client side.
+
+### Locally, server pays
+
+If you would rather the server pay on the agent's behalf, `mcp/server.ts` does that from
+a wallet you configure. It always tells the agent what is available and what each
+capability costs; whether it also settles is your choice, and there are three ways to
+arrange it.
 
 ```json
 {
@@ -243,12 +260,14 @@ lib/
   graph/verified.ts         what `npm run probe` measured as live
   x402.ts                   facilitator, resource server, pricing
   payment/agent-wallet.ts   builds a paying fetch from whatever is configured
-mcp/server.ts               local MCP server for chat clients, pays from a configured wallet
+mcp/wallet.ts               the agent's wallet as an MCP server: sign_x402_payment
+mcp/server.ts               local MCP server that pays on the agent's behalf, if configured
 lib/mcp/remote.ts           remote MCP server, served at /mcp, caller pays over x402
 app/mcp/route.ts            the /mcp endpoint
 scripts/
   pay.ts                    paying-agent test client, HTTP
-  mcp-remote-check.ts       paying-agent test client, remote MCP
+  mcp-remote-check.ts       paying-agent test client, remote MCP with x402 library
+  mcp-wallet-check.ts       chat-client test: plain MCP, pays via the wallet server
   probe-coverage.ts         measures which subgraphs still answer
 HARNESS-NOTES.md            Hedera DX friction log
 ```

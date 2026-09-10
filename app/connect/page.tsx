@@ -68,20 +68,25 @@ const result = await agent.callTool("lending_rates", { asset: "USDC", chain: "ba
 
       <h2>From Claude Code or Claude Desktop</h2>
       <p>
-        A chat client cannot sign a payment itself, so it needs a wallet beside it. Run the
-        local server from a checkout and give it one; it pays on Claude&apos;s behalf from
-        the wallet you configure, and Claude just calls the tool.
+        A chat client does not sign anything itself, but it does not need to: give it a
+        wallet as a second MCP server. When a tool answers &quot;payment required&quot;,
+        Claude hands the request to the wallet, gets a signature back, and calls the tool
+        again with it. The router never sees a key. The wallet never sees the router.
       </p>
       <pre className="code">
-        {`git clone https://github.com/web3xDev/onchain-router
-cd onchain-router && npm install
-cp .env.example .env.local    # add a wallet
-claude                        # .mcp.json in the repo registers the server`}
+        {`claude mcp add --transport http onchain-router ${base}/mcp
+claude mcp add onchain-wallet -- sh -c "cd /path/to/onchain-router && npx tsx mcp/wallet.ts"`}
       </pre>
-      <p>Or register it anywhere by hand:</p>
-      <pre className="code">
-        {`claude mcp add onchain-router -- sh -c "cd /path/to/onchain-router && npx tsx mcp/server.ts"`}
-      </pre>
+      <p>
+        <code>mcp/wallet.ts</code> is a reference wallet: one tool, <code>sign_x402_payment</code>,
+        backed by whatever is in <code>.env.local</code>. Any wallet MCP that signs x402 requests
+        works in its place. <code>npm run mcp:wallet:check</code> replays the three steps a chat
+        client would take, with no x402 library on the client side at all.
+      </p>
+      <p>
+        If you would rather the server pay on Claude&apos;s behalf, the local server in{" "}
+        <code>mcp/server.ts</code> still does that from a configured wallet.
+      </p>
 
       <h2>Who signs</h2>
       <p>
@@ -92,8 +97,8 @@ claude                        # .mcp.json in the repo registers the server`}
       <div className="callout">
         <strong style={{ color: "var(--text)" }}>Your agent, its own wallet.</strong>
         <br />
-        The remote endpoint above. The router never sees a key; it sees a signed payment
-        and settles it.
+        The remote endpoint, with an x402 client or a wallet MCP beside the agent. The
+        router never sees a key; it sees a signed payment and settles it.
       </div>
 
       <div className="callout">

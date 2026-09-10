@@ -1,8 +1,12 @@
 {
   "mcpServers": {
     "onchain-router": {
+      "type": "http",
+      "url": "http://localhost:3000/mcp"
+    },
+    "onchain-wallet": {
       "command": "npx",
-      "args": ["tsx", "mcp/server.ts"]
+      "args": ["tsx", "mcp/wallet.ts"]
     }
   }
 }

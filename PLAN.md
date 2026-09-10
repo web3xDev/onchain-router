@@ -442,9 +442,15 @@ wallet, and calls again. Verified from `scripts/mcp-remote-check.ts` acting as a
 stranger's agent: Hedera settled, Arc settled from the Circle wallet, and a bad
 protocol name was rejected by schema validation before any payment happened.
 
-The honest caveat: a chat client cannot sign, so Claude Code still runs the local
-server beside it with a wallet configured. The remote URL is for agents built with an
-x402 client, which is the audience the name promises anyway.
+I first wrote here that a chat client cannot sign, so Claude Code would still need
+the local paying server. That was wrong, and the correction came from the question
+"why do you assume Claude has no wallet? maybe someone gave it one." A chat client
+does not sign; a wallet beside it does. `mcp/wallet.ts` is that wallet as an MCP
+server with one tool, `sign_x402_payment`. The router's payment-required result now
+carries a second text item saying, in words, sign this and call again with `payment`.
+Verified with `scripts/mcp-wallet-check.ts`: a plain MCP client, no x402 library,
+three calls, settled on both rails. This is the architecture that was asked for from
+the start: the router holds nothing, the wallet is the agent's, and they never meet.
 
 ### 11 Sept: more tools
 

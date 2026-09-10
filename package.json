@@ -16,7 +16,9 @@
     "mcp:pay": "tsx scripts/mcp-pay-check.ts",
     "circle:setup": "tsx scripts/circle-setup.ts",
     "probe": "tsx scripts/probe-coverage.ts",
-    "mcp:remote": "tsx scripts/mcp-remote-check.ts"
+    "mcp:remote": "tsx scripts/mcp-remote-check.ts",
+    "mcp:wallet": "tsx mcp/wallet.ts",
+    "mcp:wallet:check": "tsx scripts/mcp-wallet-check.ts"
   },
   "dependencies": {
     "@circle-fin/developer-controlled-wallets": "^10.8.0",

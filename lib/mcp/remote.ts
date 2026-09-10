@@ -74,6 +74,49 @@ function liftPaymentArgument(
   };
 }
 
+type ToolResult = {
+  [key: string]: unknown;
+  content: { type: "text"; text: string }[];
+  isError?: boolean;
+  structuredContent?: Record<string, unknown>;
+  _meta?: Record<string, unknown>;
+};
+
+/**
+ * Makes a payment-required result readable by a model, not only by an SDK.
+ *
+ * The x402 client library reads the JSON from `structuredContent` or from the first
+ * text item, so both are left exactly as the wrapper produced them. A second text
+ * item explains, in words, what the agent should do next: sign with its wallet and
+ * call again. A chat client with a wallet MCP beside it can follow that without
+ * knowing the protocol.
+ */
+function explainPaymentRequired(result: ToolResult, toolName: string): ToolResult {
+  const accepts = (result.structuredContent as { accepts?: unknown[] } | undefined)?.accepts;
+  if (!result.isError || !Array.isArray(accepts)) return result;
+
+  const rails = accepts
+    .map((a) => {
+      const r = a as { network?: string; amount?: string; asset?: string };
+      return `${r.network} (${r.amount} of ${r.asset})`;
+    })
+    .join(", ");
+
+  return {
+    ...result,
+    content: [
+      ...result.content,
+      {
+        type: "text" as const,
+        text:
+          `Payment required, nothing has been charged. This tool costs one call on any of: ${rails}. ` +
+          `Sign the JSON above with your wallet (for example the sign_x402_payment tool) and call ` +
+          `${toolName} again with the same arguments plus payment: <the signed payment>.`,
+      },
+    ],
+  };
+}
+
 export async function buildRemoteServer(): Promise<McpServer> {
   const requirements = await accepts();
   const server = new McpServer({ name: SITE_NAME.toLowerCase().replace(/\s+/g, "-"), version: "0.1.0" });
@@ -122,7 +165,8 @@ export async function buildRemoteServer(): Promise<McpServer> {
       },
       async (args: Record<string, unknown>, extra: unknown) => {
         const lifted = liftPaymentArgument(args, extra);
-        return gated(lifted.args, lifted.extra);
+        const result = (await gated(lifted.args, lifted.extra)) as ToolResult;
+        return explainPaymentRequired(result, name);
       },
     );
   }

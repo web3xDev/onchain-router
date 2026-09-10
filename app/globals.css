@@ -229,6 +229,17 @@ pre {
   font-size: 13px;
 }
 
+.btn-icon {
+  width: 32px;
+  padding: 0;
+  justify-content: center;
+  color: var(--text-2);
+}
+
+.btn-icon:hover {
+  color: var(--text);
+}
+
 /* ── hero ────────────────────────────────────────────────────────────────── */
 
 .hero {

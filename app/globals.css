@@ -677,8 +677,14 @@ pre {
   gap: 18px;
 }
 
-.footer-links a:hover {
+.footer-links a:hover,
+.footer-by:hover {
   color: var(--text);
+}
+
+.footer-by {
+  color: var(--text-2);
+  text-decoration: none;
 }
 
 /* ── responsive ──────────────────────────────────────────────────────────── */

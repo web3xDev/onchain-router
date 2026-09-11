@@ -180,10 +180,10 @@ claude mcp add onchain-wallet -- \\
         <div className="section-head">
           <div>
             <span className="label">For tool authors</span>
-            <h2 style={{ marginTop: 8 }}>Build once. Get paid per answer.</h2>
+            <h2 style={{ marginTop: 8 }}>Get discovered. Get paid. Keep 100%.</h2>
             <p>
-              Already have an x402 endpoint that answers an onchain question? List it here
-              and let agents discover it, call it, and pay you per answer.
+              List your x402 endpoint. Agents find it, call it, and pay you directly, at
+              your endpoint. The router takes nothing.
             </p>
           </div>
         </div>
@@ -191,17 +191,22 @@ claude mcp add onchain-wallet -- \\
         <div className="authors">
           <div className="authors-points">
             <div>
-              <strong>Your price.</strong> Quoted from your own 402.
+              <strong>Discovered.</strong> In the catalogue and over MCP, in front of every
+              agent that connects.
             </div>
             <div>
-              <strong>Your wallet.</strong> Every payment settles to you.
+              <strong>Paid directly.</strong> Every call settles from the agent&apos;s wallet to
+              your address. No invoice, no payout run, no minimum.
             </div>
             <div>
-              <strong>Your endpoint.</strong> The router relays and holds nothing.
+              <strong>Your terms.</strong> Your price, quoted from your own 402. Your wallet.
+              Your endpoint, relayed as is.
             </div>
           </div>
           <div className="authors-cta">
-            <div className="authors-zero">0% commission</div>
+            <div className="authors-zero">
+              0%<span>commission</span>
+            </div>
             <Link href="/submit" className="btn btn-primary">
               List your endpoint
             </Link>

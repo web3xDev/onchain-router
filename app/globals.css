@@ -385,7 +385,9 @@ pre {
 /* ── sections ────────────────────────────────────────────────────────────── */
 
 .section {
-  padding: 64px 0;
+  /* Only the vertical rhythm; the horizontal gutter comes from .page. */
+  padding-top: 64px;
+  padding-bottom: 64px;
 }
 
 .section-head {

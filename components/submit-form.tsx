@@ -146,8 +146,8 @@ export function SubmitForm({ categories }: { categories: string[] }) {
           </button>
         </div>
         <span className="hint">
-          POST, JSON body, answers 402 with x402 payment requirements. Price and payout are
-          read from that 402; you do not enter them.
+          POST, JSON body, answers 402 with x402 payment requirements on Hedera or Arc.
+          Price and payout are read from that 402; you do not enter them.
         </span>
         {touched && !fields.endpoint.trim() && <span className="error">Required</span>}
         {touched && fields.endpoint.trim() && probe.state !== "ok" && (

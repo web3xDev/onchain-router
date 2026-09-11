@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { relay, decodeBase64Json } from "@/lib/relay";
+import { ARC_NETWORK, HEDERA_NETWORK } from "@/lib/x402";
+
+const ROUTER_NETWORKS = new Set<string>([HEDERA_NETWORK, ARC_NETWORK]);
 
 /**
  * Checks that a URL is an x402 endpoint before it is listed.
@@ -72,10 +75,22 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ ok: false, error: "402 received, but it lists no payment options." });
   }
 
+  // The router pays on two rails, and everything around it (the wallet MCP, the
+  // playground, the catalogue) assumes those two. An endpoint that only takes
+  // another network would be listed but unpayable here, so it is not listed.
+  const onRails = accepts.filter((a) => a.network && ROUTER_NETWORKS.has(a.network));
+  if (onRails.length === 0) {
+    const offered = [...new Set(accepts.map((a) => a.network ?? "unknown"))].join(", ");
+    return NextResponse.json({
+      ok: false,
+      error: `Speaks x402, but only on ${offered}. OnchainRouter pays on Hedera (${HEDERA_NETWORK}) and Arc (${ARC_NETWORK}). Add one of those to the 402 and check again.`,
+    });
+  }
+
   return NextResponse.json({
     ok: true,
     description: required?.resource?.description ?? null,
-    accepts: accepts.map((a) => ({
+    accepts: onRails.map((a) => ({
       network: a.network ?? null,
       amount: a.amount ?? null,
       asset: a.asset ?? null,

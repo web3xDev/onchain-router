@@ -26,7 +26,10 @@ export default function SubmitPage() {
 
       <h2>What gets listed</h2>
       <ul>
-        <li>Answers 402 with x402 payment requirements. Check reads the rest.</li>
+        <li>
+          Answers 402 with x402 payment requirements on Hedera or Arc, the two rails every
+          agent here pays on. Check reads the rest.
+        </li>
         <li>Returns a verdict, not a table.</li>
         <li>Returns 404 when it has no answer, so nothing is charged.</li>
         <li>Costs cents, not dollars.</li>

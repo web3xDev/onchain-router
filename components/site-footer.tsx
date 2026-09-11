@@ -1,11 +1,8 @@
 import Link from "next/link";
 import { Brand } from "@/components/brand";
 import { Logo } from "@/components/logo";
-import { siteUrl } from "@/lib/site";
 
 export function SiteFooter() {
-  const base = siteUrl();
-
   return (
     <footer className="footer">
       <div className="page">
@@ -46,12 +43,8 @@ export function SiteFooter() {
             <a href="https://github.com/web3xDev/onchain-router#readme" target="_blank" rel="noreferrer">
               README
             </a>
-            <a href={`${base}/mcp`} className="footer-mono">
-              {base.replace(/^https?:\/\//, "")}/mcp
-            </a>
-            <a href={`${base}/api/tools`} className="footer-mono">
-              {base.replace(/^https?:\/\//, "")}/api/tools
-            </a>
+            <Link href="/connect#endpoint">MCP</Link>
+            <Link href="/tools/lending-rates#http">API</Link>
           </div>
         </div>
 

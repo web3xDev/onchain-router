@@ -25,7 +25,7 @@ export default function ConnectPage() {
         <p>Add the endpoint. Your agent sees every tool, calls one, pays for it, gets the answer.</p>
       </div>
 
-      <h2>The endpoint</h2>
+      <h2 id="endpoint" style={{ scrollMarginTop: 80 }}>The endpoint</h2>
       <Code>{`${base}/mcp`}</Code>
 
       <h2>Connect</h2>

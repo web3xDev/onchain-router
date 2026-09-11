@@ -112,7 +112,7 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
             </Code>
           </div>
 
-          <div className="block">
+          <div className="block" id="http" style={{ scrollMarginTop: 80 }}>
             <h2>Call it over HTTP</h2>
             <p style={{ color: "var(--text-2)", fontSize: 14, marginTop: 0 }}>
               The first request returns 402 with the accepted networks. Sign one and repeat

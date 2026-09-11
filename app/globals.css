@@ -765,6 +765,8 @@ html {
   display: inline-flex;
   align-items: center;
   gap: 5px;
+  /* Own line, so every footer is the same three rows regardless of coverage length. */
+  flex-basis: 100%;
 }
 
 /* The guarantee always sits on its own line, so every card's footer is the same

@@ -29,22 +29,7 @@ export default async function Image({ params }: { params: Promise<{ slug: string
         }}
       >
         <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
-          <div
-            style={{
-              width: 40,
-              height: 40,
-              borderRadius: 11,
-              background: "#d25020",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              color: "#ffffff",
-              fontSize: 24,
-              fontWeight: 700,
-            }}
-          >
-            R
-          </div>
+          <svg viewBox="0 0 64 64" width="40" height="40"><rect width="64" height="64" rx="16" fill="#d25020"/><path d="M14 32h14c6 0 8-4 12-8s6-8 12-8M28 32c6 0 8 4 12 8s6 8 12 8" fill="none" stroke="#fff" strokeWidth="5" strokeLinecap="round" strokeLinejoin="round"/><circle cx="14" cy="32" r="4" fill="#fff"/></svg>
           <div style={{ display: "flex", color: "#66666f", fontSize: 24 }}>OnchainRouter</div>
         </div>
 

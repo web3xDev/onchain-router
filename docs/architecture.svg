@@ -17,9 +17,8 @@
   <rect width="1400" height="860" fill="#141414"/>
 
   <!-- title -->
+<g transform="translate(60,54) scale(0.40625)"><rect width="64" height="64" rx="16" fill="#d25020"/><path d="M14 32h14c6 0 8-4 12-8s6-8 12-8M28 32c6 0 8 4 12 8s6 8 12 8" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="14" cy="32" r="4" fill="#fff"/></g>
   <g transform="translate(60,54)">
-    <rect width="26" height="26" rx="7" fill="#d25020"/>
-    <text x="13" y="18" text-anchor="middle" font-size="14" font-weight="700" fill="#fff" font-family="ui-monospace, Menlo, monospace">R</text>
     <text x="38" y="19" font-size="22" font-weight="600" fill="#f2f2f5">OnchainRouter</text>
     <text x="0" y="52" font-size="14" fill="#9a9aa6">How a paid call settles. The router holds no wallet; the agent pays the tool author directly, on Arc or Hedera.</text>
   </g>

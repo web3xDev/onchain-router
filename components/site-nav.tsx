@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { Logo } from "@/components/logo";
 
 const LINKS = [
   { href: "/tools", label: "Tools" },
@@ -17,7 +18,7 @@ export function SiteNav() {
     <nav className="nav">
       <div className="page nav-inner">
         <Link href="/" className="brand">
-          <span className="brand-mark">R</span>
+          <Logo size={22} />
           OnchainRouter
         </Link>
 

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Brand } from "@/components/brand";
+import { Logo } from "@/components/logo";
 import { siteUrl } from "@/lib/site";
 
 export function SiteFooter() {
@@ -11,7 +12,7 @@ export function SiteFooter() {
         <div className="footer-grid">
           <div className="footer-brand">
             <Link href="/" className="brand">
-              <span className="brand-mark">R</span>
+              <Logo size={22} />
               OnchainRouter
             </Link>
             <p>Onchain answers for AI agents. Call a tool, pay a cent, get a decision.</p>

@@ -66,8 +66,7 @@ export function SiteFooter() {
             Payments over{" "}
             <a href="https://x402.org" target="_blank" rel="noreferrer" className="footer-by">
               x402
-            </a>{" "}
-            · AGPL-3.0
+            </a>
           </span>
         </div>
       </div>

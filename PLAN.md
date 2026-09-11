@@ -1,6 +1,6 @@
 # Plan
 
-Working plan for Onchain Router, written at the start of the build and updated as
+Working plan for OnchainRouter, written at the start of the build and updated as
 decisions land. Kept in the repo so the reasoning behind the code is reviewable, not
 just the code.
 
@@ -22,14 +22,14 @@ may never come back.
 
 ## 2. What we are building
 
-**Onchain Router: the onchain tool router for AI agents.**
+**OnchainRouter: the onchain tool router for AI agents.**
 
 One MCP interface. An agent connects once, discovers what onchain capabilities are
 available, calls the one it needs, and pays for that single call with x402. No
 signup, no API key, no subscription.
 
 ```
-Onchain Router handles:   Discovery → Routing → Payment → Execution
+OnchainRouter handles:   Discovery → Routing → Payment → Execution
 The agent handles:        Reasoning → Decision → Interpretation
 ```
 
@@ -57,7 +57,7 @@ Agent           holds a wallet, decides, signs, pays
   │ MCP
 MCP server      catalogue: what exists, what it costs, where to pay
   │ HTTP + x402
-Onchain Router  402 → verify → settle
+OnchainRouter  402 → verify → settle
   │
 Hedera / Arc
 ```

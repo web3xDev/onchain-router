@@ -1,6 +1,6 @@
 # Hedera developer experience notes
 
-Running log of friction hit while building Onchain Router on Hedera.
+Running log of friction hit while building OnchainRouter on Hedera.
 Written **at the moment it happens**, not reconstructed afterwards.
 
 Target: a meaningful contribution to [hedera-dev/hedera-harness](https://github.com/hedera-dev/hedera-harness)

@@ -1,11 +1,11 @@
-# Onchain Router
+# OnchainRouter
 
 **Onchain answers for AI agents.** Call an onchain tool, pay a cent, get a decision.
 
 AI agents connect once through MCP and gain access to a network of onchain
 capabilities, paying per call with x402. No signup, no API keys, no subscriptions.
 
-> **Onchain Router handles:** Discovery → Routing → Payment → Execution
+> **OnchainRouter handles:** Discovery → Routing → Payment → Execution
 > **The agent handles:** Reasoning → Decision → User interaction
 
 **0% commission.** Every tool names the address its revenue lands on, per rail, and
@@ -156,7 +156,7 @@ of your transaction and turn a payment protocol into a billing relationship.
 ```
 Agent            decides, calls, carries the signed payment back
   │  MCP                       │  MCP
-Onchain Router   /mcp          Wallet MCP   signs x402 requests
+OnchainRouter   /mcp          Wallet MCP   signs x402 requests
   payment required             (the agent's own; never meets the router)
   verify → run → settle
   │

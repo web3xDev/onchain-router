@@ -219,17 +219,25 @@ html {
 .nav-links {
   display: flex;
   align-items: center;
-  gap: 22px;
+  gap: 6px;
   font-size: 14px;
   color: var(--text-2);
 }
 
-.nav-links a:hover {
-  color: var(--text);
+.nav-links a {
+  padding: 6px 10px;
+  border-radius: 6px;
 }
 
+.nav-links a:hover {
+  color: var(--text);
+  background: var(--surface);
+}
+
+/* The current page sits in a pill, not just a brighter word. */
 .nav-links a.active {
   color: var(--text);
+  background: var(--surface-2);
 }
 
 .nav-right {

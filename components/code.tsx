@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { CopyButton } from "@/components/copy-button";
 
 /**
  * A small highlighter for the handful of snippets the site shows.
@@ -80,5 +81,10 @@ function highlightSh(source: string): ReactNode[] {
 
 export function Code({ lang = "text", children }: { lang?: Lang; children: string }) {
   const body = lang === "ts" ? highlightTs(children) : lang === "sh" ? highlightSh(children) : children;
-  return <pre className="code">{body}</pre>;
+  return (
+    <div className="code-wrap">
+      <pre className="code">{body}</pre>
+      <CopyButton text={children} />
+    </div>
+  );
 }

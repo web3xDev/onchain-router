@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { siteUrl } from "@/lib/site";
 import { ConnectPaths } from "@/components/connect-paths";
+import { Code } from "@/components/code";
 
 const DESCRIPTION =
   "One MCP URL. Your agent discovers the tools, calls the one it needs and pays for that call from its own wallet.";
@@ -25,7 +26,7 @@ export default function ConnectPage() {
       </div>
 
       <h2>The endpoint</h2>
-      <pre className="code">{`${base}/mcp`}</pre>
+      <Code>{`${base}/mcp`}</Code>
 
       <h2>Connect</h2>
       <ConnectPaths base={base} />

@@ -857,6 +857,34 @@ pre {
   white-space: pre;
 }
 
+.code-wrap {
+  position: relative;
+}
+
+.code-wrap .code {
+  padding-right: 44px;
+}
+
+.copy {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 28px;
+  height: 28px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--surface-2);
+  color: var(--text-3);
+  cursor: pointer;
+}
+
+.copy:hover {
+  color: var(--text);
+  border-color: var(--border-strong);
+}
+
 /* Syntax colours, kept inside the palette: strings warm, keywords accent,
    calls bright, comments faint. */
 .c-keyword {

@@ -92,9 +92,9 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
 
           <div className="block">
             <h2>What it answers</h2>
-            <pre className="code" style={{ marginBottom: 16 }}>
-              {requestJson}
-            </pre>
+            <div style={{ marginBottom: 16 }}>
+              <Code>{requestJson}</Code>
+            </div>
             <div className="quote">{tool.example.answer}</div>
           </div>
 

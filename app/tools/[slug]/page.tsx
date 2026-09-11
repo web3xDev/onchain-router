@@ -124,7 +124,7 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
   -d '${requestJson}'
 
 ← 402 Payment Required
-  PAYMENT-REQUIRED: ${live.map((r) => r.network).join(", ") || "no rail configured"}
+  PAYMENT-REQUIRED: ${tool.endpoint ? "as quoted by the endpoint" : live.map((r) => r.network).join(", ") || "no rail configured"}
 
 curl -X POST ${base}/api/tools/${tool.slug} \\
   -H 'Content-Type: application/json' \\
@@ -150,14 +150,23 @@ curl -X POST ${base}/api/tools/${tool.slug} \\
           </div>
 
           <div style={{ marginTop: 14 }}>
-            {live.map((rail) => (
-              <div key={rail.id} className="aside-row">
-                <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
-                  <Brand id={rail.id as BrandId} height={13} /> {rail.name}
-                </span>
-                <span>{rail.amount}</span>
+            {tool.endpoint ? (
+              // A listed endpoint names its own rails in its own 402; the router does
+              // not know them ahead of time and must not claim its own here.
+              <div className="aside-row">
+                <span>rails</span>
+                <span>as quoted by the endpoint&apos;s 402</span>
               </div>
-            ))}
+            ) : (
+              live.map((rail) => (
+                <div key={rail.id} className="aside-row">
+                  <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
+                    <Brand id={rail.id as BrandId} height={13} /> {rail.name}
+                  </span>
+                  <span>{rail.priceLabel}</span>
+                </div>
+              ))
+            )}
             {tool.source && (
               <div className="aside-row">
                 <span>data source</span>
@@ -208,14 +217,20 @@ curl -X POST ${base}/api/tools/${tool.slug} \\
           </div>
 
           <div style={{ display: "grid", gap: 8, marginTop: 18 }}>
+            {!tool.endpoint && (
+              <Link
+                href={`/playground?tool=${tool.slug}`}
+                className="btn btn-primary"
+                style={{ justifyContent: "center" }}
+              >
+                Run it in the playground
+              </Link>
+            )}
             <Link
-              href={`/playground?tool=${tool.slug}`}
-              className="btn btn-primary"
+              href="/connect"
+              className={tool.endpoint ? "btn btn-primary" : "btn"}
               style={{ justifyContent: "center" }}
             >
-              Run it in the playground
-            </Link>
-            <Link href="/connect" className="btn" style={{ justifyContent: "center" }}>
               Connect your own agent
             </Link>
           </div>

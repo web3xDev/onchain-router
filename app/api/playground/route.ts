@@ -71,6 +71,12 @@ export async function POST(request: NextRequest) {
   const { slug, input, network } = parsedRequest.data;
   const tool = findTool(slug);
   if (!tool) return NextResponse.json({ error: `Unknown tool "${slug}"` }, { status: 404 });
+  if (tool.endpoint) {
+    return NextResponse.json(
+      { error: "Listed endpoints settle on their own rails; run this one from your own agent." },
+      { status: 400 },
+    );
+  }
 
   const parsedInput = z.object(tool.inputSchema).safeParse(input);
   if (!parsedInput.success) {

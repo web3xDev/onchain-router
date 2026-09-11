@@ -20,7 +20,9 @@ export default async function PlaygroundPage({
 }) {
   const requested = (await searchParams).tool;
 
-  const tools = TOOLS.map((tool) => ({
+  // The demo wallet signs on the router's own rails. A listed endpoint names its
+  // own, which the demo wallet may not hold, so only hosted tools are offered here.
+  const tools = TOOLS.filter((tool) => !tool.endpoint).map((tool) => ({
     slug: tool.slug,
     name: tool.name,
     price: tool.price,

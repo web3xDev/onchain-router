@@ -1024,6 +1024,22 @@ pre {
   background-repeat: no-repeat;
   background-position: right 14px center;
   cursor: pointer;
+  /* Long option text fades out before the chevron instead of being clipped. The
+     hard stop at the end keeps the chevron itself fully opaque. */
+  -webkit-mask-image: linear-gradient(
+    to right,
+    #000 0,
+    #000 calc(100% - 76px),
+    transparent calc(100% - 44px),
+    #000 calc(100% - 44px)
+  );
+  mask-image: linear-gradient(
+    to right,
+    #000 0,
+    #000 calc(100% - 76px),
+    transparent calc(100% - 44px),
+    #000 calc(100% - 44px)
+  );
 }
 
 .field input:focus,

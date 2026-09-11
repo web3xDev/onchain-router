@@ -566,6 +566,66 @@ html {
   to { background: var(--accent); border-color: var(--accent); }
 }
 
+/* Stacked on narrow screens: the line runs down between the nodes instead. */
+@media (max-width: 760px) {
+  .flow-line {
+    display: none;
+  }
+
+  .flow .steps {
+    gap: 28px;
+  }
+
+  /* Text moves right; the node and the line live in the gutter to its left. */
+  .flow .step,
+  .flow .steps-plain .step {
+    position: relative;
+    padding-right: 0;
+    padding-left: 28px;
+  }
+
+  .flow .step-n {
+    padding-top: 0;
+  }
+
+  .flow .step-n::before {
+    left: -28px;
+    top: 4px;
+  }
+
+  .flow .step:not(:last-child)::after,
+  .flow .step:not(:last-child)::before {
+    content: "";
+    position: absolute;
+    left: 4px;
+    top: 14px;
+    bottom: -28px;
+    width: 1px;
+  }
+
+  .flow .step:not(:last-child)::after {
+    background: var(--border);
+  }
+
+  .flow .step:not(:last-child)::before {
+    background: var(--accent);
+    transform-origin: top;
+    transform: scaleY(0);
+    z-index: 1;
+  }
+
+  .flow-play .step:nth-child(1)::before { animation: flow-draw-y 500ms cubic-bezier(0.4, 0, 0.2, 1) 200ms forwards; }
+  .flow-play .step:nth-child(2)::before { animation: flow-draw-y 500ms cubic-bezier(0.4, 0, 0.2, 1) 800ms forwards; }
+
+  .flow .step-n::before {
+    z-index: 2;
+  }
+}
+
+@keyframes flow-draw-y {
+  to { transform: scaleY(1); }
+}
+
 /* Steps without boxes: a number, a title, a line. */
 .steps-plain .step {
   border: none;

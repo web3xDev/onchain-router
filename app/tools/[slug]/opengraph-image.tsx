@@ -86,7 +86,7 @@ export default async function Image({ params }: { params: Promise<{ slug: string
                 background: "rgba(234, 89, 36, 0.12)",
                 borderRadius: 999,
                 padding: "8px 20px",
-                color: "#f4703f",
+                color: "#ef8826",
               }}
             >
               {tool.price} per call

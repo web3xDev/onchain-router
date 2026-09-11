@@ -36,7 +36,7 @@ export default function Image() {
               width: 44,
               height: 44,
               borderRadius: 12,
-              background: "#ea5924",
+              background: "#d25020",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",

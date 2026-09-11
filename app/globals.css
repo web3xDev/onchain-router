@@ -18,9 +18,9 @@
   --text-2: oklch(0.63 0 0);
   --text-3: oklch(0.45 0 0);
 
-  --accent: #ea5924;
+  --accent: #d25020;
   --accent-dim: #c94a1c;
-  --accent-glow: rgba(234, 89, 36, 0.12);
+  --accent-glow: rgba(210, 80, 32, 0.12);
   --accent-fg: #ffffff;
 
   --success: oklch(0.72 0.17 145);
@@ -71,7 +71,7 @@ a {
 }
 
 .link:hover {
-  color: #ef8826;
+  color: #ea5924;
 }
 
 a,
@@ -225,8 +225,8 @@ pre {
 }
 
 .btn-primary:hover {
-  background: #ef8826;
-  border-color: #ef8826;
+  background: #ea5924;
+  border-color: #ea5924;
 }
 
 .btn-ghost {

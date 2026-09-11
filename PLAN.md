@@ -190,8 +190,8 @@ running log lives in [HARNESS-NOTES.md](./HARNESS-NOTES.md).
 
 **The reference implementation points at a different testnet facilitator than the one
 we need.** Hedera's x402 proof-of-concept defaults testnet settlement to
-`x402.org/facilitator` and only uses Blocky402 on mainnet. Blocky402 does support
-Hedera testnet, but the endpoint is not published on their site. Confirmed by querying
+`x402.org/facilitator` and only uses Blocky402 on mainnet. Blocky402's testnet endpoint
+is documented at blocky402.com/docs/testnet. Confirmed by querying
 `https://api.testnet.blocky402.com/supported`, which returns:
 
 ```json

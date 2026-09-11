@@ -239,9 +239,9 @@ needs no gas of its own. Confirmed against `/supported`, which advertises
 `{"scheme":"exact","network":"hedera:testnet","extra":{"feePayer":"0.0.7162784"}}`.
 
 The endpoint is worth stating explicitly: Hedera's reference implementation defaults
-**testnet** to `x402.org/facilitator` and reaches for Blocky402 only on mainnet, and
-Blocky402's own site does not publish a testnet URL. Following either one alone lands
-you somewhere other than where you meant to be. See [HARNESS-NOTES.md](./HARNESS-NOTES.md).
+**testnet** to `x402.org/facilitator` and reaches for Blocky402 only on mainnet, so
+copying it verbatim settles somewhere other than where you meant to. The testnet URL
+itself is documented at blocky402.com/docs/testnet. See [HARNESS-NOTES.md](./HARNESS-NOTES.md).
 
 ---
 
@@ -272,7 +272,7 @@ scripts/
   mcp-remote-check.ts       paying-agent test client, remote MCP with x402 library
   mcp-wallet-check.ts       chat-client test: plain MCP, pays via the wallet server
   probe-coverage.ts         measures which subgraphs still answer
-HARNESS-NOTES.md            Hedera DX friction log
+HARNESS-NOTES.md            Hedera DX notes
 ```
 
 ---

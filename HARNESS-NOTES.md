@@ -1,16 +1,14 @@
 # Hedera developer experience notes
 
 Running log of friction hit while building OnchainRouter on Hedera.
-Written **at the moment it happens**, not reconstructed afterwards.
 
-Target: a meaningful contribution to [hedera-dev/hedera-harness](https://github.com/hedera-dev/hedera-harness)
-(ETHOnline 2026, "Open Source: Improve the Hedera Harness").
+Re-checked on 2026-09-12 against the current sources; corrections are marked inline.
 
 ---
 
 ## 2026-09-07
 
-### 1. Testnet facilitator URL is undocumented and the official PoC points elsewhere
+### 1. The official PoC defaults testnet to a different facilitator
 
 **Problem**
 The ETHOnline Hedera bounty requires the x402 service to settle **via Blocky402**.
@@ -29,13 +27,16 @@ bounty point at.
 **Actual**
 The PoC uses `x402.org` on testnet and Blocky402 only on mainnet. A developer who
 copies the PoC verbatim ships against the wrong facilitator without any warning.
-Blocky402's own site says Hedera Testnet is supported but does not publish the URL.
+
+*Correction, 2026-09-12:* this note originally also said Blocky402's site does not
+publish its testnet URL. It does: `api.testnet.blocky402.com` is on the homepage and
+at `blocky402.com/docs/testnet/`. Whether it was there on 2026-09-07 could not be
+verified, so that claim is withdrawn. The PoC default is the finding.
 
 **Reproduction**
 1. Clone `hedera-dev/x402-inference-pay-per-request-poc`
 2. `cat .env.example` and `packages/service/src/x402.ts`
 3. Observe the testnet default is not Blocky402
-4. Search Blocky402's site for a testnet endpoint: not listed
 
 **How I resolved it**
 `https://api.testnet.blocky402.com`, confirmed by hitting `/supported`, which returns:
@@ -51,34 +52,14 @@ actually recommends.
 
 ---
 
-### 2. HTS token association is a hidden prerequisite for USDC payments
+### 2. HTS token association is a prerequisite for USDC payments (withdrawn)
 
-**Problem**
-Paying in USDC requires the *receiving* account to be associated with the token first.
-There is no association step in the happy path of the quickstart; it lives in a separate
-script (`scripts/associate-token.ts`).
-
-**Expected**
-Following the quickstart end to end produces a successful USDC payment.
-
-**Actual**
-Without association, settlement fails with `TOKEN_NOT_ASSOCIATED_TO_ACCOUNT`. The
-`@x402/hedera` types acknowledge this failure mode explicitly in
-`FacilitatorHederaSigner.signAndSubmitTransaction`, which means it is a known and
-expected trap rather than an edge case.
-
-**Impact**
-This is a Hedera-specific concept with no equivalent on EVM chains. A developer coming
-from Base/x402 has no reason to expect it and will read the failure as a broken
-integration rather than a missing setup step.
-
-**Workaround used here**
-Default to native HBAR (`asset 0.0.0`) for the first payment, which needs no
-association, and only move to USDC once the rail is proven.
-
-**Proposed improvement**
-Surface association as a numbered step in the quickstart, and/or have the tooling
-detect a missing association and emit an actionable error that names the token id and
-the command to fix it.
+*Withdrawn, 2026-09-12.* This note claimed the quickstart has no association step and
+that settlement fails with `TOKEN_NOT_ASSOCIATED_TO_ACCOUNT` without it. On re-check,
+the PoC README lists "Associate USDC (testnet)" as step 3 of its Quick Start, and
+`@x402/hedera`'s README has a dedicated "Token Association" section. The failure itself
+was never reproduced here: it was read from the SDK's type comments, not hit. What is
+true is only that this router pays in native HBAR (`0.0.0`), which needs no association,
+and that was a choice rather than a workaround.
 
 ---

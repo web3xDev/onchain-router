@@ -25,7 +25,7 @@ export default function Image() {
           display: "flex",
           flexDirection: "column",
           justifyContent: "space-between",
-          background: "#08080a",
+          background: "#141414",
           padding: "72px 76px",
           fontFamily: "sans-serif",
         }}
@@ -36,18 +36,18 @@ export default function Image() {
               width: 44,
               height: 44,
               borderRadius: 12,
-              background: "#cdf548",
+              background: "#3b82f6",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              color: "#0b0f02",
+              color: "#ffffff",
               fontSize: 26,
               fontWeight: 700,
             }}
           >
             R
           </div>
-          <div style={{ display: "flex", color: "#9a9aa6", fontSize: 26 }}>{SITE_NAME}</div>
+          <div style={{ display: "flex", color: "#9a9aa6", fontSize: 26 }}>OnchainRouter</div>
         </div>
 
         <div style={{ display: "flex", flexDirection: "column" }}>
@@ -60,7 +60,7 @@ export default function Image() {
               lineHeight: 1.05,
             }}
           >
-            The&nbsp;<span style={{ color: "#cdf548" }}>OpenRouter</span>
+            Onchain answers
           </div>
           <div
             style={{
@@ -71,10 +71,10 @@ export default function Image() {
               lineHeight: 1.05,
             }}
           >
-            for onchain tools
+            for AI agents
           </div>
           <div style={{ display: "flex", fontSize: 30, color: "#9a9aa6", marginTop: 26 }}>
-            Agents discover tools, call them over MCP, and pay per call.
+            Call an onchain tool, pay a cent, get a decision.
           </div>
         </div>
 

@@ -1,5 +1,7 @@
 import Link from "next/link";
 import { catalogue, CATEGORIES, TOOLS } from "@/lib/tools/registry";
+import { SUPPORTED_CHAINS } from "@/lib/graph/deployments";
+import { LIVE_GOVERNANCE_PROTOCOLS } from "@/lib/graph/verified";
 import { rails } from "@/lib/x402";
 import { ToolCatalogue } from "@/components/tool-catalogue";
 import { HeroTerminal } from "@/components/hero-terminal";
@@ -19,13 +21,14 @@ export default function Home() {
         <div className="page hero-grid">
           <div>
             <h1>
-              The OpenRouter
+              Onchain answers
               <br />
-              for onchain tools
+              for AI agents
             </h1>
 
             <p className="hero-sub">
-              Onchain tools for agents. Call one, pay a cent, get an answer.
+              Skip the API keys, subscriptions, and raw data. Call an onchain tool, pay a
+              cent, get a decision.
             </p>
 
             <div className="hero-actions">
@@ -33,11 +36,22 @@ export default function Home() {
                 Connect your agent
               </Link>
               <Link href="/playground" className="btn">
-                Try it without a wallet
+                Try the playground
               </Link>
             </div>
 
-            <p className="hero-note">No account, no API key, no subscription. No answer, no charge.</p>
+            <p className="hero-note">
+              No account. No API key. No subscription.
+              <br />
+              No answer, no charge.
+            </p>
+
+            <div className="proof">
+              <span>{TOOLS.length} tools</span>
+              <span>{SUPPORTED_CHAINS.length} chains · {LIVE_GOVERNANCE_PROTOCOLS.length} protocols</span>
+              <span>$0.01 per call</span>
+              <span>0% router commission</span>
+            </div>
           </div>
 
           <HeroTerminal />
@@ -67,6 +81,7 @@ export default function Home() {
           <div>
             <span className="label">How it works</span>
             <h2 style={{ marginTop: 8 }}>Three steps, no signup anywhere</h2>
+            <p>The OpenRouter model, for onchain tools.</p>
           </div>
         </div>
 

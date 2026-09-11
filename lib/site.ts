@@ -18,6 +18,6 @@ export function siteUrl(): string {
 }
 
 export const SITE_NAME = "Onchain Router";
-export const SITE_TAGLINE = "The OpenRouter for onchain tools";
+export const SITE_TAGLINE = "Onchain answers for AI agents";
 export const SITE_DESCRIPTION =
-  "AI agents discover onchain tools, call them over MCP and pay per call with x402. No account, no API key, no subscription.";
+  "Call an onchain tool, pay a cent, get a decision. No account, no API key, no subscription. No answer, no charge.";

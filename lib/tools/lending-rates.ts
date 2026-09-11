@@ -50,6 +50,7 @@ const MARKETS_QUERY = `
       name
       isActive
       totalValueLockedUSD
+      totalDepositBalanceUSD
       totalBorrowBalanceUSD
       maximumLTV
       rates { side type rate }
@@ -62,6 +63,7 @@ type RawMarket = {
   name: string;
   isActive: boolean;
   totalValueLockedUSD: string;
+  totalDepositBalanceUSD?: string;
   totalBorrowBalanceUSD: string;
   maximumLTV: string;
   rates: { side: string; type: string; rate: string }[];
@@ -72,6 +74,8 @@ export type LendingMarket = {
   protocol: string;
   market: string;
   tvlUsd: number;
+  /** Total deposits. Some subgraphs report TVL net of borrows, so this is kept apart. */
+  depositedUsd: number;
   borrowedUsd: number;
   supplyRate: number | null;
   borrowRate: number | null;
@@ -130,7 +134,17 @@ function money(value: number): string {
   return `$${Math.round(value)}`;
 }
 
-export async function lendingRates(assetInput: string, chainInput: string): Promise<LendingRatesResult> {
+export { ago, money, daysSince };
+
+/**
+ * Every active market for an asset on a chain, across every indexed lending
+ * protocol, with staleness already judged. Shared by the tools that ask different
+ * questions of the same markets.
+ */
+export async function scanMarkets(
+  assetInput: string,
+  chainInput: string,
+): Promise<{ asset: string; chain: string; scanned: number; responded: number; markets: LendingMarket[] }> {
   const asset = assetInput.trim().toUpperCase();
   const chain = chainInput.trim().toLowerCase();
 
@@ -146,12 +160,14 @@ export async function lendingRates(assetInput: string, chainInput: string): Prom
       .filter((m) => m.isActive)
       .map((m) => {
         const tvlUsd = Number(m.totalValueLockedUSD);
+        const depositedUsd = Number(m.totalDepositBalanceUSD ?? 0) || tvlUsd;
         const lastActivityDays = daysSince(m.dailySnapshots?.[0]?.timestamp);
         const stale = lastActivityDays === null || lastActivityDays > STALE_AFTER_DAYS;
         return {
           protocol,
           market: m.name,
           tvlUsd,
+          depositedUsd,
           borrowedUsd: Number(m.totalBorrowBalanceUSD),
           supplyRate: pickRate(m.rates, "LENDER"),
           borrowRate: pickRate(m.rates, "BORROWER"),
@@ -162,6 +178,12 @@ export async function lendingRates(assetInput: string, chainInput: string): Prom
         };
       }),
   );
+
+  return { asset, chain, scanned: deployments.length, responded: responses.length, markets };
+}
+
+export async function lendingRates(assetInput: string, chainInput: string): Promise<LendingRatesResult> {
+  const { asset, chain, scanned, responded, markets } = await scanMarkets(assetInput, chainInput);
 
   markets.sort((a, b) => (b.supplyRate ?? -1) - (a.supplyRate ?? -1));
 
@@ -192,8 +214,8 @@ export async function lendingRates(assetInput: string, chainInput: string): Prom
   return {
     asset,
     chain,
-    scanned: deployments.length,
-    responded: responses.length,
+    scanned,
+    responded,
     withMarket: markets.length,
     best,
     assessment: assess(asset, markets, trustworthy, best),

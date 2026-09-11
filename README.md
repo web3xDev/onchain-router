@@ -42,6 +42,9 @@ Everything below is running against live data and settling real payments on test
 | ✅ | Arc signed by a Circle agent wallet, so the key never reaches this machine |
 | ✅ | `lending_rates`: best rate across every indexed lending protocol on a chain |
 | ✅ | `governance_power`: how concentrated a protocol's voting power is |
+| ✅ | `withdrawal_risk`: whether a deposit can actually leave a market, and how much |
+| ✅ | `protocol_health`: growing or draining, and whether it earns anything |
+| ✅ | `governance_pulse`: whether governance is still deciding, and whether votes clear quorum |
 | ✅ | Remote MCP at `/mcp`: one URL, agent pays from its own wallet over x402 |
 | ✅ | Local MCP server for chat clients, with three ways to arrange payment |
 | ✅ | Site: catalogue, tool pages, connect, submit |

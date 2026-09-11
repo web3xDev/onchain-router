@@ -1,4 +1,4 @@
-import { querySubgraph } from "@/lib/graph/client";
+import { queryWithRetry } from "@/lib/graph/client";
 import { GOVERNANCE_DEPLOYMENTS, GOVERNANCE_PROTOCOLS } from "@/lib/graph/deployments";
 import { NoAnswer } from "@/lib/tools/no-answer";
 
@@ -91,7 +91,7 @@ export async function governancePower(protocolInput: string): Promise<Governance
     throw new Error(`Unknown protocol "${protocol}". Known: ${GOVERNANCE_PROTOCOLS.join(", ")}`);
   }
 
-  const data = await querySubgraph<RawGovernance>(deployment.id, GOVERNANCE_QUERY, undefined, 15000);
+  const data = await queryWithRetry<RawGovernance>(deployment.id, GOVERNANCE_QUERY, undefined, 15000);
   if (!data?.governances?.length) {
     throw new NoAnswer(`No governance data available for "${protocol}". The subgraph is not currently served.`);
   }

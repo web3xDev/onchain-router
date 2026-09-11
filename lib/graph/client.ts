@@ -43,9 +43,27 @@ export async function querySubgraph<T>(
   }
 }
 
+/** One query with one retry, for tools that read a single deployment. */
+export async function queryWithRetry<T>(
+  subgraphId: string,
+  query: string,
+  variables?: Record<string, unknown>,
+  timeoutMs = 15000,
+): Promise<T | null> {
+  const first = await querySubgraph<T>(subgraphId, query, variables, timeoutMs);
+  if (first !== null) return first;
+  await new Promise((r) => setTimeout(r, 300));
+  return querySubgraph<T>(subgraphId, query, variables, timeoutMs);
+}
+
 export type FanOutResult<T> = { protocol: string; data: T };
 
-/** Runs the same query against many deployments at once. Failures are dropped. */
+/**
+ * Runs the same query against many deployments at once. Failures are dropped, but
+ * only after one retry: a gateway hiccup on the biggest deployment would otherwise
+ * change the answer from one call to the next, and "the deepest pool" must not
+ * depend on which indexer was slow this second.
+ */
 export async function fanOut<T>(
   deployments: { protocol: string; id: string }[],
   query: string,
@@ -53,7 +71,11 @@ export async function fanOut<T>(
 ): Promise<FanOutResult<T>[]> {
   const settled = await Promise.all(
     deployments.map(async (d): Promise<FanOutResult<T> | null> => {
-      const data = await querySubgraph<T>(d.id, query, variables);
+      let data = await querySubgraph<T>(d.id, query, variables);
+      if (data === null) {
+        await new Promise((r) => setTimeout(r, 300));
+        data = await querySubgraph<T>(d.id, query, variables);
+      }
       return data === null ? null : { protocol: d.protocol, data: data as T };
     }),
   );

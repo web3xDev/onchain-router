@@ -74,7 +74,7 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
                 <div key={input.name} className="arg">
                   <div>
                     <div className="arg-name">{input.name}</div>
-                    <div className="arg-type">{input.type} · required</div>
+                    <div className="arg-type">{input.type} · {input.required ? "required" : "optional"}</div>
                   </div>
                   <div>
                     <div className="arg-desc">{input.description}</div>

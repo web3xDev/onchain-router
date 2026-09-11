@@ -75,8 +75,17 @@ export function Playground({
     const push = (line: Line) => show([...log, line]);
     const settle = (line: Line) => show([...log.filter((l) => !l.pending), line]);
 
+    // Form fields are strings; the schema is not. Numbers are converted and empty
+    // optional fields are left out, so the request matches what an agent would send.
+    const input: Record<string, unknown> = {};
+    for (const field of tool.inputs) {
+      const raw = (values[field.name] ?? "").trim();
+      if (raw === "") continue;
+      input[field.name] = field.type === "number" ? Number(raw) : raw;
+    }
+
     push({ text: `POST /api/tools/${tool.slug}`, tone: "key" });
-    push({ text: `  ${JSON.stringify(values)}`, tone: "dim" });
+    push({ text: `  ${JSON.stringify(input)}`, tone: "dim" });
     push({ text: "  waiting for the router…", tone: "dim", pending: true });
 
     const answer: { payment: Result["payment"]; data: Result["data"]; ms: number } = {
@@ -89,7 +98,7 @@ export function Playground({
       const response = await fetch("/api/playground", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ slug: tool.slug, input: values, network: network || undefined }),
+        body: JSON.stringify({ slug: tool.slug, input, network: network || undefined }),
       });
 
       if (!response.ok || !response.body) {
@@ -109,8 +118,8 @@ export function Playground({
             const networks = (event.networks as string[]).join(", ");
             settle({ text: "", tone: "dim" });
             push({ text: `← 402 Payment Required   ${at}`, tone: "warn" });
-            push({ text: `  accepts: ${networks}`, tone: "dim" });
-            push({ text: `  signing on ${event.chosen} from the demo wallet…`, tone: "dim", pending: true });
+            push({ text: `  offered: ${networks}`, tone: "dim" });
+            push({ text: `  chose ${event.chosen}, signing from the demo wallet…`, tone: "dim", pending: true });
             break;
           }
           case "signed":

@@ -499,7 +499,32 @@ the endpoint's 402 and refuses to file a listing for anything that does not answ
 This is what "router" should have meant from the start. The two tools that run here
 are two listings that happen to be hosted by the operator.
 
-### 12 Sept: more tools
+### 11 Sept, evening: three more tools
+
+Withdrawal risk, protocol health, governance pulse. Each answers a "should I act"
+question over data already proven to serve: the lending markets, the standardized
+daily financials, the proposal history.
+
+Three data problems surfaced in the first hour, all caught by reading the sentence
+the tool produced against the raw numbers:
+
+- aave-v3 on ethereum reported "$58,061 billion in fees over 30 days". One daily
+  snapshot carries a value ten million times its neighbours. Revenue is now summed
+  over days within twenty times the median, scaled back to thirty, and the sentence
+  says how many days were discarded.
+- Moonwell on base read as "$0 free of $9M, 100% lent out" because that subgraph
+  publishes TVL net of borrows. Utilisation is now borrows over deposits, which is
+  what the question means.
+- The deepest pool on base changed between two calls because compound-v3's indexer
+  dropped one request. fanOut and the single-deployment tools now retry once. A
+  verdict must not depend on which indexer was slow this second.
+
+Governance pulse refuses to answer when a subgraph has seen no proposal for over a
+year. Compound shows 591 days, Gitcoin 1,128. Dormant governance and governance
+that moved to a contract the subgraph does not watch produce the same data, so the
+tool says it cannot tell, and charges nothing.
+
+### 12 Sept: video
 
 *pending*
 

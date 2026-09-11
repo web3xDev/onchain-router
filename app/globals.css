@@ -368,6 +368,12 @@ pre {
   text-transform: uppercase;
 }
 
+/* The answer block in the hero, marked the way the playground marks a verdict. */
+.log-answer {
+  border-left: 2px solid var(--accent);
+  padding-left: 12px;
+}
+
 .t-icon {
   display: inline-block;
   margin-right: 6px;

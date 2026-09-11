@@ -1,7 +1,7 @@
 "use client";
 
 type Tone = "label" | "key" | "dim" | "warn" | "ok";
-type Line = { text: string; tone: Tone; group: number; icon?: "user" | "agent" };
+type Line = { text: string; tone: Tone; group: number; icon?: "user" | "agent"; answer?: boolean };
 
 /** Small line icons, drawn with strokes so they sit at text weight. */
 const ICONS = {
@@ -41,9 +41,9 @@ const SCRIPT: Line[] = [
   { text: "Payment settled", tone: "ok", group: 3 },
   { text: "200 OK", tone: "ok", group: 4 },
   { text: "", tone: "dim", group: 4 },
-  { text: "Compound V3", tone: "key", group: 5 },
-  { text: "4.51% supply APY", tone: "key", group: 5 },
-  { text: "$376M liquidity", tone: "dim", group: 5 },
+  { text: "Compound V3", tone: "key", group: 5, answer: true },
+  { text: "4.51% supply APY", tone: "key", group: 5, answer: true },
+  { text: "$376M liquidity", tone: "dim", group: 5, answer: true },
 ];
 
 /** Each step lands as a block, a beat apart; the whole exchange takes about a second. */
@@ -64,7 +64,7 @@ export function HeroTerminal() {
           {SCRIPT.map((line, index) => (
             <span
               key={index}
-              className={`log-line t-${line.tone}`}
+              className={`log-line t-${line.tone}${line.answer ? " log-answer" : ""}`}
               style={{ animationDelay: `${line.group * STEP_MS}ms` }}
             >
               {line.icon && <span className="t-icon">{ICONS[line.icon]}</span>}

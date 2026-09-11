@@ -1,0 +1,144 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="860" viewBox="0 0 1400 860" font-family="Inter, -apple-system, Segoe UI, Helvetica, Arial, sans-serif">
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0 0L10 5L0 10z" fill="#9a9aa6"/>
+    </marker>
+    <marker id="ao" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0 0L10 5L0 10z" fill="#d25020"/>
+    </marker>
+    <marker id="ag" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0 0L10 5L0 10z" fill="#4bca81"/>
+    </marker>
+    <symbol id="hedera" viewBox="0 0 1200 1200"><path fill="#fff" d="M431.22,556.89h337.64v86.23h-337.64v-86.23ZM1200,600c0,331.37-268.63,600-600,600S0,931.37,0,600,268.63,0,600,0s600,268.63,600,600ZM847.9,330.54h-79.04v168.86h-337.64l-.09.09v-168.95h-79.04v538.92h79.04v-169l.09.14h337.64v168.86h79.04V330.54Z"/></symbol>
+    <symbol id="arc" viewBox="0 0 164 171"><path fill="#fff" d="M0 171C1.39327 129.136 8.52567 90.067 20.4481 59.6871C35.5477 21.1972 57.4057 0 81.9919 0C106.578 0 128.433 21.1972 143.536 59.6871C151.391 79.7058 157.17 103.491 160.594 129.366C160.9 131.677 161.161 134.026 161.428 136.369C161.515 136.514 161.568 136.649 161.55 136.758C161.55 136.758 163.562 149.265 163.99 171H163.763C160.778 168.562 125.578 141.038 67.2282 149.007C68.1086 139.181 69.3194 129.62 70.8835 120.456C70.9634 119.987 71.0558 119.535 71.1373 119.07C94.0233 118.383 114.055 121.028 129.416 124.494C129.359 124.131 129.311 123.758 129.253 123.397C126.095 103.83 121.437 85.9161 115.43 70.6073C105.61 45.576 92.7953 30.0239 81.9919 30.0239C71.189 30.0239 58.3744 45.576 48.554 70.6073C46.1769 76.6621 44.0128 83.1192 42.0721 89.9301C39.3438 99.4735 37.0517 109.704 35.2212 120.455C32.5117 136.331 30.8189 153.358 30.1954 171H0Z"/></symbol>
+    <symbol id="graph" viewBox="0 0 64 64"><path fill="#fff" d="M29 43.9999C19.08 43.9999 11 35.9299 11 25.9999C11 16.0699 19.08 7.9999 29 7.9999C38.92 7.9999 47 16.0699 47 25.9999C47 35.9299 38.92 43.9999 29 43.9999ZM29 13.9999C22.38 13.9999 17 19.3799 17 25.9999C17 32.6199 22.38 37.9999 29 37.9999C35.62 37.9999 41 32.6199 41 25.9999C41 19.3799 35.62 13.9999 29 13.9999ZM34.12 61.1199L46.12 49.1199C47.29 47.9499 47.29 46.0499 46.12 44.8799C44.95 43.7099 43.05 43.7099 41.88 44.8799L29.88 56.8799C28.71 58.0499 28.71 59.9499 29.88 61.1199C30.47 61.7099 31.23 61.9999 32 61.9999C32.77 61.9999 33.54 61.7099 34.12 61.1199ZM50 7.3999C48.02 7.3999 46.4 9.0199 46.4 10.9999C46.4 12.9799 48.02 14.5999 50 14.5999C51.98 14.5999 53.6 12.9799 53.6 10.9999C53.6 9.0199 51.98 7.3999 50 7.3999Z"/></symbol>
+  </defs>
+
+  <rect width="1400" height="860" fill="#141414"/>
+
+  <!-- title -->
+  <g transform="translate(60,54)">
+    <rect width="26" height="26" rx="7" fill="#d25020"/>
+    <text x="13" y="18" text-anchor="middle" font-size="14" font-weight="700" fill="#fff" font-family="ui-monospace, Menlo, monospace">R</text>
+    <text x="38" y="19" font-size="22" font-weight="600" fill="#f2f2f5">OnchainRouter</text>
+    <text x="0" y="52" font-size="14" fill="#9a9aa6">How a paid call settles. The router holds no wallet; the agent pays the tool author directly, on Arc or Hedera.</text>
+  </g>
+
+  <!-- ===== row 1 ===== -->
+  <!-- Agent -->
+  <g transform="translate(60,160)">
+    <rect width="290" height="150" rx="14" fill="#222" stroke="#333"/>
+    <text x="24" y="38" font-size="11" letter-spacing="1.5" fill="#8a8a8a">CALLER</text>
+    <text x="24" y="66" font-size="19" font-weight="600" fill="#f2f2f5">AI agent</text>
+    <text x="24" y="92" font-size="13" fill="#9a9aa6">Claude Code, or any MCP client</text>
+    <text x="24" y="114" font-size="13" fill="#9a9aa6">decides, calls, carries the payment</text>
+  </g>
+
+  <!-- Router -->
+  <g transform="translate(540,160)">
+    <rect width="320" height="150" rx="14" fill="#222" stroke="#d25020"/>
+    <text x="24" y="38" font-size="11" letter-spacing="1.5" fill="#8a8a8a">ROUTER</text>
+    <text x="24" y="66" font-size="19" font-weight="600" fill="#f2f2f5">OnchainRouter</text>
+    <text x="24" y="92" font-size="13" fill="#9a9aa6" font-family="ui-monospace, Menlo, monospace">/mcp   ·   /api/tools/{slug}</text>
+    <text x="24" y="114" font-size="13" fill="#9a9aa6">quotes 402, verifies, relays. Keeps nothing.</text>
+  </g>
+
+  <!-- Tool + Graph -->
+  <g transform="translate(1050,160)">
+    <rect width="290" height="150" rx="14" fill="#222" stroke="#333"/>
+    <text x="24" y="38" font-size="11" letter-spacing="1.5" fill="#8a8a8a">TOOL</text>
+    <text x="24" y="66" font-size="19" font-weight="600" fill="#f2f2f5">lending_rates</text>
+    <text x="24" y="92" font-size="13" fill="#9a9aa6">a verdict, not a table</text>
+    <use href="#graph" x="24" y="104" width="18" height="18"/>
+    <text x="48" y="118" font-size="13" fill="#9a9aa6">The Graph, standardized subgraphs</text>
+  </g>
+
+  <!-- ===== row 2 ===== -->
+  <!-- Wallet -->
+  <g transform="translate(60,520)">
+    <rect width="290" height="150" rx="14" fill="#222" stroke="#333"/>
+    <text x="24" y="38" font-size="11" letter-spacing="1.5" fill="#8a8a8a">THE AGENT'S WALLET</text>
+    <text x="24" y="66" font-size="19" font-weight="600" fill="#f2f2f5">Wallet MCP</text>
+    <text x="24" y="92" font-size="13" fill="#9a9aa6" font-family="ui-monospace, Menlo, monospace">sign_x402_payment</text>
+    <text x="24" y="114" font-size="13" fill="#9a9aa6">Circle developer-controlled wallet.</text>
+    <text x="24" y="132" font-size="13" fill="#9a9aa6">The key never leaves Circle.</text>
+  </g>
+
+  <!-- Circle Gateway -->
+  <g transform="translate(540,520)">
+    <rect width="320" height="150" rx="14" fill="#222" stroke="#333"/>
+    <text x="24" y="38" font-size="11" letter-spacing="1.5" fill="#8a8a8a">FACILITATOR</text>
+    <text x="24" y="66" font-size="19" font-weight="600" fill="#f2f2f5">Circle Gateway</text>
+    <text x="24" y="92" font-size="13" fill="#9a9aa6">verifies the signature, settles in batches</text>
+    <text x="24" y="114" font-size="13" fill="#9a9aa6">gasless for the payer</text>
+  </g>
+
+  <!-- Arc -->
+  <g transform="translate(1050,520)">
+    <rect width="290" height="150" rx="14" fill="#222" stroke="#333"/>
+    <text x="24" y="38" font-size="11" letter-spacing="1.5" fill="#8a8a8a">SETTLEMENT</text>
+    <use href="#arc" x="24" y="48" width="20" height="21"/>
+    <text x="52" y="66" font-size="19" font-weight="600" fill="#f2f2f5">Arc testnet</text>
+    <text x="24" y="92" font-size="13" fill="#9a9aa6" font-family="ui-monospace, Menlo, monospace">USDC · eip155:5042002</text>
+    <text x="24" y="114" font-size="13" fill="#9a9aa6">lands in the tool author's address.</text>
+    <text x="24" y="132" font-size="13" fill="#9a9aa6">0% router commission.</text>
+  </g>
+
+  <!-- ===== arrows row 1: agent <-> router ===== -->
+  <!-- 1 call -->
+  <line x1="350" y1="196" x2="540" y2="196" stroke="#9a9aa6" stroke-width="1.5" marker-end="url(#a)"/>
+  <circle cx="366" cy="196" r="10" fill="#141414" stroke="#9a9aa6"/><text x="366" y="200" text-anchor="middle" font-size="11" fill="#f2f2f5">1</text>
+  <text x="445" y="188" text-anchor="middle" font-size="12" fill="#9a9aa6">call lending_rates</text>
+
+  <!-- 2 402 back -->
+  <line x1="540" y1="236" x2="350" y2="236" stroke="#d25020" stroke-width="1.5" marker-end="url(#ao)"/>
+  <circle cx="524" cy="236" r="10" fill="#141414" stroke="#d25020"/><text x="524" y="240" text-anchor="middle" font-size="11" fill="#f2f2f5">2</text>
+  <text x="445" y="228" text-anchor="middle" font-size="12" fill="#d25020">402: price, rails, payTo</text>
+
+  <!-- 4 call + payment -->
+  <line x1="350" y1="276" x2="540" y2="276" stroke="#9a9aa6" stroke-width="1.5" marker-end="url(#a)"/>
+  <circle cx="366" cy="276" r="10" fill="#141414" stroke="#9a9aa6"/><text x="366" y="280" text-anchor="middle" font-size="11" fill="#f2f2f5">4</text>
+  <text x="445" y="268" text-anchor="middle" font-size="12" fill="#9a9aa6">call again + signed payment</text>
+  <text x="445" y="298" text-anchor="middle" font-size="12" fill="#4bca81">← 200 · answer + receipt</text>
+
+  <!-- 3 sign: agent -> wallet -> agent -->
+  <line x1="180" y1="310" x2="180" y2="520" stroke="#9a9aa6" stroke-width="1.5" marker-end="url(#a)"/>
+  <line x1="230" y1="520" x2="230" y2="310" stroke="#d25020" stroke-width="1.5" marker-end="url(#ao)"/>
+  <circle cx="180" cy="330" r="10" fill="#141414" stroke="#9a9aa6"/><text x="180" y="334" text-anchor="middle" font-size="11" fill="#f2f2f5">3</text>
+  <text x="252" y="405" font-size="12" fill="#9a9aa6">sign this 402</text>
+  <text x="252" y="425" font-size="12" fill="#d25020">signed payment</text>
+
+  <!-- 5 router <-> tool -->
+  <line x1="860" y1="216" x2="1050" y2="216" stroke="#9a9aa6" stroke-width="1.5" marker-end="url(#a)"/>
+  <circle cx="876" cy="216" r="10" fill="#141414" stroke="#9a9aa6"/><text x="876" y="220" text-anchor="middle" font-size="11" fill="#f2f2f5">5</text>
+  <text x="955" y="208" text-anchor="middle" font-size="12" fill="#9a9aa6">run, once verified</text>
+  <line x1="1050" y1="256" x2="860" y2="256" stroke="#4bca81" stroke-width="1.5" marker-end="url(#ag)"/>
+  <text x="955" y="248" text-anchor="middle" font-size="12" fill="#4bca81">verdict</text>
+
+  <!-- 6 router -> gateway -> arc -->
+  <line x1="700" y1="310" x2="700" y2="520" stroke="#d25020" stroke-width="1.5" marker-end="url(#ao)"/>
+  <circle cx="700" cy="330" r="10" fill="#141414" stroke="#d25020"/><text x="700" y="334" text-anchor="middle" font-size="11" fill="#f2f2f5">6</text>
+  <text x="716" y="405" font-size="12" fill="#d25020">verify, then settle</text>
+  <text x="716" y="425" font-size="12" fill="#9a9aa6">(after the tool answered;</text>
+  <text x="716" y="443" font-size="12" fill="#9a9aa6">no answer, no settlement)</text>
+  <line x1="860" y1="595" x2="1050" y2="595" stroke="#4bca81" stroke-width="1.5" marker-end="url(#ag)"/>
+  <text x="955" y="587" text-anchor="middle" font-size="12" fill="#4bca81">USDC to the author</text>
+
+  <!-- other rail strip -->
+  <g transform="translate(540,720)">
+    <rect width="800" height="76" rx="12" fill="#1a1a1a" stroke="#2a2a2a"/>
+    <use href="#hedera" x="22" y="26" width="24" height="24"/>
+    <text x="58" y="34" font-size="13" font-weight="600" fill="#f2f2f5">Same call, other rail</text>
+    <text x="58" y="56" font-size="12.5" fill="#9a9aa6">Blocky402 facilitator → Hedera testnet, HBAR, gas sponsored. One 402 offers both rails; the agent picks; the tool never learns which.</text>
+  </g>
+
+  <!-- legend / guarantees -->
+  <g transform="translate(60,720)">
+    <rect width="440" height="76" rx="12" fill="#1a1a1a" stroke="#2a2a2a"/>
+    <text x="22" y="30" font-size="12.5" fill="#f2f2f5" font-weight="600">Two rules</text>
+    <text x="22" y="50" font-size="12.5" fill="#9a9aa6">No answer, no charge: step 6 never happens without a verdict.</text>
+    <text x="22" y="66" font-size="12.5" fill="#9a9aa6">0% commission: step 6 pays the author, not the router.</text>
+  </g>
+
+  <text x="1340" y="836" text-anchor="end" font-size="11" fill="#5a5a5a">github.com/web3xDev/onchain-router · ETHOnline 2026</text>
+</svg>

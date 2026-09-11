@@ -56,6 +56,14 @@ Everything below is running against live data and settling real payments on test
 
 ---
 
+## Architecture
+
+![How a paid call settles](./docs/architecture.svg)
+
+The agent calls a tool, gets a 402 naming both rails and the author's address, has its
+own wallet sign, and calls again. The router verifies, runs the tool, and only then
+lets the facilitator settle, straight to the author. No answer, no settlement.
+
 ## How payment works
 
 ```

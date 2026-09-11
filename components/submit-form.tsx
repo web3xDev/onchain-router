@@ -82,6 +82,7 @@ export function SubmitForm({ categories }: { categories: string[] }) {
 
         <div className="field">
           <label htmlFor="category">Category</label>
+          <span className="select">
           <select id="category" value={fields.category} onChange={set("category")}>
             <option value="">Choose or leave blank for a new one</option>
             {categories.map((category) => (
@@ -90,6 +91,7 @@ export function SubmitForm({ categories }: { categories: string[] }) {
               </option>
             ))}
           </select>
+          </span>
           <span className="hint">A new category is fine if nothing fits.</span>
         </div>
       </div>

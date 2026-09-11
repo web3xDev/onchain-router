@@ -177,6 +177,7 @@ export function Playground({
         <div className="form" style={{ marginTop: 18 }}>
           <div className="field">
             <label htmlFor="tool">Tool</label>
+            <span className="select">
             <select id="tool" value={slug} onChange={(event) => setSlug(event.target.value)}>
               {tools.map((option) => (
                 <option key={option.slug} value={option.slug}>
@@ -184,6 +185,7 @@ export function Playground({
                 </option>
               ))}
             </select>
+            </span>
             {tool && <span className="hint">{tool.summary}</span>}
           </div>
 
@@ -191,6 +193,7 @@ export function Playground({
             <div key={input.name} className="field">
               <label htmlFor={input.name}>{input.name}</label>
               {input.options ? (
+                <span className="select">
                 <select
                   id={input.name}
                   value={values[input.name] ?? ""}
@@ -204,6 +207,7 @@ export function Playground({
                     </option>
                   ))}
                 </select>
+                </span>
               ) : (
                 <input
                   id={input.name}
@@ -220,6 +224,7 @@ export function Playground({
           {rails.length > 1 && (
             <div className="field">
               <label htmlFor="network">Pay on</label>
+              <span className="select">
               <select
                 id="network"
                 value={network}
@@ -231,6 +236,7 @@ export function Playground({
                   </option>
                 ))}
               </select>
+              </span>
               <span className="hint">Both rails are offered in the same 402.</span>
             </div>
           )}

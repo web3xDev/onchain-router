@@ -1024,22 +1024,6 @@ pre {
   background-repeat: no-repeat;
   background-position: right 14px center;
   cursor: pointer;
-  /* Long option text fades out before the chevron instead of being clipped. The
-     hard stop at the end keeps the chevron itself fully opaque. */
-  -webkit-mask-image: linear-gradient(
-    to right,
-    #000 0,
-    #000 calc(100% - 76px),
-    transparent calc(100% - 44px),
-    #000 calc(100% - 44px)
-  );
-  mask-image: linear-gradient(
-    to right,
-    #000 0,
-    #000 calc(100% - 76px),
-    transparent calc(100% - 44px),
-    #000 calc(100% - 44px)
-  );
 }
 
 .field input:focus,
@@ -1047,6 +1031,25 @@ pre {
 .field select:focus {
   outline: none;
   border-color: var(--border-strong);
+}
+
+/* Wraps a select so overflowing option text fades into the field instead of
+   clipping. The overlay sits inside the border and stops before the chevron. */
+.select {
+  position: relative;
+  display: block;
+}
+
+.select::after {
+  content: "";
+  position: absolute;
+  top: 1px;
+  bottom: 1px;
+  right: 40px;
+  width: 40px;
+  border-radius: 0 var(--radius) var(--radius) 0;
+  background: linear-gradient(to right, transparent, var(--surface));
+  pointer-events: none;
 }
 
 .field .error {

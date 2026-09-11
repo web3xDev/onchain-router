@@ -13,13 +13,14 @@ each call settles straight from the agent's wallet to it. The router is never in
 middle of the money: no invoice, no payout run, no minimum. Its own tools settle to its
 own addresses; a submitted tool settles to its author.
 
-**Any x402 endpoint can be listed.** A tool does not have to live in this repo. Give
-the router an endpoint that already answers 402 and it is relayed: the endpoint's own
-402 goes out to the caller, the caller's signed payment goes back in, and settlement
-happens at the endpoint, to its address. The router verifies nothing and holds
-nothing. `external()` in `lib/tools/registry.ts` is the whole listing, and the submit
-page reads price, rails and payout live from the endpoint's 402 before it lets you file
-one.
+**Any x402 endpoint on Hedera or Arc can be listed.** A tool does not have to live in
+this repo. Give the router an endpoint that already answers 402 and it is relayed: the
+endpoint's own 402 goes out to the caller, the caller's signed payment goes back in, and
+settlement happens at the endpoint, to its address. The router verifies nothing and
+holds nothing. `external()` in `lib/tools/registry.ts` is the whole listing, and the
+submit page reads price, rails and payout live from the endpoint's 402 before it lets
+you file one. An endpoint quoting only some other network is refused there, since
+nothing on this router could pay it.
 
 **No answer, no charge.** A tool that cannot give a verdict says so, and the payment
 signed for that call is never settled. You buy answers, not attempts. Both transports
@@ -46,8 +47,8 @@ Everything below is running against live data and settling real payments on test
 | ✅ | `protocol_health`: growing or draining, and whether it earns anything |
 | ✅ | `governance_pulse`: whether governance is still deciding, and whether votes clear quorum |
 | ✅ | Remote MCP at `/mcp`: one URL, agent pays from its own wallet over x402 |
-| ✅ | Local MCP server for chat clients, with three ways to arrange payment |
-| ✅ | Site: catalogue, tool pages, connect, submit |
+| ✅ | Reference wallet MCP (`mcp/wallet.ts`) so a chat client can pay without an x402 library |
+| ✅ | Site: landing, catalogue, tool pages, connect, submit |
 | ✅ | Playground, funded by us, so it can be tried without a wallet |
 | ✅ | Coverage measured rather than claimed (`npm run probe`) |
 | ✅ | No answer, no charge: a call with no verdict is never settled |
@@ -174,13 +175,9 @@ Hedera / Arc
 ```
 
 A model cannot compute a signature itself, but that is how every agent action works.
-It cannot fetch a page either, it calls a tool that fetches. Signing is the same, and
-each network has a wallet kit for it:
-
-| Network | Agent wallet |
-|---|---|
-| Hedera | Hedera Agent Kit |
-| Arc | Circle Agent Stack |
+It cannot fetch a page either, it calls a tool that fetches. Signing is the same. The
+reference wallet signs Arc through a Circle agent wallet (the key stays with Circle)
+and Hedera with a local ECDSA key; any other x402 signer can stand in for it.
 
 > The Playground is the one exception: it funds a wallet of its own so the work can be
 > tried without one of yours.
@@ -211,6 +208,13 @@ Fill in the two account ids and the agent's private key.
 Defaults pay in **native HBAR**, which needs no HTS token association. Switch to
 USDC (`X402_ASSET=usdc`) only after associating the service wallet with token
 `0.0.429274`, otherwise settlement fails with `TOKEN_NOT_ASSOCIATED_TO_ACCOUNT`.
+
+Arc is optional and switches on once `ARC_SERVICE_ADDRESS` is set. For the paying
+side, either put a funded key in `ARC_AGENT_PRIVATE_KEY`, or run `npm run circle:setup`
+with a `CIRCLE_API_KEY` to create a Circle agent wallet and have it written into
+`.env.local`. Fund that address from [faucet.circle.com](https://faucet.circle.com),
+then `npm run arc:deposit` once: Gateway spends from a deposited balance, not from the
+wallet itself.
 
 ### 3. Run
 
@@ -245,17 +249,18 @@ you somewhere other than where you meant to be. See [HARNESS-NOTES.md](./HARNESS
 
 ```
 app/
-  page.tsx                  catalogue, the landing page
+  page.tsx                  landing page
+  tools/page.tsx            the catalogue
   tools/[slug]/page.tsx     one page per tool, generated from the registry
-  connect/, submit/         connect an agent, propose a tool
+  connect/, submit/         connect an agent, list an endpoint
   playground/               run a tool against a wallet we fund
   api/tools/route.ts        the catalogue, free to read
   api/tools/[slug]/route.ts every paid tool, one handler
+  api/probe/route.ts        reads an endpoint's 402 before it can be listed
   api/playground/route.ts   the only place the router spends its own money
 lib/
   tools/registry.ts         every tool declared once; external() lists an x402 endpoint
   relay.ts                  carries a 402 out and a signed payment in, touches nothing
-  api/probe/route.ts        reads an endpoint's 402 before it can be listed
   graph/verified.ts         what `npm run probe` measured as live
   x402.ts                   facilitator, resource server, pricing
   payment/agent-wallet.ts   builds a paying fetch from whatever is configured

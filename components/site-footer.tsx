@@ -17,9 +17,15 @@ export function SiteFooter() {
             <p>Onchain answers for AI agents. Call a tool, pay a cent, get a decision.</p>
             <div className="footer-rails">
               <span>Built with</span>
-              <Brand id="hedera" kind="logo" height={16} />
-              <Brand id="arc" kind="logo" height={16} />
-              <Brand id="graph" kind="logo" height={16} />
+              <a href="https://hedera.com" target="_blank" rel="noreferrer" className="footer-mark" aria-label="Hedera">
+                <Brand id="hedera" kind="logo" height={16} />
+              </a>
+              <a href="https://www.arc.network" target="_blank" rel="noreferrer" className="footer-mark" aria-label="Arc">
+                <Brand id="arc" kind="logo" height={16} />
+              </a>
+              <a href="https://thegraph.com" target="_blank" rel="noreferrer" className="footer-mark" aria-label="The Graph">
+                <Brand id="graph" kind="logo" height={16} />
+              </a>
             </div>
           </div>
 

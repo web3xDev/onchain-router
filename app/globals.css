@@ -1139,6 +1139,15 @@ html {
   color: var(--text-3);
 }
 
+.footer-mark {
+  display: inline-flex;
+  opacity: 0.85;
+}
+
+.footer-mark:hover {
+  opacity: 1;
+}
+
 .footer-col {
   display: grid;
   gap: 10px;

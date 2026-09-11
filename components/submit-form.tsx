@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { Select } from "@/components/select";
 
 const REPO = "https://github.com/web3xDev/onchain-router";
 
@@ -191,16 +192,16 @@ export function SubmitForm({ categories }: { categories: string[] }) {
 
         <div className="field">
           <label htmlFor="category">Category</label>
-          <span className="select">
-            <select id="category" value={fields.category} onChange={set("category")}>
-              <option value="">Choose or leave blank for a new one</option>
-              {categories.map((category) => (
-                <option key={category} value={category}>
-                  {category}
-                </option>
-              ))}
-            </select>
-          </span>
+          <Select
+            id="category"
+            value={fields.category}
+            onChange={(value) => set("category")({ target: { value } })}
+            placeholder="Choose or leave blank for a new one"
+            options={[
+              { value: "", label: "New category" },
+              ...categories.map((category) => ({ value: category, label: category })),
+            ]}
+          />
         </div>
       </div>
 

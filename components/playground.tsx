@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import type { InputField } from "@/lib/tools/registry";
+import { Select } from "@/components/select";
 
 type PlaygroundTool = {
   slug: string;
@@ -186,15 +187,15 @@ export function Playground({
         <div className="form" style={{ marginTop: 18 }}>
           <div className="field">
             <label htmlFor="tool">Tool</label>
-            <span className="select">
-            <select id="tool" value={slug} onChange={(event) => setSlug(event.target.value)}>
-              {tools.map((option) => (
-                <option key={option.slug} value={option.slug}>
-                  {option.name} · {option.price}
-                </option>
-              ))}
-            </select>
-            </span>
+            <Select
+              id="tool"
+              value={slug}
+              onChange={setSlug}
+              options={tools.map((option) => ({
+                value: option.slug,
+                label: `${option.name} · ${option.price}`,
+              }))}
+            />
             {tool && <span className="hint">{tool.summary}</span>}
           </div>
 
@@ -202,21 +203,12 @@ export function Playground({
             <div key={input.name} className="field">
               <label htmlFor={input.name}>{input.name}</label>
               {input.options ? (
-                <span className="select">
-                <select
+                <Select
                   id={input.name}
                   value={values[input.name] ?? ""}
-                  onChange={(event) =>
-                    setValues({ ...values, [input.name]: event.target.value })
-                  }
-                >
-                  {input.options.map((option) => (
-                    <option key={option} value={option}>
-                      {option}
-                    </option>
-                  ))}
-                </select>
-                </span>
+                  onChange={(next) => setValues({ ...values, [input.name]: next })}
+                  options={input.options.map((option) => ({ value: option, label: option }))}
+                />
               ) : (
                 <input
                   id={input.name}
@@ -233,19 +225,12 @@ export function Playground({
           {rails.length > 1 && (
             <div className="field">
               <label htmlFor="network">Pay on</label>
-              <span className="select">
-              <select
+              <Select
                 id="network"
                 value={network}
-                onChange={(event) => setNetwork(event.target.value)}
-              >
-                {rails.map((rail) => (
-                  <option key={rail.network} value={rail.network}>
-                    {rail.name}
-                  </option>
-                ))}
-              </select>
-              </span>
+                onChange={setNetwork}
+                options={rails.map((rail) => ({ value: rail.network, label: rail.name }))}
+              />
               <span className="hint">Both rails are offered in the same 402.</span>
             </div>
           )}

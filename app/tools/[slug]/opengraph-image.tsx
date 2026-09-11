@@ -4,7 +4,7 @@ import { SITE_NAME } from "@/lib/site";
 
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
-export const alt = "Tool on Onchain Router";
+export const alt = "Tool on OnchainRouter";
 
 /**
  * One share card per tool, built from the same registry entry the page and the

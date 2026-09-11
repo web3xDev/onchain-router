@@ -79,7 +79,7 @@ export const TOOLS: ToolDefinition[] = [
     slug: "lending-rates",
     name: "Lending rates",
     category: "lending",
-    author: "Onchain Router",
+    author: "OnchainRouter",
     summary: "Best place to lend or borrow an asset, weighed against liquidity depth.",
     description:
       "Asks every lending protocol indexed on a chain the same standardized question and " +
@@ -109,7 +109,7 @@ export const TOOLS: ToolDefinition[] = [
     slug: "governance-power",
     name: "Governance power",
     category: "governance",
-    author: "Onchain Router",
+    author: "OnchainRouter",
     summary: "How concentrated a protocol's voting power is, and how much of it never votes.",
     description:
       "Measures a protocol's delegate table against its own on-chain quorum: how few " +
@@ -140,7 +140,7 @@ export const TOOLS: ToolDefinition[] = [
     slug: "withdrawal-risk",
     name: "Withdrawal risk",
     category: "lending",
-    author: "Onchain Router",
+    author: "OnchainRouter",
     summary: "Whether a deposit can actually leave a lending market right now, and how much can.",
     description:
       "Measures every lending market for an asset by what is not lent out: the free " +
@@ -181,7 +181,7 @@ export const TOOLS: ToolDefinition[] = [
     slug: "protocol-health",
     name: "Protocol health",
     category: "lending",
-    author: "Onchain Router",
+    author: "OnchainRouter",
     summary: "Whether a protocol is growing or draining, and whether it earns anything from what it holds.",
     description:
       "Reads a protocol's standardized daily financials: where its deposits moved over " +
@@ -211,7 +211,7 @@ export const TOOLS: ToolDefinition[] = [
     slug: "governance-pulse",
     name: "Governance pulse",
     category: "governance",
-    author: "Onchain Router",
+    author: "OnchainRouter",
     summary: "Whether a protocol's governance is still deciding anything, and whether votes clear quorum.",
     description:
       "Reads the proposal history: when the last one went up, how many in the last 90 days " +

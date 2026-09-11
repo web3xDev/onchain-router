@@ -17,7 +17,7 @@ export function siteUrl(): string {
   return "http://localhost:3000";
 }
 
-export const SITE_NAME = "Onchain Router";
+export const SITE_NAME = "OnchainRouter";
 export const SITE_TAGLINE = "Onchain answers for AI agents";
 export const SITE_DESCRIPTION =
   "Call an onchain tool, pay a cent, get a decision. No account, no API key, no subscription. No answer, no charge.";

@@ -23,7 +23,7 @@ export const POST = withX402(
   {
     "/api/tools/test": {
       accepts: paymentOptions(),
-      description: "Onchain Router smoke-test tool",
+      description: "OnchainRouter smoke-test tool",
     },
   },
   resourceServer,

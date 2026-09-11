@@ -51,7 +51,7 @@ export function SubmitForm({ categories }: { categories: string[] }) {
       "**Question it answers**",
       fields.question,
       "",
-      "**Where the data comes from**",
+      "**Endpoint or data source**",
       fields.source,
       "",
       `**Price per call**: ${fields.price || "not stated"}`,
@@ -111,13 +111,18 @@ export function SubmitForm({ categories }: { categories: string[] }) {
       </div>
 
       <div className="field">
-        <label htmlFor="source">Where the data comes from</label>
+        <label htmlFor="source">Endpoint or data source</label>
         <textarea
           id="source"
           value={fields.source}
           onChange={set("source")}
-          placeholder="Subgraph id, RPC, or an existing API, and how fresh it is."
+          placeholder="An x402 endpoint you already run, or the subgraph, RPC or API the tool would read from."
+          style={{ minHeight: 80 }}
         />
+        <span className="hint">
+          Already speak x402? Give the URL and it can be listed as is. Plain API? Wrap it
+          with a paywall first, then list it.
+        </span>
         {touched && !fields.source.trim() && <span className="error">Required</span>}
       </div>
 

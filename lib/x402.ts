@@ -213,7 +213,7 @@ export function rails(): Rail[] {
           payTo: String(option.payTo),
           settlement: "Circle Gateway, gasless from a deposited balance",
           // 6 decimals.
-          priceLabel: `$${trim(Number(amount) / 1e6, 4)}`,
+          priceLabel: `${trim(Number(amount) / 1e6, 4)} USDC`,
           assetLabel: "USDC",
           gas: "Gasless",
           facilitator: "Circle Gateway",

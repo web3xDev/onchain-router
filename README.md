@@ -64,6 +64,8 @@ The agent calls a tool, gets a 402 naming both rails and the author's address, h
 own wallet sign, and calls again. The router verifies, runs the tool, and only then
 lets the facilitator settle, straight to the author. No answer, no settlement.
 
+A six-slide presentation is at [docs/presentation.pdf](./docs/presentation.pdf).
+
 ## How payment works
 
 ```

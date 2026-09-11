@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>OnchainRouter · presentation</title>
+<style>
+  @page { size: 1280px 720px; margin: 0; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: #141414; color: #f2f2f5; font-family: Inter, -apple-system, "Segoe UI", Helvetica, Arial, sans-serif; }
+  .slide { width: 1280px; height: 720px; padding: 72px 88px; position: relative; page-break-after: always; overflow: hidden; display: flex; flex-direction: column; }
+  .slide:last-child { page-break-after: auto; }
+  .brand { display: flex; align-items: center; gap: 10px; font-weight: 600; font-size: 16px; color: #9a9aa6; }
+  .mark { width: 22px; height: 22px; border-radius: 6px; background: #d25020; color: #fff; display: grid; place-items: center; font: 700 12px ui-monospace, Menlo, monospace; }
+  .label { font: 500 12px ui-monospace, Menlo, monospace; letter-spacing: .12em; text-transform: uppercase; color: #6a6a6a; margin-top: 44px; }
+  h1 { font-size: 56px; line-height: 1.08; letter-spacing: -.03em; margin: 10px 0 0; }
+  h2 { font-size: 40px; line-height: 1.12; letter-spacing: -.025em; margin: 10px 0 0; }
+  p.lede { font-size: 22px; color: #9a9aa6; margin: 20px 0 0; max-width: 34em; line-height: 1.5; }
+  .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; margin-top: 36px; align-items: start; }
+  .item { display: grid; gap: 6px; margin-bottom: 26px; }
+  .item b { font-size: 22px; }
+  .item span { font-size: 17px; color: #9a9aa6; line-height: 1.5; }
+  .foot { position: absolute; left: 88px; right: 88px; bottom: 40px; display: flex; justify-content: space-between; font-size: 12px; color: #5a5a5a; }
+  .shot { border: 1px solid #2a2a2a; border-radius: 12px; overflow: hidden; background: #222; box-shadow: 0 2px 8px rgba(0,0,0,.08); }
+  .shot img { display: block; width: 100%; }
+  .diagram { display: flex; justify-content: center; margin-top: 12px; }
+  .diagram img { height: 540px; width: auto; border: 1px solid #2a2a2a; border-radius: 12px; }
+  .term { background: #222; border: 1px solid #2a2a2a; border-radius: 12px; padding: 18px 22px; font: 13px/1.7 ui-monospace, Menlo, monospace; color: #9a9aa6; white-space: pre; align-self: start; }
+  .term .k { color: #f2f2f5; } .term .w { color: #f0b429; } .term .g { color: #4bca81; } .term .o { color: #d25020; }
+  .big { font-size: 64px; font-weight: 600; letter-spacing: -.03em; }
+  .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-top: 40px; }
+  .stat { background: #222; border: 1px solid #2a2a2a; border-radius: 12px; padding: 22px; }
+  .stat b { display: block; font-size: 38px; letter-spacing: -.02em; }
+  .stat span { font-size: 14px; color: #9a9aa6; }
+  .rule { border-left: 2px solid #d25020; padding-left: 16px; }
+  a { color: #d25020; text-decoration: none; }
+  .mono { font-family: ui-monospace, Menlo, monospace; }
+</style>
+</head>
+<body>
+
+<!-- 1 -->
+<section class="slide">
+  <div class="brand"><span class="mark">R</span> OnchainRouter</div>
+  <div class="label">ETHOnline 2026 · From Scratch</div>
+  <h1>Onchain answers<br>for AI agents</h1>
+  <p class="lede">Call an onchain tool, pay a cent, get a decision. No account, no API key, no subscription. No answer, no charge.</p>
+  <div class="foot"><span>github.com/web3xDev/onchain-router</span><span>1 / 6</span></div>
+</section>
+
+<!-- 2 -->
+<section class="slide">
+  <div class="brand"><span class="mark">R</span> OnchainRouter</div>
+  <div class="label">The problem</div>
+  <h2>An agent that needs onchain data today has to become a customer first</h2>
+  <div class="cols">
+    <div>
+      <div class="item"><b>Sign up for each provider</b><span>API keys, dashboards, rate limits, a card on file. Per source. Before the first useful call.</span></div>
+      <div class="item"><b>Pay for access, not answers</b><span>Subscriptions charge whether the data was useful or not. An empty result costs the same as a good one.</span></div>
+    </div>
+    <div>
+      <div class="item"><b>Get rows, not verdicts</b><span>27 lending markets come back as 27 objects. Which one is stale, which one is a trap, which one can you actually withdraw from: the agent has to work it out itself.</span></div>
+      <div class="item"><b>Nobody can list a tool</b><span>Every provider is its own island. There is no place an agent can discover what exists and what it costs.</span></div>
+    </div>
+  </div>
+  <div class="foot"><span>github.com/web3xDev/onchain-router</span><span>2 / 6</span></div>
+</section>
+
+<!-- 3 -->
+<section class="slide">
+  <div class="brand"><span class="mark">R</span> OnchainRouter</div>
+  <div class="label">The product</div>
+  <h2>A catalogue of paid onchain tools, one endpoint, pay per answer</h2>
+  <div class="cols">
+    <div>
+      <div class="item"><b>Discover</b><span>One MCP URL, or plain HTTP. The agent lists every tool and its price for free.</span></div>
+      <div class="item"><b>Pay per call, from the agent's own wallet</b><span>Every call returns 402 with the price and the rails. The agent signs with x402; the router never holds a key or a balance.</span></div>
+      <div class="item"><b>Get a verdict</b><span>Every tool turns onchain state into a decision, and says when the data cannot be trusted.</span></div>
+    </div>
+    <div>
+      <div class="item rule"><b>No answer, no charge</b><span>A tool with nothing to say never settles the payment. You buy verdicts, not attempts. Enforced on HTTP and MCP alike.</span></div>
+      <div class="item rule"><b>0% commission</b><span>Every tool names its payout address. Each call settles from the agent's wallet straight to the author. An existing x402 endpoint can be listed as is; the router relays and takes nothing.</span></div>
+    </div>
+  </div>
+  <div class="foot"><span>github.com/web3xDev/onchain-router</span><span>3 / 6</span></div>
+</section>
+
+<!-- 4 -->
+<section class="slide" style="padding-top:44px">
+  <div class="brand"><span class="mark">R</span> OnchainRouter</div>
+  <div class="label" style="margin-top:14px">Architecture</div>
+  <div class="diagram"><img src="architecture.png" alt="Architecture"></div>
+  <div class="foot"><span>github.com/web3xDev/onchain-router</span><span>4 / 6</span></div>
+</section>
+
+<!-- 5 -->
+<section class="slide">
+  <div class="brand"><span class="mark">R</span> OnchainRouter</div>
+  <div class="label">Arc and Circle</div>
+  <h2>Autonomous USDC payments on Arc, signed by a Circle agent wallet</h2>
+  <div class="cols" style="grid-template-columns: 1.05fr 1fr">
+    <div>
+      <div class="item"><b>Circle developer-controlled wallet</b><span>The agent's wallet lives in Circle. The router's wallet MCP asks Circle to sign the EIP-712 payment; the private key never reaches the machine.</span></div>
+      <div class="item"><b>Circle Gateway as x402 facilitator</b><span>Verifies the signature and settles USDC in batches. Gasless for the payer, which is what makes a one-cent price possible.</span></div>
+      <div class="item"><b>Settles to the tool author</b><span>The 402 names the author's Arc address. Money goes agent → author. The router is never in the middle.</span></div>
+    </div>
+    <div class="term"><span class="k">POST /api/tools/governance-pulse</span>
+  {"protocol":"ens"}
+
+<span class="w">← 402 Payment Required</span>   24 ms
+  offered: hedera:testnet, eip155:5042002
+  ↳ signed, 10000 on eip155:5042002   1238 ms
+  ↳ settled on eip155:5042002
+    by 0x266b…bbde   2474 ms
+
+<span class="g">← 200 OK in 2474 ms</span>
+<span class="k">ens governance is active: 6 proposals
+in the last 90 days, the latest 10 days ago.</span>
+gateway transfer 20788513-8325-…</div>
+  </div>
+  <div class="foot"><span>github.com/web3xDev/onchain-router</span><span>5 / 6</span></div>
+</section>
+
+<!-- 6 -->
+<section class="slide">
+  <div class="brand"><span class="mark">R</span> OnchainRouter</div>
+  <div class="label">Where it stands</div>
+  <h2>Live on testnet, verified end to end</h2>
+  <div class="stats">
+    <div class="stat"><b>5</b><span>tools, every one a verdict</span></div>
+    <div class="stat"><b>9</b><span>chains of lending data, 58 live deployments</span></div>
+    <div class="stat"><b>2</b><span>payment rails: Hedera via Blocky402, Arc via Circle Gateway</span></div>
+    <div class="stat"><b>0%</b><span>router commission</span></div>
+  </div>
+  <div class="cols" style="margin-top:36px">
+    <div>
+      <div class="item"><b>Verified</b><span>Real settlements on both rails from HTTP, from an SDK agent over MCP, and from Claude Code with a wallet MCP beside it, unprompted. Coverage measured by a probe, not claimed.</span></div>
+    </div>
+    <div>
+      <div class="item"><b>Built with</b><span>The Graph (Messari standardized subgraphs) · Hedera (x402 via Blocky402) · Arc (x402 via Circle Gateway, Circle developer-controlled wallets) · Next.js · MCP</span></div>
+      <div class="item"><b>Links</b><span class="mono">github.com/web3xDev/onchain-router</span></div>
+    </div>
+  </div>
+  <div class="foot"><span>github.com/web3xDev/onchain-router</span><span>6 / 6</span></div>
+</section>
+
+</body>
+</html>

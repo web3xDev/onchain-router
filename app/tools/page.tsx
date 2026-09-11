@@ -26,7 +26,7 @@ export default function ToolsPage() {
             answers. If it cannot give a verdict, the call is free.
           </p>
         </div>
-        <Link href="/submit" className="btn btn-sm">
+        <Link href="/submit" className="btn btn-sm btn-arrow">
           Submit a tool
         </Link>
       </div>

@@ -34,7 +34,7 @@ export default async function Image({ params }: { params: Promise<{ slug: string
               width: 40,
               height: 40,
               borderRadius: 11,
-              background: "#3b82f6",
+              background: "#ea5924",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
@@ -82,11 +82,11 @@ export default async function Image({ params }: { params: Promise<{ slug: string
             <div
               style={{
                 display: "flex",
-                border: "1px solid #2563eb",
-                background: "rgba(59, 130, 246, 0.12)",
+                border: "1px solid #c94a1c",
+                background: "rgba(234, 89, 36, 0.12)",
                 borderRadius: 999,
                 padding: "8px 20px",
-                color: "#60a5fa",
+                color: "#f4703f",
               }}
             >
               {tool.price} per call

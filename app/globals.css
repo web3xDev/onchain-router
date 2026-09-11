@@ -18,9 +18,9 @@
   --text-2: oklch(0.63 0 0);
   --text-3: oklch(0.45 0 0);
 
-  --accent: #3b82f6;
-  --accent-dim: #2563eb;
-  --accent-glow: rgba(59, 130, 246, 0.12);
+  --accent: #ea5924;
+  --accent-dim: #c94a1c;
+  --accent-glow: rgba(234, 89, 36, 0.12);
   --accent-fg: #ffffff;
 
   --success: oklch(0.72 0.17 145);
@@ -71,7 +71,7 @@ a {
 }
 
 .link:hover {
-  color: #60a5fa;
+  color: #f4703f;
 }
 
 a,

@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useMemo, useState } from "react";
 import { Brand } from "@/components/brand";
+import { Author } from "@/components/author";
 
 export type CatalogueEntry = {
   slug: string;
@@ -89,7 +90,7 @@ export function ToolCatalogue({
               <div className="card-top">
                 <div>
                   <h3>{tool.name}</h3>
-                  <div className="card-slug">by {tool.author}</div>
+                  <div className="card-slug"><Author name={tool.author} /></div>
                 </div>
                 <span className="price">{tool.price}</span>
               </div>

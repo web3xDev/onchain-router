@@ -6,6 +6,7 @@ import { rails, resolvePayout } from "@/lib/x402";
 import { siteUrl } from "@/lib/site";
 import { Code } from "@/components/code";
 import { Brand, type BrandId } from "@/components/brand";
+import { Author } from "@/components/author";
 
 // Same reason as the catalogue: the price and the accepted networks come from the
 // running deployment's configuration, not from whatever was set when it was built.
@@ -57,7 +58,7 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
               <span>·</span>
               <span>{tool.coverage}</span>
               <span>·</span>
-              <span>by {tool.author}</span>
+              <Author name={tool.author} size={13} />
             </div>
           </div>
         </div>

@@ -7,6 +7,7 @@ import { StepsFlow } from "@/components/steps-flow";
 import { Reveal } from "@/components/reveal";
 import { Brand, type BrandId } from "@/components/brand";
 import { Code } from "@/components/code";
+import { Author } from "@/components/author";
 import { siteUrl } from "@/lib/site";
 
 // The rails are read from the deployment's own configuration, so this renders per
@@ -112,7 +113,7 @@ claude mcp add onchain-wallet -- \\
               <div className="card-top">
                 <div>
                   <h3>{tool.name}</h3>
-                  <div className="card-slug">by {tool.author}</div>
+                  <div className="card-slug"><Author name={tool.author} /></div>
                 </div>
                 <span className="price">{tool.price}</span>
               </div>

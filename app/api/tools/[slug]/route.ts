@@ -4,6 +4,7 @@ import { withX402 } from "@x402/next";
 import { paymentOptions, resourceServer } from "@/lib/x402";
 import { findTool, TOOLS } from "@/lib/tools/registry";
 import { isNoAnswer } from "@/lib/tools/no-answer";
+import { relay, PAYMENT_SIGNATURE_HEADERS } from "@/lib/relay";
 
 /**
  * Every paid tool, served from one handler.
@@ -88,6 +89,30 @@ export const POST = async (request: NextRequest, context: unknown) => {
       },
       { status: 400 },
     );
+  }
+
+  // A listed endpoint is relayed as is: its 402 goes out, the caller's signed
+  // payment goes in, and settlement happens there. This router's own paywall never
+  // sees the call.
+  if (tool.endpoint) {
+    const payment =
+      PAYMENT_SIGNATURE_HEADERS.map((n) => request.headers.get(n)).find((v) => v) ?? undefined;
+
+    try {
+      const relayed = await relay(tool.endpoint, parsed.data, payment);
+      const headers: Record<string, string> = { "X-Relayed-To": tool.endpoint };
+      if (relayed.paymentRequired) headers["PAYMENT-REQUIRED"] = relayed.paymentRequired;
+      if (relayed.paymentResponse) {
+        headers["PAYMENT-RESPONSE"] = relayed.paymentResponse;
+        headers["X-PAYMENT-RESPONSE"] = relayed.paymentResponse;
+      }
+      return NextResponse.json(relayed.body, { status: relayed.status, headers });
+    } catch (error) {
+      return NextResponse.json(
+        { error: error instanceof Error ? error.message : "Relay failed", charged: false },
+        { status: 502 },
+      );
+    }
   }
 
   // The stream is spent, so the validated input is re-attached for the paid handler.

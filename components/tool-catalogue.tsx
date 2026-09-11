@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useMemo, useState } from "react";
+import { Brand } from "@/components/brand";
 
 export type CatalogueEntry = {
   slug: string;
@@ -12,6 +13,7 @@ export type CatalogueEntry = {
   price: string;
   coverage: string;
   author: string;
+  source?: string;
   inputs: string[];
 };
 
@@ -97,6 +99,13 @@ export function ToolCatalogue({
               <div className="card-foot">
                 <span className="tag">{tool.category}</span>
                 <span>{tool.coverage}</span>
+                {tool.source === "graph" ? (
+                  <span className="card-source">
+                    <Brand id="graph" height={12} /> The Graph
+                  </span>
+                ) : (
+                  tool.source && <span>{tool.source}</span>
+                )}
                 <span style={{ marginLeft: "auto" }}>no answer, no charge</span>
               </div>
             </Link>

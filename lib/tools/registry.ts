@@ -41,11 +41,35 @@ export type ToolDefinition = {
   price: string;
   /** What the tool reaches, in the operator's words. */
   coverage: string;
+  /** Where the data comes from, for the card. "graph" gets The Graph's mark. */
+  source?: "graph" | string;
   inputSchema: z.ZodRawShape;
   /** A real request and the shape of its answer, for the detail page. */
   example: { request: Record<string, unknown>; answer: string };
+  /**
+   * An x402 endpoint somewhere else. The router relays: the caller's payment goes
+   * to that endpoint's own payTo and settles there. The router verifies nothing and
+   * holds nothing; it carries the 402 out and the signed payment back in.
+   */
+  endpoint?: string;
   run: (input: Record<string, unknown>) => Promise<unknown>;
 };
+
+/**
+ * Lists an x402 endpoint that already exists. Price and payout come from its own
+ * 402 at call time; what is written here is for the catalogue.
+ */
+export function external(
+  tool: Omit<ToolDefinition, "run" | "endpoint"> & { endpoint: string },
+): ToolDefinition {
+  return {
+    ...tool,
+    // Never called: relayed tools are handled before run() by both transports.
+    run: async () => {
+      throw new Error(`${tool.slug} is relayed to ${tool.endpoint}, not run here`);
+    },
+  };
+}
 
 export const TOOLS: ToolDefinition[] = [
   {
@@ -60,6 +84,7 @@ export const TOOLS: ToolDefinition[] = [
       "why any higher rate was discarded as too thin or too stale to trust.",
     price: "$0.01",
     coverage: `${SUPPORTED_CHAINS.length} chains, ${LIVE_LENDING_TOTAL} live deployments`,
+    source: "graph",
     inputSchema: {
       asset: z.string().describe("Asset symbol, e.g. USDC or WETH"),
       chain: z
@@ -89,6 +114,7 @@ export const TOOLS: ToolDefinition[] = [
       "much of that power has never been used.",
     price: "$0.01",
     coverage: `${LIVE_GOVERNANCE_PROTOCOLS.length} protocols`,
+    source: "graph",
     inputSchema: {
       // Only the protocols the probe found actually serving data. The other seven are
       // listed on the network but return nothing, and offering them would sell a call
@@ -106,6 +132,7 @@ export const TOOLS: ToolDefinition[] = [
     },
     run: (input) => governancePower(String(input.protocol ?? "uniswap")),
   },
+
 ];
 
 export function findTool(slug: string): ToolDefinition | undefined {
@@ -149,5 +176,6 @@ export function catalogue() {
   return TOOLS.map(({ run: _run, inputSchema, ...rest }) => ({
     ...rest,
     inputs: Object.keys(inputSchema),
+    hosted: !rest.endpoint,
   }));
 }

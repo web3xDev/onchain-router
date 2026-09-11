@@ -5,6 +5,7 @@ import { describeInputs, findTool, TOOLS } from "@/lib/tools/registry";
 import { rails, resolvePayout } from "@/lib/x402";
 import { siteUrl } from "@/lib/site";
 import { Code } from "@/components/code";
+import { Brand, type BrandId } from "@/components/brand";
 
 // Same reason as the catalogue: the price and the accepted networks come from the
 // running deployment's configuration, not from whatever was set when it was built.
@@ -150,14 +151,26 @@ curl -X POST ${base}/api/tools/${tool.slug} \\
           <div style={{ marginTop: 14 }}>
             {live.map((rail) => (
               <div key={rail.id} className="aside-row">
-                <span>{rail.name}</span>
+                <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
+                  <Brand id={rail.id as BrandId} height={13} /> {rail.name}
+                </span>
                 <span>{rail.amount}</span>
               </div>
             ))}
-            <div className="aside-row">
-              <span>data source</span>
-              <span>The Graph</span>
-            </div>
+            {tool.source && (
+              <div className="aside-row">
+                <span>data source</span>
+                <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
+                  {tool.source === "graph" ? (
+                    <>
+                      <Brand id="graph" height={13} /> The Graph
+                    </>
+                  ) : (
+                    tool.source
+                  )}
+                </span>
+              </div>
+            )}
             <div className="aside-row">
               <span>coverage</span>
               <span>{tool.coverage}</span>
@@ -166,17 +179,26 @@ curl -X POST ${base}/api/tools/${tool.slug} \\
               <span>pays out to</span>
               <span>{tool.author}</span>
             </div>
-            {payout.hedera && (
+            {tool.endpoint ? (
               <div className="aside-row">
-                <span>on Hedera</span>
-                <span>{payout.hedera}</span>
+                <span>settled at</span>
+                <span>{new URL(tool.endpoint).host}</span>
               </div>
-            )}
-            {payout.arc && (
-              <div className="aside-row">
-                <span>on Arc</span>
-                <span>{payout.arc}</span>
-              </div>
+            ) : (
+              <>
+                {payout.hedera && (
+                  <div className="aside-row">
+                    <span>on Hedera</span>
+                    <span>{payout.hedera}</span>
+                  </div>
+                )}
+                {payout.arc && (
+                  <div className="aside-row">
+                    <span>on Arc</span>
+                    <span>{payout.arc}</span>
+                  </div>
+                )}
+              </>
             )}
             <div className="aside-row">
               <span>router commission</span>

@@ -13,6 +13,14 @@ each call settles straight from the agent's wallet to it. The router is never in
 middle of the money: no invoice, no payout run, no minimum. Its own tools settle to its
 own addresses; a submitted tool settles to its author.
 
+**Any x402 endpoint can be listed.** A tool does not have to live in this repo. Give
+the router an endpoint that already answers 402 and it is relayed: the endpoint's own
+402 goes out to the caller, the caller's signed payment goes back in, and settlement
+happens at the endpoint, to its address. The router verifies nothing and holds
+nothing. `external()` in `lib/tools/registry.ts` is the whole listing, and the submit
+page reads price, rails and payout live from the endpoint's 402 before it lets you file
+one.
+
 **No answer, no charge.** A tool that cannot give a verdict says so, and the payment
 signed for that call is never settled. You buy answers, not attempts. Both transports
 enforce it: HTTP refuses to settle on any 4xx, MCP on `isError`, and a tool with
@@ -41,6 +49,7 @@ Everything below is running against live data and settling real payments on test
 | ✅ | Coverage measured rather than claimed (`npm run probe`) |
 | ✅ | No answer, no charge: a call with no verdict is never settled |
 | ✅ | Per-tool payout: each tool settles straight to its author, 0% commission |
+| ✅ | External x402 endpoints listed and relayed, over HTTP and MCP |
 
 ---
 
@@ -231,7 +240,9 @@ app/
   api/tools/[slug]/route.ts every paid tool, one handler
   api/playground/route.ts   the only place the router spends its own money
 lib/
-  tools/registry.ts         every tool declared once
+  tools/registry.ts         every tool declared once; external() lists an x402 endpoint
+  relay.ts                  carries a 402 out and a signed payment in, touches nothing
+  api/probe/route.ts        reads an endpoint's 402 before it can be listed
   graph/verified.ts         what `npm run probe` measured as live
   x402.ts                   facilitator, resource server, pricing
   payment/agent-wallet.ts   builds a paying fetch from whatever is configured

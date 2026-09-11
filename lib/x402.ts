@@ -159,6 +159,11 @@ export type Rail = {
   amount: string;
   payTo: string;
   settlement: string;
+  /** For display: "0.1 HBAR", "$0.01". */
+  priceLabel: string;
+  assetLabel: string;
+  gas: string;
+  facilitator: string;
 };
 
 /**
@@ -181,6 +186,9 @@ export function rails(): Rail[] {
     const asset = typeof price === "string" ? price : (price.asset ?? "");
     const amount = typeof price === "string" ? price : (price.amount ?? "");
 
+    const trim = (n: number, digits: number) =>
+      n.toFixed(digits).replace(/\.?0+$/, "");
+
     return option.network === HEDERA_NETWORK
       ? {
           id: "hedera",
@@ -190,6 +198,11 @@ export function rails(): Rail[] {
           amount: `${amount} tinybar`,
           payTo: String(option.payTo),
           settlement: "Blocky402 facilitator, which also sponsors the gas",
+          // 8 decimals.
+          priceLabel: `${trim(Number(amount) / 1e8, 4)} HBAR`,
+          assetLabel: "HBAR",
+          gas: "Gas sponsored",
+          facilitator: "Blocky402",
         }
       : {
           id: "arc",
@@ -199,6 +212,11 @@ export function rails(): Rail[] {
           amount: `${amount} (6 decimals)`,
           payTo: String(option.payTo),
           settlement: "Circle Gateway, gasless from a deposited balance",
+          // 6 decimals.
+          priceLabel: `$${trim(Number(amount) / 1e6, 4)}`,
+          assetLabel: "USDC",
+          gas: "Gasless",
+          facilitator: "Circle Gateway",
         };
   });
 }

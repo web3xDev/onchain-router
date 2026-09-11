@@ -1,5 +1,7 @@
 "use client";
 
+import { Brand } from "@/components/brand";
+
 type Tone = "label" | "key" | "dim" | "warn" | "ok";
 type Line = { text: string; tone: Tone; group: number; icon?: "user" | "agent"; answer?: boolean };
 
@@ -74,7 +76,10 @@ export function HeroTerminal() {
         </pre>
       </div>
 
-      <p className="terminal-foot">Paid on Hedera or Arc, from the agent&apos;s own wallet.</p>
+      <p className="terminal-foot">
+        Paid on <Brand id="hedera" height={13} /> Hedera or <Brand id="arc" height={13} /> Arc,
+        from the agent&apos;s own wallet.
+      </p>
     </div>
   );
 }

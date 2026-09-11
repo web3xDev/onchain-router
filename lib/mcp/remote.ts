@@ -7,6 +7,8 @@ import { paymentOptions, resourceServer } from "@/lib/x402";
 import { TOOLS, type Payout } from "@/lib/tools/registry";
 import { SITE_NAME } from "@/lib/site";
 import { isNoAnswer } from "@/lib/tools/no-answer";
+import { relay, decodeBase64Json } from "@/lib/relay";
+import { encodePaymentSignatureHeader } from "@x402/core/http";
 
 /**
  * The router as a remote MCP server.
@@ -121,11 +123,86 @@ function explainPaymentRequired(result: ToolResult, toolName: string): ToolResul
   };
 }
 
+/**
+ * A listed endpoint over MCP. The endpoint's own 402 is handed to the caller as a
+ * payment-required result, in the same shape the router's own tools use, so an
+ * x402 MCP client or a wallet MCP handles it identically. The signed payment comes
+ * back in `_meta` or as the `payment` argument and is carried to the endpoint as its
+ * header. Settlement is the endpoint's.
+ */
+async function relayTool(
+  endpoint: string,
+  args: Record<string, unknown>,
+  extra: unknown,
+  name: string,
+): Promise<ToolResult> {
+  const lifted = liftPaymentArgument(args, extra);
+  const meta = (lifted.extra as { _meta?: Record<string, unknown> } | undefined)?._meta;
+  const payload = meta?.[MCP_PAYMENT_META_KEY] as PaymentPayload | undefined;
+  const header = payload ? encodePaymentSignatureHeader(payload) : undefined;
+
+  let relayed;
+  try {
+    relayed = await relay(endpoint, lifted.args, header);
+  } catch (error) {
+    return {
+      content: [{ type: "text", text: `Endpoint unreachable, not charged. ${error instanceof Error ? error.message : String(error)}` }],
+      isError: true,
+    };
+  }
+
+  if (relayed.status === 402) {
+    const required = decodeBase64Json<Record<string, unknown>>(relayed.paymentRequired) ??
+      (relayed.body as Record<string, unknown>);
+    return explainPaymentRequired(
+      {
+        content: [{ type: "text", text: JSON.stringify(required) }],
+        structuredContent: required,
+        isError: true,
+      },
+      name,
+    );
+  }
+
+  const text = typeof relayed.body === "string" ? relayed.body : JSON.stringify(relayed.body, null, 2);
+  const settle = decodeBase64Json<Record<string, unknown>>(relayed.paymentResponse);
+
+  if (relayed.status >= 400) {
+    return {
+      content: [{ type: "text", text: `${relayed.status === 404 ? "No answer" : "Endpoint failed"}, not charged. ${text}` }],
+      isError: true,
+    };
+  }
+
+  return {
+    content: [{ type: "text", text }],
+    ...(settle ? { _meta: { "x402/payment-response": settle } } : {}),
+  };
+}
+
 export async function buildRemoteServer(): Promise<McpServer> {
   const server = new McpServer({ name: SITE_NAME.toLowerCase().replace(/\s+/g, "-"), version: "0.1.0" });
 
   for (const tool of TOOLS) {
     const name = tool.slug.replace(/-/g, "_");
+
+    if (tool.endpoint) {
+      const endpoint = tool.endpoint;
+      server.registerTool(
+        name,
+        {
+          title: tool.summary,
+          description: `${tool.description} Covers ${tool.coverage}. Costs ${tool.price} per call, paid with x402 from the caller's own wallet, settled by the tool's own endpoint.`,
+          inputSchema: {
+            ...tool.inputSchema,
+            payment: z.string().optional().describe("x402 payment payload, base64, if not carried in _meta"),
+          },
+        },
+        async (args: Record<string, unknown>, extra: unknown) => relayTool(endpoint, args, extra, name),
+      );
+      continue;
+    }
+
     const requirements = await acceptsFor(tool.slug, tool.payTo);
 
     const gated = createPaymentWrapper(resourceServer, {

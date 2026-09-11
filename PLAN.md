@@ -477,7 +477,29 @@ quoted two different addresses for two tools, and a payment to the second one se
 from the Circle wallet to it. The router never touches the money, which makes 0% the
 natural number rather than a promotion.
 
-### 11 Sept: more tools
+### 11 Sept: the router routes
+
+Two attempts at "how does someone else list a tool", one wrong, one right.
+
+The wrong one: a turnstile. The author gives a plain API URL and the router puts an
+x402 paywall in front of it. It worked in an hour and it was Flash402 with an MCP on
+top, which is a product that already exists, is mine, and is closed source for a
+reason. Reverted before it was pushed.
+
+The right one came from the question "why would we turn people's data into tools at
+all". The router lists x402 endpoints that already exist and relays them: the
+endpoint's own 402 goes out to the caller, the caller's signed payment comes back and
+is carried to the endpoint as its header, and the endpoint settles to its own address.
+The router verifies nothing, holds nothing, and takes nothing. Verified against a real
+x402 endpoint over HTTP, over MCP with the x402 client, and over MCP with the wallet
+MCP doing the three steps. The submit page now reads price, rails and payout live from
+the endpoint's 402 and refuses to file a listing for anything that does not answer
+402.
+
+This is what "router" should have meant from the start. The two tools that run here
+are two listings that happen to be hosted by the operator.
+
+### 12 Sept: more tools
 
 *pending*
 

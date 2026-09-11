@@ -1,10 +1,14 @@
 import Link from "next/link";
-import { catalogue, CATEGORIES, TOOLS } from "@/lib/tools/registry";
+import { TOOLS, catalogue } from "@/lib/tools/registry";
 import { SUPPORTED_CHAINS } from "@/lib/graph/deployments";
 import { LIVE_GOVERNANCE_PROTOCOLS } from "@/lib/graph/verified";
 import { rails } from "@/lib/x402";
-import { ToolCatalogue } from "@/components/tool-catalogue";
 import { HeroTerminal } from "@/components/hero-terminal";
+import { StepsFlow } from "@/components/steps-flow";
+import { Reveal } from "@/components/reveal";
+import { Brand, type BrandId } from "@/components/brand";
+import { Code } from "@/components/code";
+import { siteUrl } from "@/lib/site";
 
 // The rails are read from the deployment's own configuration, so this renders per
 // request rather than being frozen into the build. A page that says "0 rails live"
@@ -12,11 +16,18 @@ import { HeroTerminal } from "@/components/hero-terminal";
 export const dynamic = "force-dynamic";
 
 export default function Home() {
-  const tools = catalogue();
   const live = rails();
+  const featured = catalogue().slice(0, 2);
+  const base = siteUrl();
+
+  // Each tool sets its own price, so the bar quotes the floor, not a promise.
+  const cheapest = TOOLS.map((t) => t.price).sort(
+    (a, b) => parseFloat(a.replace(/[^\d.]/g, "")) - parseFloat(b.replace(/[^\d.]/g, "")),
+  )[0];
 
   return (
     <>
+      <Reveal />
       <section className="hero">
         <div className="page hero-grid">
           <div>
@@ -27,8 +38,8 @@ export default function Home() {
             </h1>
 
             <p className="hero-sub">
-              Skip the API keys, subscriptions, and raw data. Call an onchain tool, pay a
-              cent, get a decision.
+              Skip the API keys and subscriptions. Call an onchain tool, pay a cent, get a
+              decision.
             </p>
 
             <div className="hero-actions">
@@ -47,8 +58,8 @@ export default function Home() {
             </p>
 
             <p className="proof">
-              {TOOLS.length} tools · {SUPPORTED_CHAINS.length} chains ·{" "}
-              {LIVE_GOVERNANCE_PROTOCOLS.length} protocols · $0.01 per call · 0% router commission
+              {TOOLS.length} live tools · {SUPPORTED_CHAINS.length} chains ·{" "}
+              {LIVE_GOVERNANCE_PROTOCOLS.length} protocols · {cheapest} per call · 0% commission
             </p>
           </div>
 
@@ -56,34 +67,86 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="section page" id="tools" style={{ scrollMarginTop: 72 }}>
+      <section className="band" data-reveal>
+        <div className="section page">
+        <div className="two-col">
+          <div>
+            <span className="label">Connect</span>
+            <h2 style={{ marginTop: 8 }}>One endpoint. Every tool.</h2>
+            <p className="lede">
+              Add the router and a wallet to Claude Code. From then on, your agent can
+              discover tools, pay for them, and get answers.
+            </p>
+            <Link href="/connect" className="link" style={{ fontSize: 14 }}>
+              Other agents and the SDK →
+            </Link>
+          </div>
+          <Code lang="sh">
+            {`claude mcp add --transport http onchain-router \\
+  ${base}/mcp
+
+claude mcp add onchain-wallet -- \\
+  npx tsx mcp/wallet.ts`}
+          </Code>
+        </div>
+        </div>
+      </section>
+
+      <section className="section page" data-reveal>
         <div className="section-head">
           <div>
-            <span className="label">Catalogue</span>
-            <h2 style={{ marginTop: 8 }}>{TOOLS.length} tools, priced per call</h2>
+            <span className="label">Tools</span>
+            <h2 style={{ marginTop: 8 }}>Verdicts, not tables</h2>
             <p>
-              Every tool answers a question rather than returning a table. You pay when it
-              answers. If it cannot give a verdict, the call is free.
+              Every tool turns onchain state into a decision, and tells the agent when the
+              data isn&apos;t trustworthy.
             </p>
           </div>
           <Link href="/tools" className="btn btn-sm">
-            All tools
+            All {TOOLS.length} tools →
           </Link>
         </div>
 
-        <ToolCatalogue tools={tools} categories={CATEGORIES} />
+        <div className="featured">
+          {featured.map((tool) => (
+            <Link key={tool.slug} href={`/tools/${tool.slug}`} className="feature">
+              <div className="card-top">
+                <div>
+                  <h3>{tool.name}</h3>
+                  <div className="card-slug">by {tool.author}</div>
+                </div>
+                <span className="price">{tool.price}</span>
+              </div>
+              <p className="feature-summary">{tool.summary}</p>
+              <div className="feature-answer">{tool.example.answer}</div>
+              <div className="card-foot">
+                <span className="tag">{tool.category}</span>
+                <span>{tool.coverage}</span>
+                {tool.source === "graph" ? (
+                  <span className="card-source">
+                    <Brand id="graph" height={12} /> The Graph
+                  </span>
+                ) : (
+                  tool.source && <span>{tool.source}</span>
+                )}
+                <span style={{ marginLeft: "auto" }}>no answer, no charge</span>
+              </div>
+            </Link>
+          ))}
+        </div>
       </section>
 
-      <section className="section page" style={{ paddingTop: 0 }}>
+      <section className="band" data-reveal>
+        <div className="section page">
         <div className="section-head">
           <div>
             <span className="label">How it works</span>
             <h2 style={{ marginTop: 8 }}>Three steps, no signup anywhere</h2>
-            <p>The OpenRouter model, for onchain tools.</p>
           </div>
         </div>
 
-        <div className="steps">
+        <StepsFlow>
+        <div className="steps steps-plain">
           <div className="step">
             <div className="step-n">01</div>
             <h3>Connect once</h3>
@@ -96,65 +159,99 @@ export default function Home() {
             <div className="step-n">02</div>
             <h3>Call a tool</h3>
             <p>
-              The first call comes back 402 with the price and the networks accepted. Nothing
-              has been charged yet.
+              The first call returns 402 with the price and payment rails. Nothing is
+              charged yet.
             </p>
           </div>
           <div className="step">
             <div className="step-n">03</div>
             <h3>The agent pays, for an answer</h3>
             <p>
-              It signs with its own wallet and the call returns. If the tool has nothing to
-              say, the payment is never settled. You buy verdicts, not attempts.
+              The agent signs with its own wallet. The tool runs and returns the answer. If
+              it has nothing to say, the payment is never settled.
             </p>
           </div>
         </div>
+        </StepsFlow>
+        </div>
       </section>
 
-      <section className="section page" style={{ paddingTop: 0 }}>
+      <section className="section page" data-reveal>
         <div className="section-head">
           <div>
             <span className="label">For tool authors</span>
-            <h2 style={{ marginTop: 8 }}>List a tool, get paid per call, straight to your wallet</h2>
+            <h2 style={{ marginTop: 8 }}>Build once. Get paid per answer.</h2>
             <p>
-              Every call an agent makes settles directly from its wallet to yours. No invoice,
-              no payout run, no minimum. The router takes 0% commission, for now.
+              Already have an x402 endpoint that answers an onchain question? List it here
+              and let agents discover it, call it, and pay you per answer.
             </p>
           </div>
-          <Link href="/submit" className="btn btn-sm">
-            Submit a tool
-          </Link>
+        </div>
+
+        <div className="authors">
+          <div className="authors-points">
+            <div>
+              <strong>Your price.</strong> Quoted from your own 402.
+            </div>
+            <div>
+              <strong>Your wallet.</strong> Every payment settles to you.
+            </div>
+            <div>
+              <strong>Your endpoint.</strong> The router relays and holds nothing.
+            </div>
+          </div>
+          <div className="authors-cta">
+            <div className="authors-zero">0% commission</div>
+            <Link href="/submit" className="btn btn-primary">
+              List your endpoint
+            </Link>
+          </div>
         </div>
       </section>
 
-      <section className="section page" style={{ paddingTop: 0 }}>
+      <section className="band" data-reveal>
+        <div className="section page">
         <div className="section-head">
           <div>
             <span className="label">Payment rails</span>
-            <h2 style={{ marginTop: 8 }}>Pay on whichever chain your agent already funds</h2>
-            <p>
-              One 402 advertises every rail at once. The agent picks; the tool never learns
-              which one settled.
-            </p>
+            <h2 style={{ marginTop: 8 }}>One tool. Multiple payment rails.</h2>
+            <p>The agent chooses how to pay. The tool doesn&apos;t care.</p>
           </div>
         </div>
 
         <div className="rails">
           {live.map((rail) => (
             <div key={rail.id} className="rail">
-              <div className="rail-head">{rail.name}</div>
-              <dl>
-                <dt>network</dt>
-                <dd>{rail.network}</dd>
-                <dt>asset</dt>
-                <dd>{rail.asset}</dd>
-                <dt>per call</dt>
-                <dd>{rail.amount}</dd>
-                <dt>settles via</dt>
-                <dd>{rail.settlement}</dd>
-              </dl>
+              <div className="rail-head">
+                <Brand id={rail.id as BrandId} kind="logo" height={24} />
+                <span className="rail-net">testnet</span>
+              </div>
+              <div className="rail-price">
+                {rail.priceLabel} <span>/ call</span>
+              </div>
+              <div className="rail-facts">
+                <span>{rail.assetLabel}</span>
+                <span>{rail.gas}</span>
+                <span>{rail.facilitator}</span>
+              </div>
             </div>
           ))}
+        </div>
+        </div>
+      </section>
+
+      <section className="page" style={{ paddingBottom: 72, paddingTop: 72 }} data-reveal>
+        <div className="closing">
+          <h2>Give your agent an onchain toolbox.</h2>
+          <p>One endpoint. Pay per answer. No signup.</p>
+          <div className="hero-actions" style={{ justifyContent: "center", marginTop: 22 }}>
+            <Link href="/connect" className="btn btn-primary">
+              Connect your agent
+            </Link>
+            <Link href="/playground" className="btn">
+              Try the playground
+            </Link>
+          </div>
         </div>
       </section>
     </>

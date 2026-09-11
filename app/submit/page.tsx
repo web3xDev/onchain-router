@@ -3,7 +3,7 @@ import { CATEGORIES } from "@/lib/tools/registry";
 import { SubmitForm } from "@/components/submit-form";
 
 const DESCRIPTION =
-  "Propose an onchain tool for the router and earn on every call agents make.";
+  "List an x402 endpoint on the router. Agents find it, call it and pay you directly.";
 
 export const metadata: Metadata = {
   title: "Submit a tool",
@@ -17,31 +17,25 @@ export default function SubmitPage() {
     <div className="page prose">
       <div className="page-head">
         <span className="label">Submit</span>
-        <h1>List your tool on the router</h1>
+        <h1>List your x402 endpoint</h1>
         <p>
-          If you can answer a question about onchain state, agents will pay you per call for
-          it. Every payment settles straight from the agent&apos;s wallet to the address you
-          name. The router takes 0% commission, for now.
+          Already charging with x402? List the URL. Agents pay at your endpoint, the router
+          takes nothing.
         </p>
       </div>
 
-      <h2>What makes a good tool</h2>
+      <h2>What gets listed</h2>
       <ul>
-        <li>
-          It answers a question rather than returning a table. &quot;Where should I lend
-          USDC&quot; beats &quot;here are 27 markets&quot;.
-        </li>
-        <li>
-          It says when the data is not trustworthy. A rate no one can actually get should be
-          called out, not ranked first.
-        </li>
-        <li>It is cheap enough that an agent calls it without thinking. Cents, not dollars.</li>
+        <li>Answers 402 with x402 payment requirements. Check reads the rest.</li>
+        <li>Returns a verdict, not a table.</li>
+        <li>Returns 404 when it has no answer, so nothing is charged.</li>
+        <li>Costs cents, not dollars.</li>
       </ul>
 
-      <h2>Propose it</h2>
+      <h2>List it</h2>
       <p>
-        This opens a prefilled issue on the repo. Nothing is sent anywhere until you press
-        the button on GitHub.
+        Opens a prefilled GitHub issue. Once reviewed, your tool is live in the catalogue and
+        over MCP.
       </p>
 
       <SubmitForm categories={CATEGORIES} />

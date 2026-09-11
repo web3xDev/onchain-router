@@ -21,7 +21,6 @@ const SCRIPT: Line[] = [
   { text: "", tone: "dim", group: 2 },
   { text: "Payment signed", tone: "dim", group: 3 },
   { text: "Payment settled", tone: "ok", group: 3 },
-  { text: "", tone: "dim", group: 3 },
   { text: "200 OK", tone: "ok", group: 4 },
   { text: "", tone: "dim", group: 4 },
   { text: "Compound V3", tone: "key", group: 5 },

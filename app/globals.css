@@ -298,10 +298,7 @@ pre {
 }
 
 .proof {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px 18px;
-  margin-top: 26px;
+  margin: 26px 0 0;
   padding-top: 18px;
   border-top: 1px solid var(--border);
   font-size: 13px;

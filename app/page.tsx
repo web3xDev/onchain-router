@@ -46,12 +46,10 @@ export default function Home() {
               No answer, no charge.
             </p>
 
-            <div className="proof">
-              <span>{TOOLS.length} tools</span>
-              <span>{SUPPORTED_CHAINS.length} chains · {LIVE_GOVERNANCE_PROTOCOLS.length} protocols</span>
-              <span>$0.01 per call</span>
-              <span>0% router commission</span>
-            </div>
+            <p className="proof">
+              {TOOLS.length} tools · {SUPPORTED_CHAINS.length} chains ·{" "}
+              {LIVE_GOVERNANCE_PROTOCOLS.length} protocols · $0.01 per call · 0% router commission
+            </p>
           </div>
 
           <HeroTerminal />

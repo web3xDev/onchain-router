@@ -1143,6 +1143,8 @@ html {
   display: grid;
   gap: 10px;
   align-content: start;
+  /* Links take their own width; the empty part of the column is not a target. */
+  justify-items: start;
   font-size: 14px;
   color: var(--text-2);
 }

@@ -27,10 +27,6 @@ const SCRIPT: Line[] = [
   { text: "Compound V3", tone: "key", group: 5 },
   { text: "4.51% supply APY", tone: "key", group: 5 },
   { text: "$376M liquidity", tone: "dim", group: 5 },
-  { text: "", tone: "dim", group: 5 },
-  { text: "Iron Bank", tone: "key", group: 5 },
-  { text: "75.10%", tone: "dim", group: 5 },
-  { text: "⚠ stale data", tone: "warn", group: 5 },
 ];
 
 /** Each step lands as a block, a beat apart; the whole exchange takes about a second. */

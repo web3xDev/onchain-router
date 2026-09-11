@@ -368,6 +368,12 @@ pre {
   text-transform: uppercase;
 }
 
+.t-icon {
+  display: inline-block;
+  margin-right: 6px;
+  vertical-align: -2px;
+}
+
 .terminal-foot {
   margin: 12px 0 0;
   font-family: var(--mono);

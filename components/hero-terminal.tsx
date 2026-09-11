@@ -1,7 +1,25 @@
 "use client";
 
 type Tone = "label" | "key" | "dim" | "warn" | "ok";
-type Line = { text: string; tone: Tone; group: number };
+type Line = { text: string; tone: Tone; group: number; icon?: "user" | "agent" };
+
+/** Small line icons, drawn with strokes so they sit at text weight. */
+const ICONS = {
+  user: (
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <circle cx="12" cy="8" r="4" />
+      <path d="M4 21c0-4 3.6-7 8-7s8 3 8 7" />
+    </svg>
+  ),
+  agent: (
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <rect x="4" y="8" width="16" height="12" rx="2" />
+      <path d="M12 8V4M8 4h8" />
+      <circle cx="9" cy="14" r="1" fill="currentColor" stroke="none" />
+      <circle cx="15" cy="14" r="1" fill="currentColor" stroke="none" />
+    </svg>
+  ),
+};
 
 /**
  * The whole product in one exchange: a question, an agent, a payment, an answer.
@@ -10,10 +28,10 @@ type Line = { text: string; tone: Tone; group: number };
  * live on the tool pages; the hero's job is to show that the loop closes.
  */
 const SCRIPT: Line[] = [
-  { text: "You", tone: "label", group: 0 },
+  { text: "You", tone: "label", group: 0, icon: "user" },
   { text: "Where should I lend USDC?", tone: "key", group: 0 },
   { text: "", tone: "dim", group: 0 },
-  { text: "Agent", tone: "label", group: 1 },
+  { text: "Agent", tone: "label", group: 1, icon: "agent" },
   { text: '→ lending_rates("USDC", "ethereum")', tone: "dim", group: 1 },
   { text: "", tone: "dim", group: 1 },
   { text: "402 Payment Required", tone: "warn", group: 2 },
@@ -49,6 +67,7 @@ export function HeroTerminal() {
               className={`log-line t-${line.tone}`}
               style={{ animationDelay: `${line.group * STEP_MS}ms` }}
             >
+              {line.icon && <span className="t-icon">{ICONS[line.icon]}</span>}
               {line.text || " "}
             </span>
           ))}

@@ -68,8 +68,8 @@ export default function Home() {
               answers. If it cannot give a verdict, the call is free.
             </p>
           </div>
-          <Link href="/submit" className="btn btn-sm">
-            Submit a tool
+          <Link href="/tools" className="btn btn-sm">
+            All tools
           </Link>
         </div>
 

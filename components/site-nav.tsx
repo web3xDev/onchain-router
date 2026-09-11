@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 const LINKS = [
-  { href: "/", label: "Tools" },
+  { href: "/tools", label: "Tools" },
   { href: "/playground", label: "Playground" },
   { href: "/connect", label: "Connect" },
   { href: "/submit", label: "Submit a tool" },
@@ -23,11 +23,7 @@ export function SiteNav() {
 
         <div className="nav-links">
           {LINKS.map((link) => {
-            // "/" is the catalogue, so a tool detail page keeps Tools lit.
-            const active =
-              link.href === "/"
-                ? pathname === "/" || pathname.startsWith("/tools")
-                : pathname.startsWith(link.href);
+            const active = pathname.startsWith(link.href);
 
             return (
               <Link key={link.href} href={link.href} className={active ? "active" : undefined}>

@@ -47,7 +47,7 @@ export default function ConnectPage() {
       </p>
 
       <div className="hero-actions" style={{ marginTop: 32 }}>
-        <Link href="/#tools" className="btn">
+        <Link href="/tools" className="btn">
           Browse tools
         </Link>
         <Link href="/playground" className="btn">

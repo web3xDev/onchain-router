@@ -42,7 +42,7 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
   return (
     <div className="page">
       <div className="detail">
-        <Link href="/" className="back">
+        <Link href="/tools" className="back">
           ← all tools
         </Link>
 

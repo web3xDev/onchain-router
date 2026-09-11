@@ -4,8 +4,7 @@ import { governancePower } from "@/lib/tools/governance-power";
 import { withdrawalRisk } from "@/lib/tools/withdrawal-risk";
 import { protocolHealth, HEALTH_PROTOCOLS } from "@/lib/tools/protocol-health";
 import { governancePulse } from "@/lib/tools/governance-pulse";
-import { SUPPORTED_CHAINS } from "@/lib/graph/deployments";
-import { LIVE_GOVERNANCE_PROTOCOLS, LIVE_LENDING_TOTAL } from "@/lib/graph/verified";
+import { LIVE_GOVERNANCE_PROTOCOLS, LIVE_LENDING_TOTAL, LIVE_LENDING_CHAINS } from "@/lib/graph/verified";
 
 /**
  * Every tool the router offers, declared once.
@@ -86,12 +85,12 @@ export const TOOLS: ToolDefinition[] = [
       "returns a decision rather than a table: the best rate, the liquidity behind it, and " +
       "why any higher rate was discarded as too thin or too stale to trust.",
     price: "$0.01",
-    coverage: `${SUPPORTED_CHAINS.length} chains, ${LIVE_LENDING_TOTAL} live deployments`,
+    coverage: `${LIVE_LENDING_CHAINS.length} chains, ${LIVE_LENDING_TOTAL} live deployments`,
     source: "graph",
     inputSchema: {
       asset: z.string().describe("Asset symbol, e.g. USDC or WETH"),
       chain: z
-        .enum(["ethereum", "arbitrum", "base", "optimism", "polygon", "avalanche"])
+        .enum([...LIVE_LENDING_CHAINS] as [string, ...string[]])
         .describe("Chain to search"),
     },
     example: {
@@ -148,12 +147,12 @@ export const TOOLS: ToolDefinition[] = [
       "which are tight, and which are effectively locked behind borrowers, and whether a " +
       "withdrawal of a given size would clear today.",
     price: "$0.01",
-    coverage: `${SUPPORTED_CHAINS.length} chains, ${LIVE_LENDING_TOTAL} live deployments`,
+    coverage: `${LIVE_LENDING_CHAINS.length} chains, ${LIVE_LENDING_TOTAL} live deployments`,
     source: "graph",
     inputSchema: {
       asset: z.string().describe("Asset symbol, e.g. USDC or WETH"),
       chain: z
-        .enum(["ethereum", "arbitrum", "base", "optimism", "polygon", "avalanche"])
+        .enum([...LIVE_LENDING_CHAINS] as [string, ...string[]])
         .describe("Chain to search"),
       amountUsd: z
         .number()
@@ -189,12 +188,12 @@ export const TOOLS: ToolDefinition[] = [
       "steady or draining, and says plainly when a protocol records no revenue at all. " +
       "Corrupt days in the source are discarded and reported.",
     price: "$0.01",
-    coverage: `${HEALTH_PROTOCOLS.length} lending protocols, ${SUPPORTED_CHAINS.length} chains`,
+    coverage: `${HEALTH_PROTOCOLS.length} lending protocols, ${LIVE_LENDING_CHAINS.length} chains`,
     source: "graph",
     inputSchema: {
       protocol: z.enum([...HEALTH_PROTOCOLS] as [string, ...string[]]).describe("Protocol name"),
       chain: z
-        .enum(["ethereum", "arbitrum", "base", "optimism", "polygon", "avalanche"])
+        .enum([...LIVE_LENDING_CHAINS] as [string, ...string[]])
         .describe("Chain the deployment runs on"),
     },
     example: {

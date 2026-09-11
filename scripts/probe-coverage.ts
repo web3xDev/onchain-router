@@ -1,7 +1,7 @@
 import dotenv from "dotenv";
 import fs from "node:fs";
 import { governancePower } from "@/lib/tools/governance-power";
-import { lendingRates } from "@/lib/tools/lending-rates";
+import { scanMarkets } from "@/lib/tools/lending-rates";
 import { GOVERNANCE_PROTOCOLS, SUPPORTED_CHAINS } from "@/lib/graph/deployments";
 
 dotenv.config({ path: ".env.local" });
@@ -55,10 +55,7 @@ async function main() {
   for (const chain of SUPPORTED_CHAINS) {
     // USDC is the one asset every lending market on every chain lists, which makes it
     // the probe that reaches the most deployments.
-    const result = (await lendingRates("USDC", chain)) as {
-      scanned: number;
-      responded: number;
-    };
+    const result = await scanMarkets("USDC", chain);
     lending[chain] = result.responded;
     scannedTotal += result.scanned;
     console.log(`  ${chain.padEnd(11)} ${result.responded}/${result.scanned}`);
@@ -89,6 +86,11 @@ export const LIVE_LENDING_BY_CHAIN: Record<string, number> = ${JSON.stringify(le
 
 export const LIVE_LENDING_TOTAL = ${respondedTotal};
 export const INDEXED_LENDING_TOTAL = ${scannedTotal};
+
+/** Chains with at least one lending deployment answering. Offered as inputs. */
+export const LIVE_LENDING_CHAINS = [
+${SUPPORTED_CHAINS.filter((c) => (lending[c] ?? 0) > 0).map((c) => `  "${c}",`).join("\n")}
+] as const;
 `;
 
   fs.writeFileSync(OUTPUT, file);

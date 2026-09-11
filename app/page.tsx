@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { TOOLS, catalogue } from "@/lib/tools/registry";
-import { SUPPORTED_CHAINS } from "@/lib/graph/deployments";
-import { LIVE_GOVERNANCE_PROTOCOLS } from "@/lib/graph/verified";
+import { LIVE_GOVERNANCE_PROTOCOLS, LIVE_LENDING_CHAINS } from "@/lib/graph/verified";
 import { rails } from "@/lib/x402";
 import { HeroTerminal } from "@/components/hero-terminal";
 import { StepsFlow } from "@/components/steps-flow";
@@ -58,7 +57,7 @@ export default function Home() {
             </p>
 
             <p className="proof">
-              {TOOLS.length} live tools · {SUPPORTED_CHAINS.length} chains ·{" "}
+              {TOOLS.length} live tools · {LIVE_LENDING_CHAINS.length} chains ·{" "}
               {LIVE_GOVERNANCE_PROTOCOLS.length} protocols · {cheapest} per call · 0% commission
             </p>
           </div>
@@ -102,8 +101,8 @@ claude mcp add onchain-wallet -- \\
               data isn&apos;t trustworthy.
             </p>
           </div>
-          <Link href="/tools" className="btn btn-sm">
-            All {TOOLS.length} tools →
+          <Link href="/tools" className="btn btn-sm btn-arrow">
+            All {TOOLS.length} tools
           </Link>
         </div>
 

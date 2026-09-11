@@ -274,14 +274,16 @@ html {
   border-color: #ea5924;
 }
 
-/* Every primary action points forward. */
-.btn-primary::after {
+/* Every primary action points forward, and so does any button asked to. */
+.btn-primary::after,
+.btn-arrow::after {
   content: "→";
   margin-left: 2px;
   transition: transform var(--ease);
 }
 
-.btn-primary:hover::after {
+.btn-primary:hover::after,
+.btn-arrow:hover::after {
   transform: translateX(2px);
 }
 

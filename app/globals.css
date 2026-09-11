@@ -983,6 +983,8 @@ pre {
 .field {
   display: grid;
   gap: 7px;
+  /* A neighbour with a hint line must not stretch this field's input. */
+  align-content: start;
 }
 
 .field label {

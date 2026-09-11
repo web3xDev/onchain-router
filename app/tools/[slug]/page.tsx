@@ -4,6 +4,7 @@ import type { Metadata } from "next";
 import { describeInputs, findTool, TOOLS } from "@/lib/tools/registry";
 import { rails, resolvePayout } from "@/lib/x402";
 import { siteUrl } from "@/lib/site";
+import { Code } from "@/components/code";
 
 // Same reason as the catalogue: the price and the accepted networks come from the
 // running deployment's configuration, not from whatever was set when it was built.
@@ -102,11 +103,11 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
             <p style={{ color: "var(--text-2)", fontSize: 14, marginTop: 0 }}>
               Over MCP the tool is called by name and the payment is handled underneath.
             </p>
-            <pre className="code">
+            <Code lang="ts">
               {`${tool.slug.replace(/-/g, "_")}(${inputs
                 .map((i) => `${i.name}: ${JSON.stringify(tool.example.request[i.name] ?? "")}`)
                 .join(", ")})`}
-            </pre>
+            </Code>
           </div>
 
           <div className="block">
@@ -115,7 +116,7 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
               The first request returns 402 with the accepted networks. Sign one and repeat
               the request with the receipt.
             </p>
-            <pre className="code">
+            <Code lang="sh">
               {`curl -X POST ${base}/api/tools/${tool.slug} \\
   -H 'Content-Type: application/json' \\
   -d '${requestJson}'
@@ -129,7 +130,7 @@ curl -X POST ${base}/api/tools/${tool.slug} \\
   -d '${requestJson}'
 
 ← 200 OK`}
-            </pre>
+            </Code>
           </div>
         </div>
 

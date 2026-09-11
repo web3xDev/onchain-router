@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { Code } from "@/components/code";
 
 type Path = "sdk" | "claude";
 
@@ -21,7 +22,7 @@ export function ConnectPaths({ base }: { base: string }) {
       {path === "sdk" ? (
         <>
           <p>Wrap an MCP client with an x402 payment client and your wallet.</p>
-          <pre className="code">
+          <Code lang="ts">
             {`const agent = wrapMCPClientWithPayment(
   new Client({ name: "my-agent", version: "1.0.0" }),
   paymentClient, // your x402Client + wallet
@@ -32,17 +33,17 @@ await agent.connect(
 );
 
 await agent.callTool("lending_rates", { asset: "USDC", chain: "base" });`}
-          </pre>
+          </Code>
         </>
       ) : (
         <>
           <p>The router, plus a wallet MCP that signs when a tool asks for payment.</p>
-          <pre className="code">
+          <Code lang="sh">
             {`claude mcp add --transport http onchain-router ${base}/mcp
 
 claude mcp add onchain-wallet -- \\
   sh -c "cd onchain-router && npx tsx mcp/wallet.ts"`}
-          </pre>
+          </Code>
         </>
       )}
     </div>

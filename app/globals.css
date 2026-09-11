@@ -15,8 +15,8 @@
   --border-strong: rgba(255, 255, 255, 0.16);
 
   --text: oklch(0.95 0 0);
-  --text-2: oklch(0.63 0 0);
-  --text-3: oklch(0.5 0 0);
+  --text-2: oklch(0.65 0 0);
+  --text-3: oklch(0.53 0 0);
 
   --accent: #d25020;
   --accent-dim: #c94a1c;
@@ -855,6 +855,41 @@ pre {
   color: var(--text-2);
   overflow-x: auto;
   white-space: pre;
+}
+
+/* Syntax colours, kept inside the palette: strings warm, keywords accent,
+   calls bright, comments faint. */
+.c-keyword {
+  color: #ea5924;
+}
+
+.c-string {
+  color: #d9b36a;
+}
+
+.c-call {
+  color: var(--text);
+}
+
+.c-type {
+  color: #8fb7e3;
+}
+
+.c-number {
+  color: #d9b36a;
+}
+
+.c-comment {
+  color: var(--text-3);
+  font-style: italic;
+}
+
+.c-flag {
+  color: var(--text);
+}
+
+.c-punct {
+  color: var(--text-2);
 }
 
 .quote {

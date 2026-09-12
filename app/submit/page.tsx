@@ -56,8 +56,10 @@ export default function SubmitPage() {
         </div>
       </div>
 
+      <div className="submit-cols">
       <SubmitForm categories={CATEGORIES} />
 
+      <aside className="submit-aside">
       <div className="good-tool">
         <span className="step-no">What makes a good tool</span>
         <div className="good-grid">
@@ -77,6 +79,8 @@ export default function SubmitPage() {
           OnchainRouter handles discovery and routing. Your endpoint handles the work. The
           agent pays you directly. No invoice, no payout run, no minimum.
         </p>
+      </div>
+      </aside>
       </div>
     </div>
   );

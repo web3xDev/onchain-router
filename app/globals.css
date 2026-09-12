@@ -2096,8 +2096,20 @@ html {
 /* ── submit: one step open at a time ────────────────────────────────────── */
 
 .submit-page {
-  max-width: 720px;
   padding-bottom: 72px;
+}
+
+.submit-cols {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 340px;
+  gap: 64px;
+  align-items: start;
+}
+
+.submit-aside {
+  position: sticky;
+  top: 84px;
+  padding-top: 36px;
 }
 
 .eyebrow-row {
@@ -2431,7 +2443,7 @@ html {
 }
 
 .good-tool {
-  margin-top: 48px;
+  margin-top: 0;
 }
 
 .good-tool .step-no {
@@ -2442,9 +2454,8 @@ html {
 
 .good-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  grid-auto-rows: 1fr;
-  gap: 12px;
+  grid-template-columns: 1fr;
+  gap: 10px;
 }
 
 .good-grid > div {
@@ -2473,22 +2484,35 @@ html {
 }
 
 .closing-claim {
-  margin-top: 48px;
-  padding-top: 32px;
+  margin-top: 28px;
+  padding-top: 24px;
   border-top: 1px solid var(--border);
 }
 
 .closing-claim h2 {
-  font-size: 26px;
+  font-size: 20px;
   letter-spacing: -0.02em;
-  margin: 0 0 12px;
+  margin: 0 0 10px;
 }
 
 .closing-claim p {
   color: var(--text-2);
-  font-size: 15.5px;
-  max-width: 56ch;
+  font-size: 14px;
   margin: 0;
+}
+
+@media (max-width: 960px) {
+  .submit-cols {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+  .submit-aside {
+    position: static;
+    padding-top: 48px;
+  }
+  .good-grid {
+    grid-template-columns: 1fr 1fr;
+  }
 }
 
 @media (max-width: 640px) {

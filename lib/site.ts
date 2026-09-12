@@ -18,6 +18,6 @@ export function siteUrl(): string {
 }
 
 export const SITE_NAME = "OnchainRouter";
-export const SITE_TAGLINE = "Onchain answers for AI agents";
+export const SITE_TAGLINE = "Onchain tools for AI agents";
 export const SITE_DESCRIPTION =
-  "Call an onchain tool, pay a cent, get a decision. No account, no API key, no subscription. No answer, no charge.";
+  "Call an onchain tool, pay a cent, get the result. No account, no API key, no subscription. No answer, no charge.";

@@ -1,6 +1,6 @@
 # OnchainRouter
 
-**Onchain answers for AI agents.** Call an onchain tool, pay a cent, get a decision.
+**Onchain tools for AI agents.** Call an onchain tool, pay a cent, get the result.
 
 AI agents connect once through MCP and gain access to a network of onchain
 capabilities, paying per call with x402. No signup, no API keys, no subscriptions.

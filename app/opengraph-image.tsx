@@ -45,7 +45,7 @@ export default function Image() {
               lineHeight: 1.05,
             }}
           >
-            Onchain answers
+            Onchain tools
           </div>
           <div
             style={{
@@ -59,7 +59,7 @@ export default function Image() {
             for AI agents
           </div>
           <div style={{ display: "flex", fontSize: 30, color: "#9a9aa6", marginTop: 26 }}>
-            Call an onchain tool, pay a cent, get a decision.
+            Call an onchain tool, pay a cent, get the result.
           </div>
         </div>
 

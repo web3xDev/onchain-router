@@ -22,8 +22,8 @@ export default function ToolsPage() {
           <span className="label">Tools</span>
           <h1 style={{ fontSize: 36, marginTop: 8 }}>{TOOLS.length} tools, priced per call</h1>
           <p>
-            Every tool answers a question rather than returning a table. You pay when it
-            answers. If it cannot give a verdict, the call is free.
+            Every tool does one job and reports the outcome. You pay when it delivers. If it
+            cannot, the call is free.
           </p>
         </div>
         <Link href="/submit" className="btn btn-sm btn-arrow">

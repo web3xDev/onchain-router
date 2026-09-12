@@ -12,7 +12,7 @@ export function SiteFooter() {
               <Logo size={22} />
               OnchainRouter
             </Link>
-            <p>Onchain answers for AI agents. Call a tool, pay a cent, get a decision.</p>
+            <p>Onchain tools for AI agents. Call a tool, pay a cent, get the result.</p>
             <div className="footer-rails">
               <span>Built with</span>
               <a href="https://hedera.com" target="_blank" rel="noreferrer" className="footer-mark" aria-label="Hedera">

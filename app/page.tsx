@@ -32,14 +32,14 @@ export default function Home() {
         <div className="page hero-grid">
           <div>
             <h1>
-              Onchain answers
+              Onchain tools
               <br />
               for AI agents
             </h1>
 
             <p className="hero-sub">
-              Skip the API keys and subscriptions. Call an onchain tool, pay a cent, get a
-              decision.
+              Skip the API keys and subscriptions. Call an onchain tool, pay a cent, get the
+              result.
             </p>
 
             <div className="hero-actions">

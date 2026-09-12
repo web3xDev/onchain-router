@@ -874,6 +874,7 @@ html {
 [data-reveal] .steps > *,
 [data-reveal] .authors,
 [data-reveal] .rails > *,
+[data-reveal] .faq,
 [data-reveal] .closing {
   opacity: 0;
   transform: translateY(16px);
@@ -891,6 +892,7 @@ html {
 [data-reveal].revealed .steps > *,
 [data-reveal].revealed .authors,
 [data-reveal].revealed .rails > *,
+[data-reveal].revealed .faq,
 [data-reveal].revealed .closing {
   opacity: 1;
   transform: none;
@@ -901,6 +903,7 @@ html {
    entrance staggers but hover colours still respond at once. */
 [data-reveal].revealed .two-col > :nth-child(2),
 [data-reveal].revealed .authors,
+[data-reveal].revealed .faq,
 [data-reveal].revealed .featured > :nth-child(1),
 [data-reveal].revealed .steps > :nth-child(1),
 [data-reveal].revealed .rails > :nth-child(1) {
@@ -2513,20 +2516,24 @@ html {
   border-bottom: 1px solid var(--border);
 }
 
-.faq-item summary {
+.faq-q {
   display: flex;
   align-items: center;
   gap: 14px;
+  width: 100%;
   padding: 16px 0;
-  list-style: none;
+  border: 0;
+  background: none;
+  text-align: left;
   cursor: pointer;
+  font-family: inherit;
   font-size: 15.5px;
   font-weight: 500;
   color: var(--text);
 }
 
-.faq-item summary::-webkit-details-marker {
-  display: none;
+.faq-q:hover {
+  color: var(--text);
 }
 
 .faq-chev {
@@ -2538,8 +2545,13 @@ html {
   transition: transform var(--ease);
 }
 
-.faq-item[open] .faq-chev {
+.faq-item.is-open .faq-chev {
   transform: rotate(180deg);
+}
+
+/* The height transition lives on .acc-wrap; only the open state is named here. */
+.faq-item.is-open .acc-wrap {
+  grid-template-rows: 1fr;
 }
 
 .faq-body {
@@ -2548,7 +2560,16 @@ html {
   color: var(--text-2);
   font-size: 14.5px;
   line-height: 1.65;
-  animation: line-in 220ms ease-out both;
+  opacity: 0;
+  transform: translateY(-4px);
+  transition:
+    opacity 200ms ease,
+    transform 240ms ease;
+}
+
+.faq-item.is-open .faq-body {
+  opacity: 1;
+  transform: none;
 }
 
 .faq-body code {

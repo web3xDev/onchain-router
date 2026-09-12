@@ -1,9 +1,12 @@
+"use client";
+
 import Link from "next/link";
+import { useState } from "react";
 
 /**
  * The questions people ask before they connect, answered in the product's own
- * words. Native details/summary: no script, works everywhere, one open at a time
- * is not enforced on purpose so two answers can be compared.
+ * words. More than one can be open, so two answers can be compared; each opens
+ * and closes on the same height transition the submit steps use.
  */
 const FAQ: { q: string; a: React.ReactNode }[] = [
   {
@@ -53,17 +56,34 @@ const FAQ: { q: string; a: React.ReactNode }[] = [
 ];
 
 export function Faq() {
+  const [open, setOpen] = useState<Set<number>>(() => new Set());
+
+  const toggle = (i: number) =>
+    setOpen((current) => {
+      const next = new Set(current);
+      if (next.has(i)) next.delete(i);
+      else next.add(i);
+      return next;
+    });
+
   return (
     <div className="faq">
-      {FAQ.map((item) => (
-        <details key={item.q} className="faq-item">
-          <summary>
-            {item.q}
-            <span className="faq-chev" aria-hidden="true" />
-          </summary>
-          <div className="faq-body">{item.a}</div>
-        </details>
-      ))}
+      {FAQ.map((item, i) => {
+        const isOpen = open.has(i);
+        return (
+          <div key={item.q} className={`faq-item${isOpen ? " is-open" : ""}`}>
+            <button type="button" className="faq-q" aria-expanded={isOpen} onClick={() => toggle(i)}>
+              {item.q}
+              <span className="faq-chev" aria-hidden="true" />
+            </button>
+            <div className="acc-wrap" inert={!isOpen}>
+              <div className="acc-clip">
+                <div className="faq-body">{item.a}</div>
+              </div>
+            </div>
+          </div>
+        );
+      })}
     </div>
   );
 }

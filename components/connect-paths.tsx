@@ -24,6 +24,9 @@ export function ConnectPaths({ base }: { base: string }) {
           <p>
             One package: a wallet on Hedera and Arc, and a call that pays the 402 for you.
           </p>
+          <div style={{ marginBottom: 10 }}>
+            <Code lang="sh">{`npm install onchainrouter`}</Code>
+          </div>
           <Code lang="ts">
             {`import { createWallet, pay } from "onchainrouter";
 

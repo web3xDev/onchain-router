@@ -33,18 +33,18 @@ export default function ConnectPage() {
 
       <h2>The wallet</h2>
       <p>
-        Your agent&apos;s wallet signs every payment; the router never holds a key. The wallet
-        in the repo is a reference, backed by a Circle agent wallet or a local key. Any wallet
-        that signs x402 requests works in its place. Setup and caps are in the{" "}
+        Your agent&apos;s wallet signs every payment; the router never holds a key. The{" "}
         <a
-          href="https://github.com/web3xDev/onchainrouter#readme"
+          href="https://www.npmjs.com/package/onchainrouter"
           target="_blank"
           rel="noreferrer"
           className="link"
         >
-          README
-        </a>
-        .
+          onchainrouter
+        </a>{" "}
+        package ships a reference wallet, backed by a local key or a Circle agent wallet, with
+        a per-payment cap. Any wallet that signs x402 requests works in its place. Fund one
+        that exists only for this.
       </p>
 
       <div className="hero-actions" style={{ marginTop: 32 }}>

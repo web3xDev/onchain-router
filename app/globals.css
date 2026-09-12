@@ -2109,21 +2109,30 @@ html {
   color: var(--text-3);
 }
 
-.eyebrow-row span + span::before {
-  content: "·";
-  margin-right: 18px;
-  color: var(--border-strong);
+/* ── rotator: one line, facts rolling through it ─────────────────────────── */
+
+.rotator {
+  display: inline-block;
+  height: 1.4em;
+  overflow: hidden;
+  vertical-align: top;
 }
 
-/* Narrow screens: one fact per line, no separators left dangling at a wrap. */
-@media (max-width: 620px) {
-  .eyebrow-row {
-    flex-direction: column;
-    gap: 6px;
-  }
-  .eyebrow-row span + span::before {
-    content: none;
-  }
+.rotator-track {
+  display: flex;
+  flex-direction: column;
+  transition: transform 420ms cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+.rotator-track.is-snap {
+  transition: none;
+}
+
+.rotator-item {
+  display: block;
+  height: 1.4em;
+  line-height: 1.4em;
+  white-space: nowrap;
 }
 
 .submit {

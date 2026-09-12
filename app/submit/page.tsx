@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { CATEGORIES } from "@/lib/tools/registry";
 import { SubmitForm } from "@/components/submit-form";
+import { Rotator } from "@/components/rotator";
 
 const DESCRIPTION =
   "Turn your API into an agent-ready, pay-per-call tool, or bring an endpoint that already speaks x402. 0% commission, payments go straight to you.";
@@ -23,9 +24,7 @@ export default function SubmitPage() {
           the endpoint.
         </p>
         <div className="eyebrow-row">
-          <span>0% commission</span>
-          <span>Direct settlement</span>
-          <span>Hedera Testnet + Arc Testnet</span>
+          <Rotator items={["0% commission", "Direct settlement", "Hedera Testnet + Arc Testnet"]} />
         </div>
       </div>
 

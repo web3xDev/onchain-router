@@ -87,7 +87,8 @@ export default function Home() {
   ${base}/mcp
 
 claude mcp add onchain-wallet -e HEDERA_AGENT_ACCOUNT_ID=0.0.x \\
-  -e HEDERA_AGENT_PRIVATE_KEY=0x... -- npx -y onchainrouter wallet`}
+  -e HEDERA_AGENT_PRIVATE_KEY=0x... -e ARC_AGENT_PRIVATE_KEY=0x... \\
+  -- npx -y onchainrouter wallet`}
           </Code>
         </div>
         </div>

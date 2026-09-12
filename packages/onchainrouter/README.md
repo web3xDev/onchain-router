@@ -96,6 +96,7 @@ Claude Code cannot sign a payment. Give it a wallet as a second MCP server:
 claude mcp add --transport http onchainrouter https://onchainrouter.io/mcp
 claude mcp add onchain-wallet \
   -e HEDERA_AGENT_ACCOUNT_ID=0.0.12345 -e HEDERA_AGENT_PRIVATE_KEY=0x... \
+  -e ARC_AGENT_PRIVATE_KEY=0x... \
   -- npx -y onchainrouter wallet
 ```
 

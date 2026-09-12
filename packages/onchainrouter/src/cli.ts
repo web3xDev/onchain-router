@@ -13,7 +13,8 @@ Keys come from the environment:
 
 Register it beside a paid MCP server, e.g. in Claude Code:
   claude mcp add --transport http onchainrouter https://onchainrouter.io/mcp
-  claude mcp add onchain-wallet -e HEDERA_AGENT_ACCOUNT_ID=0.0.x -e HEDERA_AGENT_PRIVATE_KEY=0x... -- npx -y onchainrouter wallet
+  claude mcp add onchain-wallet -e HEDERA_AGENT_ACCOUNT_ID=0.0.x -e HEDERA_AGENT_PRIVATE_KEY=0x... \\
+    -e ARC_AGENT_PRIVATE_KEY=0x... -- npx -y onchainrouter wallet
 `;
 
 const [, , command] = process.argv;

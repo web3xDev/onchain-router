@@ -118,14 +118,16 @@ the wallet, gets a signature back, and calls the tool again with it as the `paym
 argument. `.mcp.json` in this repo registers exactly that pair.
 
 ```
-claude mcp add --transport http onchain-router https://<host>/mcp
-claude mcp add onchain-wallet -- sh -c "cd /path/to/onchain-router && npx tsx mcp/wallet.ts"
+claude mcp add --transport http onchainrouter https://<host>/mcp
+claude mcp add onchain-wallet -e HEDERA_AGENT_ACCOUNT_ID=0.0.x -e HEDERA_AGENT_PRIVATE_KEY=0x... -- npx -y onchainrouter wallet
 ```
 
-`mcp/wallet.ts` is a reference wallet with one tool, `sign_x402_payment`, backed by
-whatever is in `.env.local`. It knows nothing about the router; it signs x402 requests,
-so any x402 service can be paid through it. `npm run mcp:wallet:check` replays the three
-steps with a plain MCP client and no x402 library on the client side.
+`npx onchainrouter wallet` is the published reference wallet (source in
+`packages/onchainrouter`; `mcp/wallet.ts` is the same thing run from this checkout). One
+tool, `sign_x402_payment`, backed by the keys in the environment. It knows nothing about
+the router; it signs x402 requests, so any x402 service can be paid through it.
+`npm run mcp:wallet:check` replays the three steps with a plain MCP client and no x402
+library on the client side.
 
 ### What backs the wallet
 

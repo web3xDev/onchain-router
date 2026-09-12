@@ -79,7 +79,7 @@ Any x402 endpoint on Hedera or Arc can be listed, by a person or an agent. Nothi
 - [Connect](${base}/connect): MCP and HTTP setup for your own agent or Claude Code
 - [Playground](${base}/playground): try a tool from a wallet we fund
 - [Submit](${base}/submit): list your own tool; wrap an API with \`paid()\` or bring an x402 endpoint
-- [Source](https://github.com/web3xDev/onchain-router)
+- [Source](https://github.com/web3xDev/onchainrouter)
 `;
 
   return new Response(body, {

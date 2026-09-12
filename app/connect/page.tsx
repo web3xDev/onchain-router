@@ -37,7 +37,7 @@ export default function ConnectPage() {
         in the repo is a reference, backed by a Circle agent wallet or a local key. Any wallet
         that signs x402 requests works in its place. Setup and caps are in the{" "}
         <a
-          href="https://github.com/web3xDev/onchain-router#readme"
+          href="https://github.com/web3xDev/onchainrouter#readme"
           target="_blank"
           rel="noreferrer"
           className="link"

@@ -4,7 +4,7 @@ import { useLayoutEffect, useRef, useState } from "react";
 import { Code } from "@/components/code";
 import { Select } from "@/components/select";
 
-const REPO = "https://github.com/web3xDev/onchain-router";
+const REPO = "https://github.com/web3xDev/onchainrouter";
 
 type Fields = {
   endpoint: string;

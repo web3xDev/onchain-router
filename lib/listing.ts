@@ -12,7 +12,7 @@ import { ARC_NETWORK, HEDERA_NETWORK } from "@/lib/x402";
  * pull request would add. Nothing is stored here; review happens in the open.
  */
 
-export const REPO = "https://github.com/web3xDev/onchain-router";
+export const REPO = "https://github.com/web3xDev/onchainrouter";
 
 const ROUTER_NETWORKS = new Set<string>([HEDERA_NETWORK, ARC_NETWORK]);
 

@@ -37,10 +37,10 @@ export function SiteFooter() {
 
           <div className="footer-col">
             <div className="footer-title">Developers</div>
-            <a href="https://github.com/web3xDev/onchain-router" target="_blank" rel="noreferrer">
+            <a href="https://github.com/web3xDev/onchainrouter" target="_blank" rel="noreferrer">
               Source
             </a>
-            <a href="https://github.com/web3xDev/onchain-router#readme" target="_blank" rel="noreferrer">
+            <a href="https://github.com/web3xDev/onchainrouter#readme" target="_blank" rel="noreferrer">
               README
             </a>
             <Link href="/connect#endpoint">MCP</Link>

@@ -83,7 +83,7 @@ export default function Home() {
             </Link>
           </div>
           <Code lang="sh">
-            {`claude mcp add --transport http onchain-router \\
+            {`claude mcp add --transport http onchainrouter \\
   ${base}/mcp
 
 claude mcp add onchain-wallet -- \\

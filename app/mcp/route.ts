@@ -39,7 +39,7 @@ export async function POST(request: Request) {
 export async function GET() {
   return new Response(
     JSON.stringify({
-      name: "onchain-router",
+      name: "onchainrouter",
       transport: "streamable-http",
       hint: "POST JSON-RPC to this URL. Tools are priced per call and paid with x402.",
     }),

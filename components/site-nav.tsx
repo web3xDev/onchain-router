@@ -12,7 +12,7 @@ const LINKS = [
   { href: "/submit", label: "Submit a tool" },
 ];
 
-const GITHUB = "https://github.com/web3xDev/onchain-router";
+const GITHUB = "https://github.com/web3xDev/onchainrouter";
 
 function GitHubIcon() {
   return (

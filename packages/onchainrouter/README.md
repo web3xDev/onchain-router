@@ -93,7 +93,7 @@ Spend caps are per payment. A service asking for more than the cap is refused be
 Claude Code cannot sign a payment. Give it a wallet as a second MCP server:
 
 ```
-claude mcp add --transport http onchain-router https://onchainrouter.io/mcp
+claude mcp add --transport http onchainrouter https://onchainrouter.io/mcp
 claude mcp add onchain-wallet \
   -e HEDERA_AGENT_ACCOUNT_ID=0.0.12345 -e HEDERA_AGENT_PRIVATE_KEY=0x... \
   -- npx -y onchainrouter wallet
@@ -109,4 +109,4 @@ Testnet only in this release: `hedera:testnet` (native HBAR, gas sponsored by Bl
 
 ## License
 
-AGPL-3.0-or-later. Source: [github.com/web3xDev/onchain-router](https://github.com/web3xDev/onchain-router).
+AGPL-3.0-or-later. Source: [github.com/web3xDev/onchainrouter](https://github.com/web3xDev/onchainrouter).

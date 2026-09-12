@@ -47,7 +47,7 @@ const { data, receipt } = await pay(
         <>
           <p>The router, plus a wallet MCP that signs when a tool asks for payment. Keys stay in your environment.</p>
           <Code lang="sh">
-            {`claude mcp add --transport http onchain-router ${base}/mcp
+            {`claude mcp add --transport http onchainrouter ${base}/mcp
 
 claude mcp add onchain-wallet \\
   -e HEDERA_AGENT_ACCOUNT_ID=0.0.x -e HEDERA_AGENT_PRIVATE_KEY=0x... \\

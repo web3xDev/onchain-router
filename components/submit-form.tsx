@@ -204,8 +204,16 @@ export function SubmitForm({ categories }: { categories: string[] }) {
     anchor.current = null;
     const head = heads.current[a.id];
     if (!head) return;
-    const delta = head.getBoundingClientRect().top - a.top;
-    if (delta !== 0) window.scrollBy(0, delta);
+    // The heights animate, so the correction runs every frame until they settle.
+    const until = performance.now() + 300;
+    let frame = 0;
+    const follow = () => {
+      const delta = head.getBoundingClientRect().top - a.top;
+      if (Math.abs(delta) >= 0.5) window.scrollBy(0, delta);
+      if (performance.now() < until) frame = requestAnimationFrame(follow);
+    };
+    follow();
+    return () => cancelAnimationFrame(frame);
   }, [active]);
 
   return (
@@ -236,7 +244,9 @@ export function SubmitForm({ categories }: { categories: string[] }) {
               <span className="acc-chev" aria-hidden="true" />
             </button>
 
-            {isOpen && step.id === "start" && (
+            <div className="acc-wrap" inert={!isOpen}>
+            <div className="acc-clip">
+            {step.id === "start" && (
               <div className="acc-body">
                 <div className="start-cards" role="radiogroup" aria-label="How do you want to start">
                   <button type="button" role="radio" aria-checked={start === "api"} className="start-card" onClick={() => setStart("api")}>
@@ -295,7 +305,7 @@ export const POST = paid(
               </div>
             )}
 
-            {isOpen && step.id === "verify" && (
+            {step.id === "verify" && (
               <div className="acc-body">
                 <div className="field">
                   <div className="probe-row">
@@ -356,7 +366,7 @@ export const POST = paid(
               </div>
             )}
 
-            {isOpen && step.id === "describe" && (
+            {step.id === "describe" && (
               <div className="acc-body">
                 <div className="form-grid">
                   <div className="field">
@@ -405,7 +415,7 @@ export const POST = paid(
               </div>
             )}
 
-            {isOpen && step.id === "submit" && (
+            {step.id === "submit" && (
               <div className="acc-body">
                 <p style={{ margin: "0 0 14px", color: "var(--text-2)" }}>
                   Opens a prefilled GitHub issue with everything we read from your 402. We review
@@ -421,6 +431,8 @@ export const POST = paid(
                 </button>
               </div>
             )}
+            </div>
+            </div>
           </section>
         );
       })}

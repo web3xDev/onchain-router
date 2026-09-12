@@ -2072,9 +2072,34 @@ html {
   margin-left: auto;
 }
 
+/* Open and close both animate: the wrapper's row goes 0fr to 1fr and back. */
+.acc-wrap {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 240ms ease;
+}
+
+.acc.is-open .acc-wrap {
+  grid-template-rows: 1fr;
+}
+
+.acc-clip {
+  min-height: 0;
+  overflow: hidden;
+}
+
 .acc-body {
   padding: 4px 0 28px;
-  animation: line-in 220ms ease-out both;
+  opacity: 0;
+  transform: translateY(-4px);
+  transition:
+    opacity 200ms ease,
+    transform 240ms ease;
+}
+
+.acc.is-open .acc-body {
+  opacity: 1;
+  transform: none;
 }
 
 .step-no {

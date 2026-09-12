@@ -2075,9 +2075,18 @@ html {
   margin: 0;
 }
 
+/* One line on a desktop, but never wider than the phone it is read on. */
+.pg-intro {
+  max-width: none;
+  white-space: nowrap;
+}
+
 @media (max-width: 900px) {
   .pg {
     grid-template-columns: minmax(0, 1fr);
+  }
+  .pg-intro {
+    white-space: normal;
   }
 }
 

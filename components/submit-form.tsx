@@ -62,7 +62,7 @@ function shorten(address: string | null): string {
  */
 export function SubmitForm({ categories }: { categories: string[] }) {
   const [start, setStart] = useState<Start>("api");
-  const [active, setActive] = useState<Active>("start");
+  const [active, setActive] = useState<Active | null>("start");
   const [fields, setFields] = useState<Fields>(EMPTY);
   const [touched, setTouched] = useState(false);
   const [probe, setProbe] = useState<Probe>({ state: "idle" });
@@ -180,6 +180,7 @@ export function SubmitForm({ categories }: { categories: string[] }) {
   ];
 
   const openStep = (id: Active) => setActive(id);
+  const toggleStep = (id: Active) => setActive((current) => (current === id ? null : id));
 
   return (
     <div className="submit">
@@ -190,7 +191,7 @@ export function SubmitForm({ categories }: { categories: string[] }) {
             <button
               type="button"
               className="acc-head"
-              onClick={() => !step.locked && openStep(step.id)}
+              onClick={() => !step.locked && toggleStep(step.id)}
               aria-expanded={isOpen}
               disabled={step.locked}
             >

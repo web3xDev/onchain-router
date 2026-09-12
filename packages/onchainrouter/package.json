@@ -1,0 +1,65 @@
+{
+  "name": "onchainrouter",
+  "version": "0.1.0",
+  "description": "Sell an API to AI agents over x402 on Hedera and Arc, or pay for one. Server wrapper, paying client, and a wallet MCP for chat clients.",
+  "license": "AGPL-3.0-or-later",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/web3xDev/onchain-router.git",
+    "directory": "packages/onchainrouter"
+  },
+  "homepage": "https://onchainrouter.app",
+  "keywords": [
+    "x402",
+    "mcp",
+    "ai-agents",
+    "hedera",
+    "arc",
+    "circle",
+    "micropayments"
+  ],
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "bin": {
+    "onchainrouter": "./dist/cli.js"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/client.d.ts",
+      "default": "./dist/client.js"
+    },
+    "./server": {
+      "types": "./dist/server.d.ts",
+      "default": "./dist/server.js"
+    },
+    "./wallet": {
+      "types": "./dist/wallet.d.ts",
+      "default": "./dist/wallet.js"
+    }
+  },
+  "scripts": {
+    "build": "tsup",
+    "prepublishOnly": "npm run build"
+  },
+  "dependencies": {
+    "@circle-fin/developer-controlled-wallets": "^10.8.0",
+    "@circle-fin/x402-batching": "^3.4.0",
+    "@modelcontextprotocol/sdk": "^1.30.0",
+    "@x402/core": "^2.25.0",
+    "@x402/fetch": "^2.25.0",
+    "@x402/hedera": "^2.25.0",
+    "viem": "^2.0.0",
+    "zod": "^4.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.20.2",
+    "tsup": "^8.5.0",
+    "typescript": "^5"
+  }
+}

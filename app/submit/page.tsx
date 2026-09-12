@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
 import { CATEGORIES } from "@/lib/tools/registry";
 import { SubmitForm } from "@/components/submit-form";
+import { SubmitPaths } from "@/components/submit-paths";
 
 const DESCRIPTION =
-  "List an x402 endpoint on the router. Agents find it, call it and pay you directly.";
+  "List a tool on the router. Wrap your API in x402 with one call, or list an endpoint that already speaks it. Agents pay you directly.";
 
 export const metadata: Metadata = {
   title: "Submit a tool",
@@ -17,12 +18,15 @@ export default function SubmitPage() {
     <div className="page prose">
       <div className="page-head">
         <span className="label">Submit</span>
-        <h1>List your x402 endpoint</h1>
+        <h1>List your tool</h1>
         <p>
-          Already charging with x402? List the URL. Agents pay at your endpoint, the router
-          takes nothing.
+          Have an API? Wrap it in x402 with one call and list it. Already charging with x402?
+          List the URL. Either way agents pay at your endpoint and the router takes nothing.
         </p>
       </div>
+
+      <h2>Get to a 402</h2>
+      <SubmitPaths />
 
       <h2>What gets listed</h2>
       <ul>

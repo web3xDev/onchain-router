@@ -124,7 +124,7 @@ claude mcp add onchain-wallet -- \\
                 <span>{tool.coverage}</span>
                 {tool.source === "graph" ? (
                   <span className="card-source">
-                    <Brand id="graph" height={12} /> The Graph
+                    Powered by <Brand id="graph" height={12} /> The Graph
                   </span>
                 ) : (
                   tool.source && <span>{tool.source}</span>
@@ -182,8 +182,8 @@ claude mcp add onchain-wallet -- \\
             <span className="label">For tool authors</span>
             <h2 style={{ marginTop: 8 }}>Get discovered. Get paid. Keep 100%.</h2>
             <p>
-              List your x402 endpoint. Agents find it, call it, and pay you directly, at
-              your endpoint. The router takes nothing.
+              Wrap your API in x402 with one call, or list an endpoint that already speaks
+              it. Agents find it, call it, and pay you directly. The router takes nothing.
             </p>
           </div>
         </div>
@@ -199,8 +199,8 @@ claude mcp add onchain-wallet -- \\
               your address. No invoice, no payout run, no minimum.
             </div>
             <div>
-              <strong>Your terms.</strong> Your price, quoted from your own 402. Your wallet.
-              Your endpoint, relayed as is.
+              <strong>Your terms.</strong> Your price, your wallet, your server. One
+              <code>paid()</code> call if you are not on x402 yet.
             </div>
           </div>
           <div className="authors-cta">
@@ -208,7 +208,7 @@ claude mcp add onchain-wallet -- \\
               0%<span>commission</span>
             </div>
             <Link href="/submit" className="btn btn-primary">
-              List your endpoint
+              List your tool
             </Link>
           </div>
         </div>

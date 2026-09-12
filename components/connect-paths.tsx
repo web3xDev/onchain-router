@@ -21,28 +21,37 @@ export function ConnectPaths({ base }: { base: string }) {
 
       {path === "sdk" ? (
         <>
-          <p>Wrap an MCP client with an x402 payment client and your wallet.</p>
+          <p>
+            One package: a wallet on Hedera and Arc, and a call that pays the 402 for you.
+          </p>
           <Code lang="ts">
-            {`const agent = wrapMCPClientWithPayment(
-  new Client({ name: "my-agent", version: "1.0.0" }),
-  paymentClient, // your x402Client + wallet
-);
+            {`import { createWallet, pay } from "onchainrouter";
 
-await agent.connect(
-  new StreamableHTTPClientTransport(new URL("${base}/mcp")),
-);
+const wallet = createWallet({
+  hedera: { accountId: "0.0.12345", privateKey: "0x..." },
+  arc: { privateKey: "0x..." },
+});
 
-await agent.callTool("lending_rates", { asset: "USDC", chain: "base" });`}
+const { data, receipt } = await pay(
+  "${base}/api/tools/lending-rates",
+  { asset: "USDC", chain: "base" },
+  wallet,
+);`}
           </Code>
+          <p className="hint" style={{ marginTop: 10 }}>
+            Over MCP instead: <code>wrapMCPClientWithPayment(mcpClient, wallet.client)</code>{" "}
+            and connect to <code>{base}/mcp</code>.
+          </p>
         </>
       ) : (
         <>
-          <p>The router, plus a wallet MCP that signs when a tool asks for payment.</p>
+          <p>The router, plus a wallet MCP that signs when a tool asks for payment. Keys stay in your environment.</p>
           <Code lang="sh">
             {`claude mcp add --transport http onchain-router ${base}/mcp
 
-claude mcp add onchain-wallet -- \\
-  sh -c "cd onchain-router && npx tsx mcp/wallet.ts"`}
+claude mcp add onchain-wallet \\
+  -e HEDERA_AGENT_ACCOUNT_ID=0.0.x -e HEDERA_AGENT_PRIVATE_KEY=0x... \\
+  -- npx -y onchainrouter wallet`}
           </Code>
         </>
       )}

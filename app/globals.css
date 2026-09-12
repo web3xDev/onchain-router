@@ -998,6 +998,9 @@ html {
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
   background: linear-gradient(180deg, var(--surface), var(--bg));
+  /* The gradient stops at the padding edge, so the translucent border reads the
+     same all the way round instead of fading where the fill gets darker. */
+  background-clip: padding-box;
   padding: 56px 32px;
   text-align: center;
 }

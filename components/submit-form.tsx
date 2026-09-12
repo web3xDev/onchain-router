@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useLayoutEffect, useRef, useState } from "react";
 import { Code } from "@/components/code";
 import { Select } from "@/components/select";
 
@@ -179,8 +179,34 @@ export function SubmitForm({ categories }: { categories: string[] }) {
     { id: "submit", no: "03", title: "Submit for review", summary: "", done: false, locked: probe.state !== "ok" },
   ];
 
-  const openStep = (id: Active) => setActive(id);
-  const toggleStep = (id: Active) => setActive((current) => (current === id ? null : id));
+  // Opening a lower step collapses the one above it, which would yank the clicked
+  // header up the screen. The header's position is measured before the change and
+  // restored after the render, so what you clicked stays under your cursor.
+  const heads = useRef<Record<string, HTMLButtonElement | null>>({});
+  const anchor = useRef<{ id: Active; top: number } | null>(null);
+
+  // Continue: the next step opens and its header is brought just under the nav,
+  // since the button that was pressed sat at the bottom of the previous one.
+  const openStep = (id: Active) => {
+    anchor.current = { id, top: 84 };
+    setActive(id);
+  };
+
+  const toggleStep = (id: Active) => {
+    const head = heads.current[id];
+    if (head) anchor.current = { id, top: head.getBoundingClientRect().top };
+    setActive((current) => (current === id ? null : id));
+  };
+
+  useLayoutEffect(() => {
+    const a = anchor.current;
+    if (!a) return;
+    anchor.current = null;
+    const head = heads.current[a.id];
+    if (!head) return;
+    const delta = head.getBoundingClientRect().top - a.top;
+    if (delta !== 0) window.scrollBy(0, delta);
+  }, [active]);
 
   return (
     <div className="submit">
@@ -191,6 +217,9 @@ export function SubmitForm({ categories }: { categories: string[] }) {
             <button
               type="button"
               className="acc-head"
+              ref={(el) => {
+                heads.current[step.id] = el;
+              }}
               onClick={() => !step.locked && toggleStep(step.id)}
               aria-expanded={isOpen}
               disabled={step.locked}

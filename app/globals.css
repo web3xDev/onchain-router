@@ -2115,6 +2115,17 @@ html {
   color: var(--border-strong);
 }
 
+/* Narrow screens: one fact per line, no separators left dangling at a wrap. */
+@media (max-width: 620px) {
+  .eyebrow-row {
+    flex-direction: column;
+    gap: 6px;
+  }
+  .eyebrow-row span + span::before {
+    content: none;
+  }
+}
+
 .submit {
   margin-top: 36px;
   border-top: 1px solid var(--border);

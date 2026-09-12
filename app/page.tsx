@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Faq } from "@/components/faq";
 import { TOOLS, catalogue } from "@/lib/tools/registry";
 import { LIVE_GOVERNANCE_PROTOCOLS, LIVE_LENDING_CHAINS } from "@/lib/graph/verified";
 import { rails } from "@/lib/x402";
@@ -245,10 +246,20 @@ claude mcp add onchain-wallet -- \\
         </div>
       </section>
 
-      <section className="page" style={{ paddingBottom: 72, paddingTop: 72 }} data-reveal>
+      <section className="section page" data-reveal>
+        <div className="section-head">
+          <div>
+            <span className="label">FAQ</span>
+            <h2 style={{ marginTop: 8 }}>Questions, answered</h2>
+          </div>
+        </div>
+        <Faq />
+      </section>
+
+      <section className="page" style={{ paddingBottom: 72, paddingTop: 24 }} data-reveal>
         <div className="closing">
           <h2>Give your agent an onchain toolbox.</h2>
-          <p>One endpoint. Pay per answer. No signup.</p>
+          <p>One endpoint. Pay per call. No signup.</p>
           <div className="hero-actions" style={{ justifyContent: "center", marginTop: 22 }}>
             <Link href="/connect" className="btn btn-primary">
               Connect your agent

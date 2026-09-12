@@ -1,6 +1,6 @@
 {
   "name": "onchainrouter",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Sell an API to AI agents over x402 on Hedera and Arc, or pay for one. Server wrapper, paying client, and a wallet MCP for chat clients.",
   "license": "AGPL-3.0-or-later",
   "repository": {

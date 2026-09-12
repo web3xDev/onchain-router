@@ -1,6 +1,6 @@
 {
   "name": "onchainrouter",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Sell an API to AI agents over x402 on Hedera and Arc, or pay for one. Server wrapper, paying client, and a wallet MCP for chat clients.",
   "license": "AGPL-3.0-or-later",
   "repository": {
@@ -8,7 +8,7 @@
     "url": "git+https://github.com/web3xDev/onchain-router.git",
     "directory": "packages/onchainrouter"
   },
-  "homepage": "https://onchainrouter.app",
+  "homepage": "https://onchainrouter.io",
   "keywords": [
     "x402",
     "mcp",

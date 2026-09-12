@@ -217,7 +217,7 @@ export type PayResult<T = unknown> = {
 /**
  * One paid call: POST JSON, pay the 402 if there is one, return the answer.
  *
- * `pay("https://onchainrouter.app/api/tools/lending-rates", { asset: "USDC", chain: "base" }, wallet)`
+ * `pay("https://onchainrouter.io/api/tools/lending-rates", { asset: "USDC", chain: "base" }, wallet)`
  */
 export async function pay<T = unknown>(
   url: string,

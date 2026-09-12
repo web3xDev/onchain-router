@@ -56,7 +56,7 @@ const Input = z.object({ position: z.string() });
 paid({ ..., parse: (body) => Input.parse(body) }, async (input) => { ... });
 ```
 
-Then list it on [onchainrouter.app/submit](https://onchainrouter.app/submit). The form reads price, rails and address off your 402.
+Then list it on [onchainrouter.io/submit](https://onchainrouter.io/submit). The form reads price, rails and address off your 402.
 
 ## Pay: `createWallet()` and `pay()`
 
@@ -70,7 +70,7 @@ const wallet = createWallet({
 });
 
 const { status, data, receipt } = await pay(
-  "https://onchainrouter.app/api/tools/lending-rates",
+  "https://onchainrouter.io/api/tools/lending-rates",
   { asset: "USDC", chain: "base" },
   wallet,
 );
@@ -93,7 +93,7 @@ Spend caps are per payment. A service asking for more than the cap is refused be
 Claude Code cannot sign a payment. Give it a wallet as a second MCP server:
 
 ```
-claude mcp add --transport http onchain-router https://onchainrouter.app/mcp
+claude mcp add --transport http onchain-router https://onchainrouter.io/mcp
 claude mcp add onchain-wallet \
   -e HEDERA_AGENT_ACCOUNT_ID=0.0.12345 -e HEDERA_AGENT_PRIVATE_KEY=0x... \
   -- npx -y onchainrouter wallet

@@ -86,8 +86,8 @@ export default function Home() {
             {`claude mcp add --transport http onchainrouter \\
   ${base}/mcp
 
-claude mcp add onchain-wallet -- \\
-  npx tsx mcp/wallet.ts`}
+claude mcp add onchain-wallet -e HEDERA_AGENT_ACCOUNT_ID=0.0.x \\
+  -e HEDERA_AGENT_PRIVATE_KEY=0x... -- npx -y onchainrouter wallet`}
           </Code>
         </div>
         </div>
@@ -200,7 +200,7 @@ claude mcp add onchain-wallet -- \\
               your address. No invoice, no payout run, no minimum.
             </div>
             <div>
-              <strong>Your terms.</strong> Your price, your wallet, your server. One
+              <strong>Your terms.</strong> Your price, your wallet, your server. One{" "}
               <code>paid()</code> call if you are not on x402 yet.
             </div>
           </div>

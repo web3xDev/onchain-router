@@ -2652,12 +2652,16 @@ html {
   margin: 22px 0 8px;
 }
 
-.docs-body .code + .code,
-.docs-body .code + p {
+.docs-body .code-wrap + .code-wrap {
+  margin-top: 10px;
+}
+
+.docs-body .code-wrap + p,
+.docs-body .code-wrap + table {
   margin-top: 14px;
 }
 
-.docs-body p + .code {
+.docs-body p + .code-wrap {
   margin-top: 12px;
 }
 

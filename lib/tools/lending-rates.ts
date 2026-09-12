@@ -37,7 +37,7 @@ const OUTLIER_MULTIPLE = 5;
  * years ago. The indexer is at the chain head, so the subgraph looks fresh; only the
  * market's own last snapshot says nobody has touched it.
  */
-const STALE_AFTER_DAYS = 30;
+export const STALE_AFTER_DAYS = 30;
 
 const MARKETS_QUERY = `
   query Markets($symbol: String!) {

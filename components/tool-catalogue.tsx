@@ -102,7 +102,7 @@ export function ToolCatalogue({
                 <span>{tool.coverage}</span>
                 {tool.source === "graph" ? (
                   <span className="card-source">
-                    <Brand id="graph" height={12} /> The Graph
+                    Powered by <Brand id="graph" height={12} /> The Graph
                   </span>
                 ) : (
                   tool.source && <span>{tool.source}</span>

@@ -2,6 +2,7 @@ import { z } from "zod";
 import { lendingRates } from "@/lib/tools/lending-rates";
 import { governancePower } from "@/lib/tools/governance-power";
 import { withdrawalRisk } from "@/lib/tools/withdrawal-risk";
+import { liquidationPressure } from "@/lib/tools/liquidation-pressure";
 import { protocolHealth, HEALTH_PROTOCOLS } from "@/lib/tools/protocol-health";
 import { governancePulse } from "@/lib/tools/governance-pulse";
 import { LIVE_GOVERNANCE_PROTOCOLS, LIVE_LENDING_TOTAL, LIVE_LENDING_CHAINS } from "@/lib/graph/verified";
@@ -174,6 +175,42 @@ export const TOOLS: ToolDefinition[] = [
         String(input.chain ?? "ethereum"),
         input.amountUsd === undefined ? undefined : Number(input.amountUsd),
       ),
+  },
+
+  {
+    slug: "liquidation-pressure",
+    name: "Liquidation pressure",
+    category: "lending",
+    author: "OnchainRouter",
+    summary: "Whether borrowers against an asset are being liquidated right now, and how much room the terms leave.",
+    description:
+      "Sums a week of liquidations across every lending market for an asset on a chain " +
+      "and weighs it against what is borrowed there. Calls the chain calm, stressed or " +
+      "cascading, says which way it is moving against the week before, and names any " +
+      "single market in trouble under a calm total. Then reads the terms: how far price " +
+      "has to fall before a position opened at max LTV is seized, and the penalty when it " +
+      "is. Days that claim to liquidate more than the market held are discarded and reported.",
+    price: "$0.01",
+    coverage: `${LIVE_LENDING_CHAINS.length} chains, ${LIVE_LENDING_TOTAL} live deployments`,
+    source: "graph",
+    inputSchema: {
+      asset: z.string().describe("Asset symbol, e.g. WETH or USDC"),
+      chain: z
+        .enum([...LIVE_LENDING_CHAINS] as [string, ...string[]])
+        .describe("Chain to search"),
+    },
+    example: {
+      request: { asset: "USDC", chain: "base" },
+      answer:
+        "USDC on base is calm: $25k liquidated across 3 live markets in 7 days, under 0.01% " +
+        "of the $349.0M borrowed. The week before saw almost none. Almost all of it, $25k, " +
+        "was on moonwell. moonwell on its own is stressed: $25k liquidated against $8.9M " +
+        "borrowed, 0.28% in a week. Tightest terms are on seamless-protocol: 77% max LTV " +
+        "against an 80% threshold, so a position opened at the limit is 3.7% of price from " +
+        "liquidation, with a 5% penalty.",
+    },
+    run: (input) =>
+      liquidationPressure(String(input.asset ?? "WETH"), String(input.chain ?? "ethereum")),
   },
 
   {

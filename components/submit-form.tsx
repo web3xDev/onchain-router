@@ -34,6 +34,7 @@ type Probe =
   | { state: "bad"; error: string };
 
 type Start = "api" | "x402";
+type Active = "start" | "verify" | "describe" | "submit";
 
 /** A rail as the 402 names it, rendered the way the site names it. */
 function railLabel(a: Accept): { name: string; price: string } {
@@ -61,6 +62,7 @@ function shorten(address: string | null): string {
  */
 export function SubmitForm({ categories }: { categories: string[] }) {
   const [start, setStart] = useState<Start>("api");
+  const [active, setActive] = useState<Active>("start");
   const [fields, setFields] = useState<Fields>(EMPTY);
   const [touched, setTouched] = useState(false);
   const [probe, setProbe] = useState<Probe>({ state: "idle" });
@@ -146,250 +148,252 @@ export function SubmitForm({ categories }: { categories: string[] }) {
     window.open(url, "_blank", "noreferrer");
   }
 
+  const hostOf = (url: string) => {
+    try {
+      return new URL(url).host;
+    } catch {
+      return url;
+    }
+  };
+
+  const verifySummary =
+    probe.state === "ok"
+      ? `${hostOf(fields.endpoint)} · ${probe.accepts.map((a) => railLabel(a).price).join(" · ")}`
+      : probe.state === "checking"
+        ? "Checking…"
+        : "";
+
+  const describeSummary = fields.name.trim() ? fields.name.trim() : "";
+
+  type Step = { id: Active; no: string; title: string; summary: string; done: boolean; locked?: boolean };
+  const steps: Step[] = [
+    {
+      id: "start",
+      no: "00",
+      title: "How do you want to start?",
+      summary: start === "api" ? "I have an API" : "I already use x402",
+      done: active !== "start",
+    },
+    { id: "verify", no: "01", title: "Verify your endpoint", summary: verifySummary, done: probe.state === "ok" },
+    { id: "describe", no: "02", title: "Describe your tool", summary: describeSummary, done: missing.length === 0 && probe.state === "ok" },
+    { id: "submit", no: "03", title: "Submit for review", summary: "", done: false, locked: probe.state !== "ok" },
+  ];
+
+  const openStep = (id: Active) => setActive(id);
+
   return (
     <div className="submit">
-      {/* How to start */}
-      <div className="sstep">
-        <div className="step-head">
-          <span className="step-no">How do you want to start?</span>
-        </div>
-        <div className="start-cards" role="radiogroup" aria-label="How do you want to start">
-          <button
-            type="button"
-            role="radio"
-            aria-checked={start === "api"}
-            className="start-card"
-            onClick={() => setStart("api")}
-          >
-            <span className="start-title">I have an API</span>
-            <span className="start-sub">Add pay-per-call payments in one function call.</span>
-            <span className="start-flag">Recommended</span>
-          </button>
-          <button
-            type="button"
-            role="radio"
-            aria-checked={start === "x402"}
-            className="start-card"
-            onClick={() => setStart("x402")}
-          >
-            <span className="start-title">I already use x402</span>
-            <span className="start-sub">Bring your existing endpoint.</span>
-          </button>
-        </div>
+      {steps.map((step) => {
+        const isOpen = active === step.id;
+        return (
+          <section key={step.id} className={`acc${isOpen ? " is-open" : ""}${step.done ? " is-done" : ""}`}>
+            <button
+              type="button"
+              className="acc-head"
+              onClick={() => !step.locked && openStep(step.id)}
+              aria-expanded={isOpen}
+              disabled={step.locked}
+            >
+              <span className="step-no">{step.no}</span>
+              <span className="acc-title">{step.title}</span>
+              {!isOpen && step.summary && (
+                <span className="acc-summary">
+                  {step.done && <span className="probe-tick">✓ </span>}
+                  {step.summary}
+                </span>
+              )}
+              {step.locked && !isOpen && <span className="acc-summary">After Check</span>}
+              <span className="acc-chev" aria-hidden="true" />
+            </button>
 
-        {start === "api" ? (
-          <div className="start-body">
-            <h3>One wrapper. Two payment rails.</h3>
-            <p>
-              <code>paid()</code> adds x402 to your existing handler. Your price and wallet go
-              out in the 402; successful calls settle directly to you.
-            </p>
-            <div style={{ marginBottom: 10 }}>
-              <Code lang="sh">{`npm install onchainrouter`}</Code>
-            </div>
-            <Code lang="ts">
-              {`import { paid } from "onchainrouter/server";
+            {isOpen && step.id === "start" && (
+              <div className="acc-body">
+                <div className="start-cards" role="radiogroup" aria-label="How do you want to start">
+                  <button type="button" role="radio" aria-checked={start === "api"} className="start-card" onClick={() => setStart("api")}>
+                    <span className="start-title">I have an API</span>
+                    <span className="start-sub">Add pay-per-call payments in one function call.</span>
+                    <span className="start-flag">Recommended</span>
+                  </button>
+                  <button type="button" role="radio" aria-checked={start === "x402"} className="start-card" onClick={() => setStart("x402")}>
+                    <span className="start-title">I already use x402</span>
+                    <span className="start-sub">Bring your existing endpoint.</span>
+                  </button>
+                </div>
+
+                {start === "api" ? (
+                  <div className="start-body">
+                    <p>
+                      <code>paid()</code> adds x402 to your existing handler. Your price and wallet
+                      go out in the 402; successful calls settle directly to you.
+                    </p>
+                    <div style={{ marginBottom: 10 }}>
+                      <Code lang="sh">{`npm install onchainrouter`}</Code>
+                    </div>
+                    <Code lang="ts">
+                      {`import { paid } from "onchainrouter/server";
 
 export const POST = paid(
   {
     price: { hbar: "0.1", usdc: "0.01" },
     payTo: { hedera: "0.0.12345", arc: "0xYourAddress" },
-    description: "Liquidation risk for a lending position",
   },
   async (input) => {
     const result = await yourExistingLogic(input);
-    if (!result) return null;
+    if (!result) return null;   // no answer, no charge
     return result;
   },
 );`}
-            </Code>
-            <p className="start-rule">
-              No result? Return <code>null</code>. No settlement.
-            </p>
-            <p className="hint">
-              A complete Next.js route, and a plain <code>(Request) =&gt; Response</code> for
-              Hono, Bun, Workers or Express. x402 is the HTTP status that tells an agent what
-              to pay, where, and how; the package writes it for you.
-            </p>
-          </div>
-        ) : (
-          <div className="start-body">
-            <p>
-              Your endpoint already answers 402 on Hedera or Arc. The router relays that 402
-              to callers and their signed payment back to you. Settlement happens at your
-              endpoint, to your address; nothing changes on your side.
-            </p>
-          </div>
-        )}
-      </div>
-
-      {/* 01 */}
-      <div className="sstep">
-        <div className="step-head">
-          <span className="step-no">01</span>
-          <h2>Verify your endpoint</h2>
-        </div>
-        <div className="field">
-          <div className="probe-row">
-            <input
-              id="endpoint"
-              aria-label="x402 endpoint"
-              value={fields.endpoint}
-              onChange={set("endpoint")}
-              placeholder="https://api.example.com/liquidation-risk"
-              onKeyDown={(e) => e.key === "Enter" && check()}
-            />
-            <button
-              type="button"
-              className="btn"
-              onClick={check}
-              disabled={probe.state === "checking" || !fields.endpoint.trim()}
-            >
-              {probe.state === "checking" ? "Checking…" : "Check"}
-            </button>
-          </div>
-          <span className="hint">
-            We read the price, payment rails and payout address straight from your 402
-            response. POST, JSON body.
-          </span>
-          {touched && !fields.endpoint.trim() && <span className="error">Required</span>}
-          {touched && fields.endpoint.trim() && probe.state !== "ok" && (
-            <span className="error">Run Check first; the endpoint has to answer 402.</span>
-          )}
-        </div>
-
-        {probe.state === "bad" && <div className="probe-result probe-bad">{probe.error}</div>}
-
-        {probe.state === "ok" && (
-          <div className="probe-result probe-ok">
-            <div className="probe-title">
-              <span className="probe-tick">✓</span> Speaks x402
-              <span className="probe-count">
-                {probe.accepts.length} payment rail{probe.accepts.length === 1 ? "" : "s"}
-              </span>
-            </div>
-            <div className="probe-rails">
-              {probe.accepts.map((a, i) => {
-                const { name, price } = railLabel(a);
-                return (
-                  <div key={i} className="probe-rail" style={{ animationDelay: `${120 + i * 110}ms` }}>
-                    <span className="probe-rail-name">{name}</span>
-                    <span className="probe-rail-price">{price}</span>
-                    <span className="probe-rail-to" title={a.payTo ?? ""}>
-                      → {shorten(a.payTo)}
-                    </span>
+                    </Code>
+                    <p className="hint" style={{ marginTop: 10 }}>
+                      A complete Next.js route, and a plain <code>(Request) =&gt; Response</code>{" "}
+                      for Hono, Bun, Workers or Express. Deploy it, then continue.
+                    </p>
                   </div>
-                );
-              })}
-            </div>
-          </div>
-        )}
+                ) : (
+                  <div className="start-body">
+                    <p>
+                      Your endpoint answers 402 on Hedera or Arc. The router relays that 402 to
+                      callers and their signed payment back to you. Settlement happens at your
+                      endpoint; nothing changes on your side.
+                    </p>
+                  </div>
+                )}
 
-        <div className="field" style={{ marginTop: 14 }}>
-          <label htmlFor="example">Example request</label>
-          <textarea
-            id="example"
-            value={fields.example}
-            onChange={set("example")}
-            style={{ minHeight: 64, fontFamily: "var(--mono)", fontSize: 13 }}
-          />
-          <span className="hint">Sent as the body when checking; shown on the tool page.</span>
-        </div>
-      </div>
+                <button type="button" className="btn btn-primary" onClick={() => openStep("verify")} style={{ marginTop: 18 }}>
+                  Continue
+                </button>
+              </div>
+            )}
 
-      {/* 02 */}
-      <div className="sstep">
-        <div className="step-head">
-          <span className="step-no">02</span>
-          <h2>Describe your tool</h2>
-        </div>
+            {isOpen && step.id === "verify" && (
+              <div className="acc-body">
+                <div className="field">
+                  <div className="probe-row">
+                    <input
+                      id="endpoint"
+                      aria-label="x402 endpoint"
+                      value={fields.endpoint}
+                      onChange={set("endpoint")}
+                      placeholder="https://api.example.com/liquidation-risk"
+                      onKeyDown={(e) => e.key === "Enter" && check()}
+                    />
+                    <button type="button" className="btn" onClick={check} disabled={probe.state === "checking" || !fields.endpoint.trim()}>
+                      {probe.state === "checking" ? "Checking…" : "Check"}
+                    </button>
+                  </div>
+                  <span className="hint">
+                    We read the price, payment rails and payout address straight from your 402.
+                    POST, JSON body.
+                  </span>
+                </div>
 
-        <div className="form-grid">
-          <div className="field">
-            <label htmlFor="name">Tool name</label>
-            <input id="name" value={fields.name} onChange={set("name")} placeholder="Liquidation risk" />
-            {touched && !fields.name.trim() && <span className="error">Required</span>}
-          </div>
+                {probe.state === "bad" && <div className="probe-result probe-bad">{probe.error}</div>}
 
-          <div className="field">
-            <label htmlFor="category">Category</label>
-            <Select
-              id="category"
-              value={fields.category}
-              onChange={(value) => set("category")({ target: { value } })}
-              placeholder="Choose or leave blank for a new one"
-              options={[
-                { value: "", label: "New category" },
-                ...categories.map((category) => ({ value: category, label: category })),
-              ]}
-            />
-          </div>
+                {probe.state === "ok" && (
+                  <div className="probe-result probe-ok">
+                    <div className="probe-title">
+                      <span className="probe-tick">✓</span> Speaks x402
+                      <span className="probe-count">
+                        {probe.accepts.length} payment rail{probe.accepts.length === 1 ? "" : "s"}
+                      </span>
+                    </div>
+                    <div className="probe-rails">
+                      {probe.accepts.map((a, i) => {
+                        const { name, price } = railLabel(a);
+                        return (
+                          <div key={i} className="probe-rail" style={{ animationDelay: `${120 + i * 110}ms` }}>
+                            <span className="probe-rail-name">{name}</span>
+                            <span className="probe-rail-price">{price}</span>
+                            <span className="probe-rail-to" title={a.payTo ?? ""}>→ {shorten(a.payTo)}</span>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
 
-          <div className="field span-2">
-            <label htmlFor="question">What it answers</label>
-            <textarea
-              id="question"
-              value={fields.question}
-              onChange={set("question")}
-              placeholder="How close is this position to liquidation, and what price move gets it there?"
-              style={{ minHeight: 64 }}
-            />
-            <span className="hint">
-              One sentence, shown on the catalogue card. What the caller learns, not which
-              fields come back.
-            </span>
-            {touched && !fields.question.trim() && <span className="error">Required</span>}
-          </div>
+                <details className="acc-more" style={{ marginTop: 12 }}>
+                  <summary>Example request</summary>
+                  <div className="field" style={{ marginTop: 8 }}>
+                    <textarea id="example" value={fields.example} onChange={set("example")} style={{ minHeight: 56, fontFamily: "var(--mono)", fontSize: 13 }} />
+                    <span className="hint">Sent as the body when checking; shown on the tool page.</span>
+                  </div>
+                </details>
 
-          <div className="field">
-            <label htmlFor="inputs">Inputs</label>
-            <textarea
-              id="inputs"
-              value={fields.inputs}
-              onChange={set("inputs")}
-              placeholder={"address: the position owner\nchain: ethereum | base | arbitrum"}
-              style={{ minHeight: 84, fontFamily: "var(--mono)", fontSize: 13 }}
-            />
-            <span className="hint">One per line. Fixed choices as a | b | c.</span>
-          </div>
+                <button type="button" className="btn btn-primary" onClick={() => openStep("describe")} disabled={probe.state !== "ok"} style={{ marginTop: 18 }}>
+                  Continue
+                </button>
+              </div>
+            )}
 
-          <div className="field">
-            <label htmlFor="contact">Contact</label>
-            <input id="contact" value={fields.contact} onChange={set("contact")} placeholder="GitHub handle or X" />
-            <span className="hint">So we can reach you about the review.</span>
-          </div>
-        </div>
-      </div>
+            {isOpen && step.id === "describe" && (
+              <div className="acc-body">
+                <div className="form-grid">
+                  <div className="field">
+                    <label htmlFor="name">Tool name</label>
+                    <input id="name" value={fields.name} onChange={set("name")} placeholder="Liquidation risk" />
+                    {touched && !fields.name.trim() && <span className="error">Required</span>}
+                  </div>
+                  <div className="field">
+                    <label htmlFor="category">Category</label>
+                    <Select
+                      id="category"
+                      value={fields.category}
+                      onChange={(value) => set("category")({ target: { value } })}
+                      placeholder="Choose or leave blank for a new one"
+                      options={[{ value: "", label: "New category" }, ...categories.map((c) => ({ value: c, label: c }))]}
+                    />
+                  </div>
+                  <div className="field span-2">
+                    <label htmlFor="question">What it answers</label>
+                    <textarea id="question" value={fields.question} onChange={set("question")} placeholder="How close is this position to liquidation, and what price move gets it there?" style={{ minHeight: 56 }} />
+                    <span className="hint">One sentence, shown on the catalogue card.</span>
+                    {touched && !fields.question.trim() && <span className="error">Required</span>}
+                  </div>
+                  <div className="field">
+                    <label htmlFor="inputs">Inputs</label>
+                    <textarea id="inputs" value={fields.inputs} onChange={set("inputs")} placeholder={"address: the position owner\nchain: ethereum | base | arbitrum"} style={{ minHeight: 72, fontFamily: "var(--mono)", fontSize: 13 }} />
+                    <span className="hint">One per line. Fixed choices as a | b | c.</span>
+                  </div>
+                  <div className="field">
+                    <label htmlFor="contact">Contact</label>
+                    <input id="contact" value={fields.contact} onChange={set("contact")} placeholder="GitHub handle or X" />
+                  </div>
+                </div>
 
-      {/* 03 */}
-      <div className="sstep">
-        <div className="step-head">
-          <span className="step-no">03</span>
-          <h2>Submit for review</h2>
-        </div>
+                <button
+                  type="button"
+                  className="btn btn-primary"
+                  onClick={() => {
+                    setTouched(true);
+                    if (missing.length === 0) openStep("submit");
+                  }}
+                  style={{ marginTop: 18 }}
+                >
+                  Continue
+                </button>
+              </div>
+            )}
 
-        <div className={`submit-box${ready ? " is-ready" : ""}`}>
-          <div>
-            <div className="submit-status">
-              {probe.state === "ok"
-                ? "Your endpoint passed the x402 check."
-                : "Run Check on your endpoint first."}
-            </div>
-            <p className="hint" style={{ margin: "6px 0 0" }}>
-              Opens a prefilled GitHub issue with everything we read from your 402. We review
-              it, then your tool is live in the catalogue and over MCP.
-            </p>
-            <div className="submit-chips">
-              <span>0% commission</span>
-              <span>Direct settlement</span>
-              <span>MCP + HTTP</span>
-            </div>
-          </div>
-          <button type="button" className="btn btn-primary" onClick={submit} disabled={probe.state !== "ok"}>
-            Submit listing request
-          </button>
-        </div>
-      </div>
+            {isOpen && step.id === "submit" && (
+              <div className="acc-body">
+                <p style={{ margin: "0 0 14px", color: "var(--text-2)" }}>
+                  Opens a prefilled GitHub issue with everything we read from your 402. We review
+                  it, then your tool is live in the catalogue and over MCP.
+                </p>
+                <div className="submit-chips" style={{ marginBottom: 18 }}>
+                  <span>0% commission</span>
+                  <span>Direct settlement</span>
+                  <span>MCP + HTTP</span>
+                </div>
+                <button type="button" className="btn btn-primary" onClick={submit} disabled={!ready}>
+                  Submit listing request
+                </button>
+              </div>
+            )}
+          </section>
+        );
+      })}
     </div>
   );
 }

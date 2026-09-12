@@ -32,9 +32,7 @@ export default function SubmitPage() {
       <SubmitForm categories={CATEGORIES} />
 
       <div className="good-tool">
-        <div className="step-head">
-          <span className="step-no">What makes a good tool</span>
-        </div>
+        <span className="step-no">What makes a good tool</span>
         <div className="good-grid">
           <div>
             <strong>One job</strong>

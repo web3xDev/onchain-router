@@ -13,6 +13,34 @@ export const metadata: Metadata = {
   twitter: { title: "Submit a tool", description: DESCRIPTION },
 };
 
+/** Lucide icons (ISC), inlined so the page ships no icon package. */
+const svg = (paths: string) => (
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" dangerouslySetInnerHTML={{ __html: paths }} />
+);
+
+const GOOD = [
+  {
+    title: "One job",
+    text: "Answers one clear question or performs one clear action.",
+    icon: svg('<circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/>'),
+  },
+  {
+    title: "Agent-ready",
+    text: "Speaks x402 on Hedera or Arc, the rails every agent here pays on.",
+    icon: svg('<path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 13v2"/><path d="M9 13v2"/>'),
+  },
+  {
+    title: "Outcome, not dump",
+    text: "Returns a useful result, and 404 when it has none, so nothing is charged.",
+    icon: svg('<circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/>'),
+  },
+  {
+    title: "Pay-per-call",
+    text: "Cheap enough for an agent to call again and again.",
+    icon: svg('<circle cx="8" cy="8" r="6"/><path d="M18.09 10.37A6 6 0 1 1 10.34 18"/><path d="M7 6h1v4"/><path d="m16.71 13.88.7.71-2.82 2.82"/>'),
+  },
+];
+
 export default function SubmitPage() {
   return (
     <div className="page submit-page">
@@ -33,22 +61,13 @@ export default function SubmitPage() {
       <div className="good-tool">
         <span className="step-no">What makes a good tool</span>
         <div className="good-grid">
-          <div>
-            <strong>One job</strong>
-            <span>Answers one clear question or performs one clear action.</span>
-          </div>
-          <div>
-            <strong>Agent-ready</strong>
-            <span>Speaks x402 on Hedera or Arc, the rails every agent here pays on.</span>
-          </div>
-          <div>
-            <strong>Outcome, not dump</strong>
-            <span>Returns a useful result, and 404 when it has none, so nothing is charged.</span>
-          </div>
-          <div>
-            <strong>Pay-per-call</strong>
-            <span>Cheap enough for an agent to call again and again.</span>
-          </div>
+          {GOOD.map((item) => (
+            <div key={item.title}>
+              <span className="good-icon" aria-hidden="true">{item.icon}</span>
+              <strong>{item.title}</strong>
+              <span>{item.text}</span>
+            </div>
+          ))}
         </div>
       </div>
 

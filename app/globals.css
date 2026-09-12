@@ -2440,16 +2440,23 @@ html {
 .good-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
+  grid-auto-rows: 1fr;
   gap: 12px;
 }
 
 .good-grid > div {
   display: grid;
   gap: 4px;
-  padding: 14px 16px;
+  padding: 16px;
   border: 1px solid var(--border);
   border-radius: var(--radius);
   background: var(--surface);
+}
+
+.good-grid .good-icon {
+  display: inline-flex;
+  color: var(--accent);
+  margin-bottom: 6px;
 }
 
 .good-grid strong {

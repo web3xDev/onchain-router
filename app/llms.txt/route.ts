@@ -75,6 +75,7 @@ Any x402 endpoint on Hedera or Arc can be listed, by a person or an agent. Nothi
 
 ## Pages
 
+- [Docs](${base}/docs): quickstarts, HTTP and MCP reference, selling a tool, funding a wallet
 - [Catalogue](${base}/tools): every tool with price and inputs
 - [Connect](${base}/connect): MCP and HTTP setup for your own agent or Claude Code
 - [Playground](${base}/playground): try a tool from a wallet we fund

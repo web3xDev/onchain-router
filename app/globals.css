@@ -2600,3 +2600,116 @@ html {
   font-size: 13px;
   color: var(--text);
 }
+
+/* ── docs ────────────────────────────────────────────────────────────────── */
+
+.docs {
+  display: grid;
+  grid-template-columns: 200px minmax(0, 1fr);
+  gap: 56px;
+  padding-top: 56px;
+  padding-bottom: 72px;
+  align-items: start;
+}
+
+.docs-nav {
+  position: sticky;
+  top: 84px;
+}
+
+.docs-nav nav {
+  display: grid;
+  gap: 2px;
+  margin-top: 12px;
+}
+
+.docs-nav a {
+  padding: 6px 10px;
+  margin-left: -10px;
+  border-radius: 6px;
+  font-size: 13.5px;
+  color: var(--text-2);
+}
+
+.docs-nav a:hover {
+  color: var(--text);
+  background: var(--surface);
+}
+
+.docs-body {
+  max-width: 76ch;
+  padding-bottom: 0;
+}
+
+.docs-body h2 {
+  scroll-margin-top: 84px;
+  padding-top: 8px;
+  margin-top: 44px;
+}
+
+.docs-body h3 {
+  font-size: 15px;
+  margin: 22px 0 8px;
+}
+
+.docs-body .code + .code,
+.docs-body .code + p {
+  margin-top: 14px;
+}
+
+.docs-body p + .code {
+  margin-top: 12px;
+}
+
+.docs-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 12px 0 8px;
+  font-size: 14px;
+}
+
+.docs-table td {
+  padding: 10px 12px 10px 0;
+  border-bottom: 1px solid var(--border);
+  vertical-align: top;
+  color: var(--text-2);
+}
+
+.docs-table td:first-child {
+  width: 130px;
+  color: var(--text);
+  white-space: nowrap;
+}
+
+.docs-tool {
+  padding: 14px 0 6px;
+  border-top: 1px solid var(--border);
+}
+
+.docs-tool h3 {
+  margin-top: 0;
+}
+
+.docs-tool p {
+  margin: 6px 0 8px;
+}
+
+.docs-tool ul {
+  margin: 0 0 10px;
+  font-size: 14px;
+}
+
+@media (max-width: 860px) {
+  .docs {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+  .docs-nav {
+    position: static;
+  }
+  .docs-nav nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 6px;
+  }
+}

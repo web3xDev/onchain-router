@@ -40,11 +40,12 @@ export function SiteFooter() {
             <a href="https://github.com/web3xDev/onchainrouter" target="_blank" rel="noreferrer">
               Source
             </a>
-            <a href="https://github.com/web3xDev/onchainrouter#readme" target="_blank" rel="noreferrer">
-              README
+            <Link href="/docs">Docs</Link>
+            <Link href="/docs#mcp">MCP</Link>
+            <Link href="/docs#http">API</Link>
+            <a href="https://www.npmjs.com/package/onchainrouter" target="_blank" rel="noreferrer">
+              npm
             </a>
-            <Link href="/connect#endpoint">MCP</Link>
-            <Link href="/tools/lending-rates#http">API</Link>
           </div>
         </div>
 

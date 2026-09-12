@@ -9,6 +9,7 @@ const LINKS = [
   { href: "/tools", label: "Tools" },
   { href: "/playground", label: "Playground" },
   { href: "/connect", label: "Connect" },
+  { href: "/docs", label: "Docs" },
   { href: "/submit", label: "Submit a tool" },
 ];
 

@@ -2,6 +2,8 @@
 
 **Onchain tools for AI agents.** Call an onchain tool, pay a cent, get the result.
 
+Live at **[onchainrouter.io](https://onchainrouter.io)** · MCP at `https://onchainrouter.io/mcp` · npm: [`onchainrouter`](https://www.npmjs.com/package/onchainrouter) · [llms.txt](https://onchainrouter.io/llms.txt)
+
 AI agents connect once through MCP and gain access to a network of onchain
 capabilities, paying per call with x402. No signup, no API keys, no subscriptions.
 
@@ -20,7 +22,9 @@ settlement happens at the endpoint, to its address. The router verifies nothing 
 holds nothing. `external()` in `lib/tools/registry.ts` is the whole listing, and the
 submit page reads price, rails and payout live from the endpoint's 402 before it lets
 you file one. An endpoint quoting only some other network is refused there, since
-nothing on this router could pay it.
+nothing on this router could pay it. Not on x402 yet? `npm install onchainrouter` and
+wrap the function with `paid()`: one call, both rails, your address in the 402. Agents
+can list tools too, through the free `submit_tool` on MCP or `POST /api/submit`.
 
 **No answer, no charge.** A tool that cannot give a verdict says so, and the payment
 signed for that call is never settled. You buy answers, not attempts. Both transports
@@ -48,8 +52,8 @@ Everything below is running against live data and settling real payments on test
 | ✅ | `protocol_health`: growing or draining, and whether it earns anything |
 | ✅ | `governance_pulse`: whether governance is still deciding, and whether votes clear quorum |
 | ✅ | Remote MCP at `/mcp`: one URL, agent pays from its own wallet over x402 |
-| ✅ | Reference wallet MCP (`mcp/wallet.ts`) so a chat client can pay without an x402 library |
-| ✅ | Site: landing, catalogue, tool pages, connect, submit |
+| ✅ | `onchainrouter` on npm: `paid()` to sell, `pay()` to buy, `npx onchainrouter wallet` for chat clients |
+| ✅ | Site: landing, catalogue, tool pages, connect, submit, FAQ, `/llms.txt` for agents |
 | ✅ | Playground, funded by us, so it can be tried without a wallet |
 | ✅ | Coverage measured rather than claimed (`npm run probe`) |
 | ✅ | No answer, no charge: a call with no verdict is never settled |
@@ -102,7 +106,7 @@ key; it receives a signed payment inside the tool call and settles it.
 
 ```ts
 const agent = wrapMCPClientWithPayment(new Client({ name: "my-agent", version: "1.0.0" }), paymentClient);
-await agent.connect(new StreamableHTTPClientTransport(new URL("https://<host>/mcp")));
+await agent.connect(new StreamableHTTPClientTransport(new URL("https://onchainrouter.io/mcp")));
 const result = await agent.callTool("lending_rates", { asset: "USDC", chain: "base" });
 ```
 
@@ -118,7 +122,7 @@ the wallet, gets a signature back, and calls the tool again with it as the `paym
 argument. `.mcp.json` in this repo registers exactly that pair.
 
 ```
-claude mcp add --transport http onchainrouter https://<host>/mcp
+claude mcp add --transport http onchainrouter https://onchainrouter.io/mcp
 claude mcp add onchain-wallet -e HEDERA_AGENT_ACCOUNT_ID=0.0.x -e HEDERA_AGENT_PRIVATE_KEY=0x... -- npx -y onchainrouter wallet
 ```
 

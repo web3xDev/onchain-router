@@ -3,7 +3,7 @@
 import { Brand } from "@/components/brand";
 
 type Tone = "label" | "key" | "dim" | "warn" | "ok";
-type Line = { text: string; tone: Tone; group: number; icon?: "user" | "agent"; answer?: boolean };
+type Line = { text: string; tone: Tone; group: number; icon?: "user" | "agent" | "check"; answer?: boolean };
 
 /** Small line icons, drawn with strokes so they sit at text weight. */
 const ICONS = {
@@ -19,6 +19,11 @@ const ICONS = {
       <path d="M12 8V4M8 4h8" />
       <circle cx="9" cy="14" r="1" fill="currentColor" stroke="none" />
       <circle cx="15" cy="14" r="1" fill="currentColor" stroke="none" />
+    </svg>
+  ),
+  check: (
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M5 12.5l4.5 4.5L19 7" />
     </svg>
   ),
 };
@@ -40,8 +45,8 @@ const SCRIPT: Line[] = [
   { text: "→ $0.01", tone: "dim", group: 2 },
   { text: "", tone: "dim", group: 2 },
   { text: "Payment signed", tone: "dim", group: 3 },
-  { text: "Payment settled", tone: "ok", group: 3 },
-  { text: "200 OK", tone: "ok", group: 4 },
+  { text: "Payment settled", tone: "ok", group: 3, icon: "check" },
+  { text: "200 OK", tone: "ok", group: 4, icon: "check" },
   { text: "", tone: "dim", group: 4 },
   { text: "Compound V3", tone: "key", group: 5, answer: true },
   { text: "4.51% supply APY", tone: "key", group: 5, answer: true },

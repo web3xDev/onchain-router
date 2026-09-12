@@ -1,6 +1,7 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
 import { createPaymentWrapper } from "@x402/mcp";
+import { buildListing, probeEndpoint } from "@/lib/listing";
 import type { PaymentRequirements, PaymentPayload } from "@x402/core/types";
 import type { ResourceConfig } from "@x402/core/server";
 import { paymentOptions, resourceServer } from "@/lib/x402";
@@ -182,6 +183,39 @@ async function relayTool(
 
 export async function buildRemoteServer(): Promise<McpServer> {
   const server = new McpServer({ name: SITE_NAME.toLowerCase().replace(/\s+/g, "-"), version: "0.1.0" });
+
+  // Listing is free and open to agents too. The tool probes the endpoint's 402 and
+  // returns the two artefacts a listing is made of; nothing is stored here.
+  server.registerTool(
+    "submit_tool",
+    {
+      title: "List an x402 endpoint on the router",
+      description:
+        "Free. Checks that an endpoint answers 402 on Hedera or Arc, then returns a prefilled " +
+        "GitHub issue URL and the registry entry a pull request would add. Open the issue or " +
+        "send the PR; once reviewed and merged the tool is live in the catalogue and over MCP.",
+      inputSchema: {
+        endpoint: z.string().url().describe("The x402 endpoint, POST with a JSON body"),
+        name: z.string().min(2).max(60).describe("Tool name, e.g. Liquidation risk"),
+        question: z.string().min(8).max(200).describe("One sentence: what the caller learns or gets"),
+        example: z.record(z.string(), z.unknown()).optional().describe("Sample request body, sent when checking"),
+        category: z.string().max(30).optional(),
+        inputs: z.string().max(600).optional().describe("One per line, name: meaning"),
+        contact: z.string().max(80).optional().describe("GitHub handle or X"),
+      },
+    },
+    async (args) => {
+      const probe = await probeEndpoint(args.endpoint, args.example ?? {});
+      if (!probe.ok) {
+        return { content: [{ type: "text" as const, text: `Not listed: ${probe.error}` }], isError: true };
+      }
+      const listing = buildListing(args, probe);
+      return {
+        content: [{ type: "text" as const, text: JSON.stringify(listing, null, 2) }],
+        structuredContent: listing as unknown as Record<string, unknown>,
+      };
+    },
+  );
 
   for (const tool of TOOLS) {
     const name = tool.slug.replace(/-/g, "_");

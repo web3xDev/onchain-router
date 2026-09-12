@@ -64,6 +64,15 @@ Both rails are offered in one 402; pay on whichever you hold.
 
 ${tools.join("\n\n")}
 
+## List a tool
+
+Any x402 endpoint on Hedera or Arc can be listed, by a person or an agent. Nothing is stored; a listing is a GitHub issue or pull request that a maintainer merges.
+
+- MCP: call \`submit_tool\` on \`${base}/mcp\` (free) with endpoint, name, question, example. It probes the 402 and returns \`issueUrl\` (prefilled) and \`registryEntry\` (for a PR to \`lib/tools/registry.ts\`).
+- HTTP: \`POST ${base}/api/submit\` with the same JSON fields; same response.
+- Not on x402 yet: \`npm install onchainrouter\`, wrap the function with \`paid()\` from \`onchainrouter/server\`, deploy, then list it.
+- Rules: the 402 must offer \`hedera:testnet\` or \`eip155:5042002\`; return 404 when there is no answer so nothing is charged; do one job and report the outcome.
+
 ## Pages
 
 - [Catalogue](${base}/tools): every tool with price and inputs

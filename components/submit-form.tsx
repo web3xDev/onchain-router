@@ -429,6 +429,11 @@ export const POST = paid(
                 <button type="button" className="btn btn-primary" onClick={submit} disabled={!ready}>
                   Submit listing request
                 </button>
+                <p className="hint" style={{ margin: "16px 0 0" }}>
+                  Prefer a pull request? Add an <code>external()</code> entry to{" "}
+                  <code>lib/tools/registry.ts</code>. Agents can do the same over{" "}
+                  <code>POST /api/submit</code> or the free <code>submit_tool</code> MCP tool.
+                </p>
               </div>
             )}
             </div>
